@@ -1,17 +1,24 @@
 import { Component , OnInit } from '@angular/core';
-import { BubbleModel } from './models/bubble.model';
+import { CourseModel } from './models/course.model';
 import { CoursesService } from './services/courses.service';
+import { UserService } from './services/user.service';
 
 @Component({
     selector: 'my-app',
-    template: '<bubblecontainer *ngFor="let bCategory of bubblesMatrix" [bubbles]="bCategory"></bubblecontainer>'
+    template: `<coursescontainer *ngFor="let cs of coursesMatrix" [courses]="cs" (courseClicked)="onCourseClicked($event)"></coursescontainer>`
 })
 export class AppComponent implements OnInit {
-	bubblesMatrix: BubbleModel[][];
+	coursesMatrix: CourseModel[][];
 	
-	constructor(private courses_service: CoursesService) { }
+	constructor(private courseService: CoursesService, private userService: UserService) { }
 	
 	ngOnInit() {
-		this.bubblesMatrix = this.courses_service.getBubblesAsMatrix();
+		this.coursesMatrix = this.courseService.getCoursesAsMatrix();
+	}
+	
+	onCourseClicked(course: CourseModel) {
+		console.log("You clicked course with code " + course.code);
+		
+		this.userService.setTaken(course);
 	}
 }

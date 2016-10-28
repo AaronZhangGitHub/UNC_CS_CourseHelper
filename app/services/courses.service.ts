@@ -1,28 +1,30 @@
-import { BubbleModel } from '../models/bubble.model';
+import { Injectable } from '@angular/core';
+import { CourseModel } from '../models/course.model';
 
+@Injectable()
 export class CoursesService {
-	private bubblesByCategory: { [id: string] : BubbleModel[] } = {};
+	private coursesByCategory: { [id: string] : CourseModel[] } = {};
 	
 	constructor() {
-		this.addBubble(new BubbleModel("first_level", "COMP 401", "Introduction to CS"));
+		this.addCourse(new CourseModel("first_level", "COMP 401", "Introduction to CS", [ ]));
 		
-		this.addBubble(new BubbleModel("second_level", "COMP 410", "Data Structures"));
-		this.addBubble(new BubbleModel("second_level", "COMP 411", "Computer Organization"));
+		this.addCourse(new CourseModel("second_level", "COMP 410", "Data Structures", [ "COMP 401" ]));
+		this.addCourse(new CourseModel("second_level", "COMP 411", "Computer Organization", [ "COMP 401" ]));
 	}
 	
-	private addBubble(b: BubbleModel) {
-		var categ = this.bubblesByCategory[b.category];
+	private addCourse(c: CourseModel) {
+		var categ = this.coursesByCategory[c.category];
 		if (!categ) {
-			this.bubblesByCategory[b.category] = [ b ];
+			this.coursesByCategory[c.category] = [ c ];
 		} else {
-			categ.push(b);
+			categ.push(c);
 		}
 	}
 	
-	getBubblesAsMatrix() {
-		var res: BubbleModel[][] = [ ];
-		for (let key in this.bubblesByCategory) {
-			let categ = this.bubblesByCategory[key];
+	getCoursesAsMatrix() {
+		var res: CourseModel[][] = [ ];
+		for (let key in this.coursesByCategory) {
+			let categ = this.coursesByCategory[key];
 			res.push(categ);
 		}
 	
