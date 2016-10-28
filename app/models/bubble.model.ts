@@ -1,6 +1,6 @@
 export class BubbleModel {
 
-	constructor(public code: string, public desc: string) {
+	constructor(public readonly category: string, public readonly code: string, public readonly desc: string) {
 		if (code.length < 8) throw "Invalid code: ${code}!";
 	}
 	

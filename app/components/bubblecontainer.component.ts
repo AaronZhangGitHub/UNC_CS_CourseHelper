@@ -5,7 +5,7 @@ import { BubbleModel } from '../models/bubble.model';
     selector: 'bubblecontainer',
     template: `
 	<div class="row bubble-container" *ngIf="hasOne()">
-		<bubble *ngFor="let b of bubbles" [b]="b"></bubble>
+		<bubble *ngFor="let b of bubbles" [model]="b"></bubble>
 	</div>
 	`
 })
