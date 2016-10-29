@@ -15,8 +15,7 @@ import { UserService } from '../services/user.service';
 				</div>
 			</div>
 		</div>
-	</footer>
-	`
+	</footer>`,
 	styles: [
 		`
 		footer {
