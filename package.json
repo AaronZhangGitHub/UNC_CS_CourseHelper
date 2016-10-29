@@ -14,7 +14,8 @@
     "test-once": "tsc && karma start karma.conf.js --single-run",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
-	"lessc": "lessc",
+    "lessc": "lessc",
+	"typings": "typings",
     "webdriver:update": "webdriver-manager update"
   },
   "keywords": [],
@@ -38,6 +39,7 @@
     "angular-in-memory-web-api": "~0.1.13",
     "bootstrap": "^3.3.7",
     "core-js": "^2.4.1",
+    "d3": "3.x",
     "materialize-css": "^0.97.7",
     "reflect-metadata": "^0.1.8",
     "rxjs": "5.0.0-beta.12",
@@ -66,6 +68,7 @@
     "rimraf": "^2.5.4",
     "tslint": "^3.15.1",
     "typescript": "^2.0.3",
+    "typings": "^1.5.0",
     "webdriver-manager": "10.2.5"
   },
   "repository": {}
