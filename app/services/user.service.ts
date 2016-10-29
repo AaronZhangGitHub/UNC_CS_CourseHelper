@@ -14,4 +14,12 @@ export class UserService {
 	setTaken(course: CourseModel) {
 		this.taken_courses[course.code] = true;
 	}
+	
+	unsetTaken(course_code: string) {
+		delete this.taken_courses[course_code];
+	}
+	
+	getTakenCourseCodes() {
+		return Object.keys(this.taken_courses);
+	}
 }

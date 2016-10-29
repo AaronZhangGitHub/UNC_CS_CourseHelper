@@ -24,7 +24,7 @@ module.exports = function () {
       {pattern: 'node_modules/zone.js/dist/fake-async-test.js', instrument: false},
 
       // application (but not specs) loaded via module imports
-      {pattern: 'app/**/*+(ts|html|css)', load: false},
+      {pattern: 'app/**/*+(ts|html|css|less)', load: false},
       {pattern: 'app/**/*.spec.ts', ignore: true},
 
       {pattern: 'testing/**/*+(ts|html|css)', load: false},

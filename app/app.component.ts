@@ -5,7 +5,10 @@ import { UserService } from './services/user.service';
 
 @Component({
     selector: 'my-app',
-    template: `<coursescontainer *ngFor="let cs of coursesMatrix" [courses]="cs" (courseClicked)="onCourseClicked($event)"></coursescontainer>`
+    template: `
+		<coursescontainer *ngFor="let cs of coursesMatrix" [courses]="cs" (courseClicked)="onCourseClicked($event)"></coursescontainer>
+		<takencourses></takencourses>
+	`
 })
 export class AppComponent implements OnInit {
 	coursesMatrix: CourseModel[][];

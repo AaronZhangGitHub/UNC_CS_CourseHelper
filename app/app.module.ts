@@ -6,6 +6,7 @@ import { CoursesService } from './services/courses.service';
 
 import { AppComponent }  from './app.component';
 import { BubbleComponent } from './components/bubble.component';
+import { TakenCoursesComponent } from './components/takencourses.component';
 import { CoursesContainerComponent } from './components/coursescontainer.component';
 
 @NgModule({
@@ -17,6 +18,7 @@ import { CoursesContainerComponent } from './components/coursescontainer.compone
   declarations: [ 
 	AppComponent,
 	BubbleComponent,
+	TakenCoursesComponent,
 	CoursesContainerComponent
   ],
   bootstrap: [ AppComponent ]

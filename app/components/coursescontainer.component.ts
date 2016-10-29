@@ -5,10 +5,19 @@ import { CourseModel } from '../models/course.model';
 @Component({
     selector: 'coursescontainer',
     template: `
-	<div class="row course-container" *ngIf="hasOne()">
+	<div class="row">
 		<bubble *ngFor="let c of courses" [model]="c" (clicked)="onCourseClicked($event)"></bubble>
 	</div>
-	`
+	`,
+	styles: [`
+		.row {
+			margin: 0px;
+		}
+		
+		.bubble {
+			margin-top: 20px;
+		}
+	`]
 })
 export class CoursesContainerComponent {
 	@Input() 

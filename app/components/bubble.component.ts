@@ -6,7 +6,7 @@ import { IBubble } from '../models/IBubble';
     selector: 'bubble',
     template: `
 	<div class="col s12 m6 l4" *ngIf="model.show(userService)">
-		<div class="card blue-grey" (click)="onClick()">
+		<div class="card cyan darken-4" (click)="onClick()">
 			<div class="card-content white-text">
 				<span class="card-title">{{model.getTitle()}}</span>
 				<p>{{model.getText()}}</p>
