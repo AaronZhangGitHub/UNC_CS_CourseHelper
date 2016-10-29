@@ -5,7 +5,7 @@ import { UserService } from './services/user.service';
 import { CoursesService } from './services/courses.service';
 
 import { AppComponent }  from './app.component';
-import { BubbleComponent } from './components/bubble.component';
+import { CourseComponent } from './components/course.component';
 import { TakenCoursesComponent } from './components/takencourses.component';
 import { CoursesContainerComponent } from './components/coursescontainer.component';
 
@@ -17,7 +17,7 @@ import { CoursesContainerComponent } from './components/coursescontainer.compone
   ],
   declarations: [ 
 	AppComponent,
-	BubbleComponent,
+	CourseComponent,
 	TakenCoursesComponent,
 	CoursesContainerComponent
   ],

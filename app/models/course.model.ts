@@ -1,7 +1,6 @@
 import { UserService } from '../services/user.service';
-import { IBubble } from './IBubble';
 
-export class CourseModel implements IBubble {
+export class CourseModel {
 
 	constructor(public readonly category: string, 
 				public readonly code: string, 
@@ -11,22 +10,11 @@ export class CourseModel implements IBubble {
 		if (code.length < 8) throw "Invalid code: ${code}!";
 	}
 	
-	// From IBubble
-	getTitle(): string {
-		return this.code;
+	isShowing(userService: UserService) {
+		return (!userService.hasTaken(this.code) && this.hasPrereqs(userService));
 	}
 	
-	// From IBubble
-	getText(): string {
-		return this.desc;
-	}
-	
-	// From IBubble
-	show(userService: UserService) {
-		return !userService.hasTaken(this.code) && this.hasPrereqs(userService);
-	}
-	
-	hasPrereqs(userService: UserService) {
+	private hasPrereqs(userService: UserService) {
 		for (let pr_code of this.prereq_codes) {
 			if (!userService.hasTaken(pr_code)) return false;
 		}
