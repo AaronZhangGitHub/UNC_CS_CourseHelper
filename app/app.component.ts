@@ -10,6 +10,4 @@ import { UserService } from './services/user.service';
 		<takencourses></takencourses>
 	`
 })
-export class AppComponent {
-	
-}
+export class AppComponent { }

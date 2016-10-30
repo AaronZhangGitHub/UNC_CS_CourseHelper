@@ -1,4 +1,5 @@
 import { NgModule }      from '@angular/core';
+import { HttpModule }    from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { UserService } from './services/user.service';
@@ -10,7 +11,10 @@ import { TakenCoursesComponent } from './components/takencourses.component';
 import { CoursesContainerComponent } from './components/coursescontainer.component';
 
 @NgModule({
-  imports: [ BrowserModule ],
+  imports: [ 
+	BrowserModule,
+	HttpModule
+  ],
   providers: [
 	UserService,
 	CoursesService

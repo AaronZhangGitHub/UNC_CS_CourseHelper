@@ -7,9 +7,33 @@ import { Subscription } from 'rxjs/Subscription';
 @Component({
     selector: 'coursescontainer',
     template: `
-	<span *ngIf="coursesMatrix.length">
+	<span *ngIf="!initLoad">
+		<div class="row">
+			<div class="center-align">
+				<div class="preloader-wrapper big active">
+					<div class="spinner-layer spinner-blue-only">
+						<div class="circle-clipper left">
+							<div class="circle"></div>
+						</div>
+						<div class="gap-patch">
+							<div class="circle"></div>
+						</div>
+						<div class="circle-clipper right">
+							<div class="circle"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</span>
+	
+	<span *ngIf="coursesMatrix && coursesMatrix.length">
 		<ul class="collection">
 			<li class="collection-item" *ngFor="let courses of coursesMatrix">
+				<span class="title">
+					<h5>{{courses[0].category}}</h5>
+					<hr />
+				</span>
 				<div class="row">
 					<course *ngFor="let c of courses" [model]="c" (clicked)="onCourseClicked($event)"></course>
 				</div>
@@ -25,6 +49,7 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class CoursesContainerComponent implements OnInit, OnDestroy {
 	
+	private initLoad = false;
 	private coursesMatrix: CourseModel[][];
 	private subscription: Subscription;
 	
@@ -33,7 +58,10 @@ export class CoursesContainerComponent implements OnInit, OnDestroy {
 	}
 	
 	private refreshCourses() {
-		this.coursesMatrix = this.coursesService.getCourses()
+		this.coursesService.getCourses().then((coursesMatrix) => {
+			this.initLoad = true;
+			this.coursesMatrix = coursesMatrix;
+		});
 	}
 	
 	private onCourseClicked(course: CourseModel) {
