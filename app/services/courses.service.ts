@@ -9,6 +9,7 @@ export class CoursesService {
 	
 	constructor(private http: Http, private userService: UserService) {
 		this.addCourse(new CourseModel("Introduction", "COMP 401", "Introduction to CS", [ "COMP 401" ], [ ]));
+    this.addCourse(new CourseModel("Introduction", "MATH 233", "Multivariable Calculus", [ "MATH 233" ], [ ]);
 		
 		this.addCourse(new CourseModel("Fundamentals", "COMP 410", "Data Structures", [ "COMP 410" ], [ "COMP 401" ]));
 		this.addCourse(new CourseModel("Fundamentals", "COMP 411", "Computer Organization", [ "COMP 411" ], [ "COMP 401" ]));
@@ -16,6 +17,11 @@ export class CoursesService {
 		this.addCourse(new CourseModel("Distributed Systems", "COMP 431", "Internet Services and Protocols", [ "COMP 431", "INTRO DS" ], [ "COMP 410", "COMP 411" ]));
 		this.addCourse(new CourseModel("Distributed Systems", "COMP 530", "Operating Systems", [ "COMP 530", "INTRO DS" ], [ "COMP 410", "COMP 411" ]));
 		this.addCourse(new CourseModel("Distributed Systems", "COMP 533", "Distributed Systems", [ "COMP 533" ], [ "INTRO DS" ]));
+    
+    this.addCourse(new CourseModel("Bio", "COMP 555", "BioAlgorithms", [ "COMP 555" ], [ "COMP 410" ]);
+    
+    this.addCourse(new CourseModel("Graphics", "MATH 547", "Linear Algebra", [ "MATH 547" ], [ "MATH 233" ]);
+    this.addCourse(new CourseModel("Graphics", "COMP 572", "Graphics", [ "COMP 572" ], [ "MATH 547", "COMP 410" ]);
 	}
 	
 	private addCourse(c: CourseModel) {

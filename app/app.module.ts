@@ -16,14 +16,14 @@ import { CoursesContainerComponent } from './components/coursescontainer.compone
 	HttpModule
   ],
   providers: [
-	UserService,
-	CoursesService
+    UserService,
+    CoursesService
   ],
   declarations: [ 
-	AppComponent,
-	CourseComponent,
-	TakenCoursesComponent,
-	CoursesContainerComponent
+    AppComponent,
+    CourseComponent,
+    TakenCoursesComponent,
+    CoursesContainerComponent
   ],
   bootstrap: [ AppComponent ]
 })

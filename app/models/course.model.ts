@@ -9,6 +9,7 @@ export class CourseModel {
 				public readonly prereq_codes: string[]) 
 	{
 		if (code.length < 8) throw "Invalid code: ${code}!";
+    else if (equivalence_groups.length == 0) throw "Must provide at least one equivalence group for ${code}";
 	}
 	
 	isShowing(userService: UserService) {
