@@ -6,8 +6,13 @@ import { UserService } from './services/user.service';
 @Component({
     selector: 'my-app',
     template: `
-		<coursescontainer></coursescontainer>
-		<takencourses></takencourses>
+    <welcome></welcome>
+    
+    <div class="fixed-action-btn">
+      <a class="btn-floating btn-large">
+        <i class="large material-icons">done</i>
+      </a>
+    </div>
 	`
 })
 export class AppComponent { }

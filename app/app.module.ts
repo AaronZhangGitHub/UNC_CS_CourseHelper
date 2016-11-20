@@ -7,13 +7,14 @@ import { CoursesService } from './services/courses.service';
 
 import { AppComponent }  from './app.component';
 import { CourseComponent } from './components/course.component';
+import { WelcomeComponent } from './components/welcome.component';
 import { TakenCoursesComponent } from './components/takencourses.component';
 import { CoursesContainerComponent } from './components/coursescontainer.component';
 
 @NgModule({
   imports: [ 
-	BrowserModule,
-	HttpModule
+    BrowserModule,
+    HttpModule
   ],
   providers: [
     UserService,
@@ -22,6 +23,7 @@ import { CoursesContainerComponent } from './components/coursescontainer.compone
   declarations: [ 
     AppComponent,
     CourseComponent,
+    WelcomeComponent,
     TakenCoursesComponent,
     CoursesContainerComponent
   ],

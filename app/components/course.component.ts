@@ -5,7 +5,7 @@ import { CourseModel } from '../models/course.model';
     selector: 'course',
     template: `
 	<div class="col s12 m6 l4">
-		<div class="card cyan darken-4" (click)="onClick()">
+		<div class="click-card card cyan darken-4" (click)="onClick()">
 			<div class="card-content white-text">
 				<span class="card-title">{{model.code}}</span>
 				<p>{{model.desc}}</p>

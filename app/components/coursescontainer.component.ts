@@ -28,17 +28,15 @@ import { Subscription } from 'rxjs/Subscription';
 	</span>
 	
 	<span *ngIf="coursesMatrix && coursesMatrix.length">
-		<ul class="collection">
-			<li class="collection-item" *ngFor="let courses of coursesMatrix">
-				<span class="title">
-					<h5>{{courses[0].category}}</h5>
-					<hr />
-				</span>
-				<div class="row">
-					<course *ngFor="let c of courses" [model]="c" (clicked)="onCourseClicked($event)"></course>
-				</div>
-			</li>
-		</ul>
+    <div class="category-group collection-item" *ngFor="let courses of coursesMatrix">
+      <span class="title">
+        <h5>{{courses[0].category}}</h5>
+        <hr />
+      </span>
+      <div class="row">
+        <course *ngFor="let c of courses" [model]="c" (clicked)="onCourseClicked($event)"></course>
+      </div>
+    </div>
 	</span>
 	`,
 	styles: [`
