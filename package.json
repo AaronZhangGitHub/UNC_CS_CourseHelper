@@ -15,7 +15,7 @@
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "lessc": "lessc",
-	"typings": "typings",
+    "typings": "typings",
     "webdriver:update": "webdriver-manager update"
   },
   "keywords": [],
@@ -39,7 +39,9 @@
     "angular-in-memory-web-api": "~0.1.13",
     "bootstrap": "^3.3.7",
     "core-js": "^2.4.1",
+    "dragula": "^3.7.2",
     "materialize-css": "^0.97.7",
+    "ng2-dragula": "^1.2.1",
     "reflect-metadata": "^0.1.8",
     "rxjs": "5.0.0-beta.12",
     "systemjs": "0.19.39",

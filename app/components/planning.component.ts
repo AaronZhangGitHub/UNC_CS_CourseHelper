@@ -6,24 +6,15 @@ import { CourseModel } from '../models/course.model';
   template: `
     <topnotification text="Welcome, lets get started by selecting what classes you've already taken"></topnotification>
     
-    <div class="padded-container container">
+    <div class="container">
       <coursescontainer></coursescontainer>
       <takencourses></takencourses>
     </div>
-    
-    <div class="fixed-action-btn">
-      <a class="btn-floating btn-large" (click)="next()">
-        <i class="large material-icons">done</i>
-      </a>
-    </div>
-  `
+  `,
+  styles: [`
+    .container {
+      padding-bottom: 55px;
+    }
+  `]
 })
-export class WelcomeComponent {
-  
-  @Output()
-  onNext = new EventEmitter();
-  
-  next() {
-    this.onNext.emit();
-  }
-}
+export class WelcomeComponent { }
