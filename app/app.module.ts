@@ -1,7 +1,7 @@
 import { NgModule }      from '@angular/core';
 import { HttpModule }    from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { DragulaModule } from '../node_modules/ng2-dragula/ng2-dragula.js';
+import { DragulaModule, DragulaService } from '../node_modules/ng2-dragula/ng2-dragula.js';
 
 import { UserService } from './services/user.service';
 import { CoursesService } from './services/courses.service';
@@ -22,7 +22,8 @@ import { CoursesContainerComponent } from './components/coursescontainer.compone
   ],
   providers: [
     UserService,
-    CoursesService
+    CoursesService,
+    DragulaService
   ],
   declarations: [ 
     AppComponent,

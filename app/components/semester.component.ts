@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CourseModel } from '../models/course.model';
 import { UserService } from '../services/user.service';
+import { DragulaService } from '../../node_modules/ng2-dragula/ng2-dragula.js';
 
 @Component({
   selector: 'semester',
@@ -8,18 +9,28 @@ import { UserService } from '../services/user.service';
     <topnotification text="Optionally categorize the courses you've taken by semester"></topnotification>
     
     <div class="padded-container container">
-      <div id="semester-wrapper">
-        <div id="semester-row" class="row">
-          <div class="semester col l3 m4 s6" *ngFor="let sm of semesters" [dragula]="'semester'">
-            <h4>{{ sm.name }}</h4>
-            <div class="chip" *ngFor="let course of sm.courses" [innerHtml]="course"></div>
-            <button type="button"></button>
-          </div>
-          <div *ngIf="semesters.length < 8" id="add-semester" class="col l3 m4 s6 z-depth-1" (click)="addSemester()">
-            <h4>+</h4>
-          </div>
-        </div>
-      </div>
+      <table id="semester-wrapper" [style.height.px]="cardHeight * 2">
+        <tbody>
+          <tr id="semester-row">
+            <td class="semester" *ngFor="let sm of semesters" [style.height.px]="cardHeight">
+              <div class="card">
+                <div class="card-content">
+                  <span class="card-title">{{ sm.name }}</span>
+                  <div class="semester-div" [dragula]="'semester'" [dragulaModel]="sm.courses">
+                    <div class="chip" *ngFor="let course of sm.courses" [innerHtml]="course"></div>
+                  </div>
+                </div>
+                <div class="card-action" *ngIf="semesters.length > 1">
+                  <a href="javascript:void(0)" (click)="removeSemester(sm)">Remove</a>
+                </div>
+              </div>
+            </td>
+            <td *ngIf="semesters.length < 8" id="add-semester" class="col l3 m4 s6 z-depth-1" (click)="addSemester()" [style.height]="cardHeight + 'px'">
+              <h4>+</h4>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     
     <div class="fixed-action-btn">
@@ -33,65 +44,7 @@ import { UserService } from '../services/user.service';
       </ul>
     </div>
   `,
-  styles: [`
-    .gu-mirror {
-      position: fixed !important;
-      margin: 0 !important;
-      z-index: 9999 !important;
-      opacity: 0.8;
-      -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
-      filter: alpha(opacity=80);
-    }
-    .gu-hide {
-      display: none !important;
-    }
-    .gu-unselectable {
-      -webkit-user-select: none !important;
-      -moz-user-select: none !important;
-      -ms-user-select: none !important;
-      user-select: none !important;
-    }
-    .gu-transit {
-      opacity: 0.2;
-      -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
-      filter: alpha(opacity=20);
-    }
-    /* dragula-specific example page styles */
-    .dragula-container {
-      display: table-cell;
-      margin: 2px;
-    }
-    .chip {
-      display: block;
-      width: 120px;
-      text-align: center;
-      cursor: move;
-    }
-    #semester-wrapper {
-      display: table;
-      width: 100%;
-      height: 100%;
-    }
-    #semester-row {
-      display: table-row;
-    }
-    #add-semester, 
-    .semester {
-      height: 100%;
-      margin-bottom: 15px;
-      display: inline-block;
-    }
-    #add-semester {
-      text-align: center;
-      width: 150px;
-      background-color: rgba(225, 245, 254, 0.5);
-      cursor: pointer;
-    }
-    #add-semester h4 {
-      margin-top: 50%;
-    }
-    `
-  ]
+  styleUrls: [ "app/components/semester.component.css" ]
 })
 export class SemesterComponent implements OnInit {
   
@@ -99,8 +52,21 @@ export class SemesterComponent implements OnInit {
   onNext = new EventEmitter();
   
   semesters: Array<any> = [ { name: "Semester 1", courses: [] } ];
+  cardHeight: number;
   
-  constructor(private userService: UserService) { }
+  constructor(private dragulaService: DragulaService, private userService: UserService) { 
+    this.cardHeight = 0;
+    
+    dragulaService.drop.subscribe((value: any) => {
+      console.log(value[1].innerHTML);
+      // TODO move between course arrays
+      
+      this.recalculateHeight();
+    });
+    dragulaService.drag.subscribe((value: any) => {
+      this.recalculateHeight();
+    });
+  }
   
   next() {
     this.onNext.emit();
@@ -110,9 +76,35 @@ export class SemesterComponent implements OnInit {
     for (let c of this.userService.getTakenCourseCodes()) {
       this.semesters[0].courses.push(c);
     }
+    this.recalculateHeight();
+  }
+  
+  recalculateHeight() {
+    var cnt = 0;
+    for (let sm of this.semesters) {
+      if (sm.courses.length > cnt) cnt = sm.courses.length;
+    }
+    
+    this.cardHeight = (cnt+1)*37 + 150;
   }
   
   addSemester() {
     this.semesters.push({ name: "Semester " + (this.semesters.length+1), courses: [] });
+  }
+  
+  removeSemester(sm: any) {
+    let idx = this.semesters.indexOf(sm);
+    if (idx >= 0 && this.semesters.length > 1) {
+      this.semesters.splice(idx, 1);
+      
+      // Move courses
+      let nextSm = this.semesters[ Math.min(idx, this.semesters.length-1) ];
+      for (let c of sm.courses) nextSm.courses.push(c);
+      
+      // Rename semesters
+      this.semesters.forEach((sm, idx) => { sm.name = "Semester " + (idx+1) });
+      
+      this.recalculateHeight();
+    }
   }
 }
