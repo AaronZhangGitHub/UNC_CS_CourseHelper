@@ -20,6 +20,8 @@ export class UserService {
 	}
 	
 	setTaken(course: CourseModel) {
+    // TODO callback to server to set as taken, should return avaliable but untaken courses
+  
 		this.taken_courses[course.code] = course;
 		for (let equ_group of course.equivalence_groups) {
 			let old_equ_count = this.equivalent_prereqs[equ_group];
@@ -31,6 +33,8 @@ export class UserService {
 	}
 	
 	unsetTaken(course_code: string) {
+    // TODO callback to server to unset course as taken, should return remaining taken courses
+  
 		let course = this.taken_courses[course_code];
 		if (course) {
 			for (let equ of course.equivalence_groups) {

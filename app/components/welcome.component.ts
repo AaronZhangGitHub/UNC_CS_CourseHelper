@@ -7,6 +7,8 @@ import { CourseModel } from '../models/course.model';
     <topnotification text="Welcome, lets get started by selecting what classes you've already taken"></topnotification>
     
     <div class="padded-container container">
+      <coursepopup></coursepopup>
+    
       <coursescontainer></coursescontainer>
       <takencourses></takencourses>
     </div>
