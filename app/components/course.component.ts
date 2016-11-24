@@ -5,9 +5,12 @@ import { CourseModel } from '../models/course.model';
     selector: 'course',
     template: `
 	<div class="col s12 m6 l4">
-		<div class="click-card card cyan darken-4">
-			<div class="card-content white-text" (click)="onClick()">
-				<span class="card-title">{{model.code}}</span>
+		<div class="click-card card">
+			<div class="card-content darken-2 white-text" [ngClass]="model.getCatColor()" (click)="onClick()">
+        <span class="badge white-text darken-3" [ngClass]="model.getAltCatColor()">{{ model.alt_cat }}</span>
+				<span class="card-title">
+          {{model.code}}
+        </span>
 				<p>{{model.desc}}</p>
 			</div>
       <div class="card-action">

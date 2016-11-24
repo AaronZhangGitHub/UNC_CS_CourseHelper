@@ -17,7 +17,7 @@ import { DragulaService } from '../../node_modules/ng2-dragula/ng2-dragula.js';
                 <div class="card-content">
                   <span class="card-title">{{ sm.name }}</span>
                   <div class="semester-div" [dragula]="'semester'" [dragulaModel]="sm.courses">
-                    <div class="chip" *ngFor="let course of sm.courses" [innerHtml]="course"></div>
+                    <course-chip [course]="c" [closeable]="false" *ngFor="let c of sm.courses"></course-chip>
                   </div>
                 </div>
                 <div class="card-action" *ngIf="semesters.length > 1">
@@ -73,7 +73,7 @@ export class SemesterComponent implements OnInit {
   }
   
   ngOnInit() {
-    for (let c of this.userService.getTakenCourseCodes()) {
+    for (let c of this.userService.getTakenCourses()) {
       this.semesters[0].courses.push(c);
     }
     this.recalculateHeight();

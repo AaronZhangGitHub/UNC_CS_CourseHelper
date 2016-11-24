@@ -30,7 +30,7 @@ export class AppComponent {
   }
   
   finishWelcome() {
-    if (this.userService.getTakenCourseCodes().length > 0) {
+    if (this.userService.getTakenCourses().length > 0) {
       this.page = Page.SEMESTER;
     } else {
       this.page = Page.PLANNING;

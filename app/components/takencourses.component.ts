@@ -8,10 +8,7 @@ import { UserService } from '../services/user.service';
 		<div class="container">
 			<div class="row taken-courses">
 				<div class="col s12">
-					<div class="chip" *ngFor="let code of getTakenCourseCodes()">
-						{{code}}
-						<i class="close material-icons" (click)="unsetTaken(code)">close</i>
-					</div>
+					<course-chip [course]="c" [closeable]="true" (onClose)="unsetTaken($event.code)" *ngFor="let c of getTakenCourses()"></course-chip>
 				</div>
 			</div>
 		</div>
@@ -30,8 +27,8 @@ export class TakenCoursesComponent {
 	
 	constructor(private userService: UserService) { }
 	
-	private getTakenCourseCodes(): string[] {
-		return this.userService.getTakenCourseCodes();
+	private getTakenCourses(): string[] {
+		return this.userService.getTakenCourses();
 	}
 	
 	private unsetTaken(course_code: string) {

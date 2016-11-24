@@ -48,7 +48,7 @@ export class UserService {
 		this.subjectPrereqsChange.next();
 	}
 	
-	getTakenCourseCodes() {
-		return Object.keys(this.taken_courses);
+	getTakenCourses() {
+		return Object.values(this.taken_courses);
 	}
 }
