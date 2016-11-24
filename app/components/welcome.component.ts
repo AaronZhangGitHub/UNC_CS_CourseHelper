@@ -4,7 +4,7 @@ import { CourseModel } from '../models/course.model';
 @Component({
   selector: 'welcome',
   template: `
-    <topnotification text="Welcome, lets get started by selecting what classes you've already taken"></topnotification>
+    <topnotification text="Welcome, let's get started by selecting what classes you've already taken"></topnotification>
     
     <div class="padded-container container">
       <coursepopup></coursepopup>
@@ -14,7 +14,7 @@ import { CourseModel } from '../models/course.model';
     </div>
     
     <div class="fixed-action-btn">
-      <a class="btn-floating btn-large" (click)="next()">
+      <a routerLink="/semester" routerLinkActive="active" class="btn-floating btn-large">
         <i class="large material-icons">done</i>
       </a>
     </div>
@@ -24,8 +24,4 @@ export class WelcomeComponent {
   
   @Output()
   onNext = new EventEmitter();
-  
-  next() {
-    this.onNext.emit();
-  }
 }

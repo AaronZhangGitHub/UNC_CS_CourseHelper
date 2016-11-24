@@ -1,5 +1,6 @@
 import { NgModule }      from '@angular/core';
 import { HttpModule }    from '@angular/http';
+import { RouterModule, Routes } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { DragulaModule, DragulaService } from '../node_modules/ng2-dragula/ng2-dragula.js';
 
@@ -16,11 +17,17 @@ import { TakenCoursesComponent } from './components/takencourses.component';
 import { TopNotificationComponent } from './components/topnotification.component';
 import { CoursesContainerComponent } from './components/coursescontainer.component';
 
+const appRoutes: Routes = [
+  { path: 'semester', component: SemesterComponent },
+  { path: '', component: WelcomeComponent }
+];
+
 @NgModule({
   imports: [ 
     BrowserModule,
     DragulaModule,
-    HttpModule
+    HttpModule,
+    RouterModule.forRoot(appRoutes)
   ],
   providers: [
     UserService,
