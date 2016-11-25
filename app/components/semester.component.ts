@@ -34,13 +34,11 @@ import { DragulaService } from '../../node_modules/ng2-dragula/ng2-dragula.js';
     </div>
     
     <div class="fixed-action-btn">
-      <a class="btn-floating btn-large">
-        <i class="large material-icons">menu</i>
+      <a routerLink="/home" routerLinkActive="active" class="btn-floating btn-large">
+        <i class="large material-icons">done</i>
       </a>
       <ul>
-        <li><a class="btn-floating red"><i class="material-icons">insert_chart</i></a></li>
-        <li><a class="btn-floating yellow darken-1"><i class="material-icons">format_quote</i></a></li>
-        <li><a class="btn-floating green"><i class="material-icons">publish</i></a></li>
+        <li><a routerLink="/welcome" routerLinkActive="active" class="btn-floating red"><i class="fa fa-arrow-left"></i></a></li>
       </ul>
     </div>
   `,
