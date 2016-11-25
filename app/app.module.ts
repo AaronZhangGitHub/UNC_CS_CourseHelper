@@ -49,6 +49,7 @@ const appRoutes: Routes = [
     TopNotificationComponent,
     CoursesContainerComponent
   ],
+  entryComponents: [ CoursePopupComponent ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }
