@@ -19,7 +19,7 @@ import { UserService } from './services/user.service';
   <router-outlet (activate)="onActivate($event, outlet)" #outlet></router-outlet>`
 })
 export class AppComponent {
-  onActivate(e, outlet) {
+  onActivate(e: any, outlet: any) {
     outlet.scrollTop = 0;
   }
 }
