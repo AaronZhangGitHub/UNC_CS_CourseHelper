@@ -10,7 +10,7 @@ import { CourseModel } from '../models/course.model';
       <a class="waves-effect waves-light btn-large">Sign Up</a>
     </div>
 
-    <loginpopup ="model" [show]="showPopup"></loginpopup>
+    <loginpopup [show]="showPopup"></loginpopup>
 
     <!-- This is the correct way to do a link in angular -->
     <a routerLink="/welcome" routerLinkActive="active" class="btn-floating btn-large">
