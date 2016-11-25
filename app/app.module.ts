@@ -8,6 +8,7 @@ import { UserService } from './services/user.service';
 import { CoursesService } from './services/courses.service';
 
 import { AppComponent }  from './app.component';
+import { LoginComponent } from './components/login.component';
 import { CourseComponent } from './components/course.component';
 import { WelcomeComponent } from './components/welcome.component';
 import { SemesterComponent } from './components/semester.component';
@@ -19,7 +20,8 @@ import { CoursesContainerComponent } from './components/coursescontainer.compone
 
 const appRoutes: Routes = [
   { path: 'semester', component: SemesterComponent },
-  { path: '', component: WelcomeComponent }
+  { path: 'welcome', component: WelcomeComponent },
+  { path: '', component: LoginComponent }
 ];
 
 @NgModule({
@@ -36,6 +38,7 @@ const appRoutes: Routes = [
   ],
   declarations: [ 
     AppComponent,
+    LoginComponent,
     CourseComponent,
     WelcomeComponent,
     SemesterComponent,
