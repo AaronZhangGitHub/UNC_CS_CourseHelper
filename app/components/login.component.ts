@@ -10,7 +10,16 @@ import { CourseModel } from '../models/course.model';
       <a class="waves-effect waves-light btn-large">Sign Up</a>
     </div>
 
-    <loginpopup [show]="showPopup"></loginpopup>
+    <!-- Login Popup -->
+    <div *ngIf="showPopup" class="modal open" style="z-index: 1003; display: block; opacity: 1; transform: scaleX(1); top: 10%;">
+      <div class="modal-content">
+        <p>Login Popup</p>
+      </div>
+      <div class="modal-footer">
+        <a href="javascript:void(0)" (click)="hideDetails()" class="modal-close waves-effect waves-green btn-flat">Close</a>
+      </div>
+    </div>
+    <div *ngIf="showPopup" class="modal-overlay open" id="materialize-modal-overlay-1" style="z-index: 1002; display: block; opacity: 0.5;"></div>
 
     <!-- This is the correct way to do a link in angular -->
     <a routerLink="/welcome" routerLinkActive="active" class="btn-floating btn-large">
@@ -31,5 +40,9 @@ export class LoginComponent {
   
   showDetails() {
     this.showPopup = true;
+  }
+  
+  hideDetails() {
+    this.showPopup = false;
   }
 }

@@ -13,7 +13,6 @@ import { CourseComponent } from './components/course.component';
 import { WelcomeComponent } from './components/welcome.component';
 import { SemesterComponent } from './components/semester.component';
 import { CourseChipComponent } from './components/coursechip.component';
-import { LogInPopUpComponent } from './components/loginpopup.component';
 import { CoursePopupComponent } from './components/coursepopup.component';
 import { TakenCoursesComponent } from './components/takencourses.component';
 import { TopNotificationComponent } from './components/topnotification.component';
@@ -44,7 +43,6 @@ const appRoutes: Routes = [
     CourseComponent,
     WelcomeComponent,
     SemesterComponent,
-    LogInPopUpComponent,
     CourseChipComponent,
     CoursePopupComponent,
     TakenCoursesComponent,
