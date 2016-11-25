@@ -8,6 +8,7 @@ import { UserService } from './services/user.service';
 import { CoursesService } from './services/courses.service';
 
 import { AppComponent }  from './app.component';
+import { HomeComponent } from './components/home.component';
 import { LoginComponent } from './components/login.component';
 import { CourseComponent } from './components/course.component';
 import { WelcomeComponent } from './components/welcome.component';
@@ -17,11 +18,16 @@ import { CoursePopupComponent } from './components/coursepopup.component';
 import { TakenCoursesComponent } from './components/takencourses.component';
 import { TopNotificationComponent } from './components/topnotification.component';
 import { CoursesContainerComponent } from './components/coursescontainer.component';
+import { SemesterCategorizerComponent } from './components/semestercategorizer.component';
+
+import { CoursePlannerComponent } from './components/home/courseplanner.component';
+import { SemesterPlannerComponent } from './components/home/semesterplanner.component';
 
 
 const appRoutes: Routes = [
   { path: 'semester', component: SemesterComponent },
   { path: 'welcome', component: WelcomeComponent },
+  { path: 'home', component: HomeComponent },
   { path: '', component: LoginComponent }
 ];
 
@@ -39,6 +45,7 @@ const appRoutes: Routes = [
   ],
   declarations: [ 
     AppComponent,
+    HomeComponent,
     LoginComponent,
     CourseComponent,
     WelcomeComponent,
@@ -47,7 +54,11 @@ const appRoutes: Routes = [
     CoursePopupComponent,
     TakenCoursesComponent,
     TopNotificationComponent,
-    CoursesContainerComponent
+    CoursesContainerComponent,
+    SemesterCategorizerComponent,
+    
+    CoursePlannerComponent,
+    SemesterPlannerComponent
   ],
   entryComponents: [ CoursePopupComponent ],
   bootstrap: [ AppComponent ]

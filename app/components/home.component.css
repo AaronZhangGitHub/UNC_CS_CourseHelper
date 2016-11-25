@@ -1,0 +1,8 @@
+.tab.active {
+  border-bottom: #2979ff solid 6px;
+}
+
+.tab:not(.active) a:hover {
+  color: #bdbdbd !important;
+  transition: color .28s ease;
+}

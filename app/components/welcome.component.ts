@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CourseModel } from '../models/course.model';
 
+// The first page the user sees after creating and account
 @Component({
   selector: 'welcome',
   template: `
