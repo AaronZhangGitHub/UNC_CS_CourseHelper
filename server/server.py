@@ -84,10 +84,24 @@ def user_login():
 @get('/test')
 @db_session
 def test():
-	classes = select(c for c in Class)[:]
-	result = resolve_result(result, 'Class')
+	classes = select(c for c in Class)[:][1]
+	result = classes.to_dict(with_collections=True)
 	response.content_type = 'application/json'
 	return json.dumps(result)
+
+@get('/api/prereqs/<className>')
+@db_session
+def get_prereqs(className):
+	instance = select(c for c in Class if className in c.Name).first()
+	if instance == None:
+		abort(404, 'The requested resource does not exist.')
+	result = []
+	for eqclass in instance.Prerequisites.EQClass:
+		classes = select(c for c in Class if eqclass in c.EQClasses.EQClass)
+		result.append(resolve_result(classes, 'Class'))
+	response.content_type = 'application/json'
+	return json.dumps(result)
+
 
 
 @get('/api/<table>/<id>')
@@ -133,6 +147,9 @@ def table_delete_item(table, id):
 	except ObjectNotFound as e:
 		abort(404, "The requested resource does not exist.")
 	instance.delete()
+
+
+
   
 @route('/')
 def index():
@@ -141,7 +158,6 @@ def index():
 # All other files  
 @route('/<filepath:path>')
 def server_static(filepath):
-  print 'Read ' + filepath;
   return static_file(filepath, root='../')
 
-run(port=80)
+run(port=8080)
