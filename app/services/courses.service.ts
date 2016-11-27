@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { CourseModel } from '../models/course.model';
 import { UserService } from './user.service';
+import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
 
@@ -17,24 +18,12 @@ export class CoursesService {
 	
 	constructor(private http: Http, private userService: UserService) {    
     this.http.get("/api/Class").map(
-        (res: Response) => { 
-          return res.json() || { }; 
-        }
+        (res: Response) => {  return res.json() || { }; }
       ).subscribe(
-        (all_courses: any[]) => { 
-          for (let c of all_courses) {
-            console.log(c);
-            if (c.Categories.length == 0) continue;
-            
-            let main_categ = c.Categories[0].Name;
-            let alt_categ = c.Categories.length > 1 ? c.Categories[1].Name : "";
-            let code = c.Name.split(":")[0];
-            let short_desc = c.Name.split(":")[1].trim();
-            let full_desc = c.Description;
-            let eq_groups = c.EQClasses.map((c: { EQClass: number }) => c.EQClass);
-            let prereqs = c.Prerequisites.map((c: { EQClass: number }) => c.EQClass);
-            
-            this.addCourse(new CourseModel(main_categ, alt_categ, code, short_desc, full_desc, eq_groups, prereqs));
+        (coure_jsons: any[]) => {
+          // Convert json response to a TypeScript Model Object and track
+          for (let course_json of coure_jsons) {
+            this.addCourse(this.parseCourse(course_json));
           }
           
           this.coursesLoaded = true;
@@ -43,6 +32,20 @@ export class CoursesService {
         (err: any) => { alert(err); }
       );
 	}
+  
+  /// Utility to convert json version of a course to a TypeScript Model Object
+  private parseCourse(c: any)  {
+    let cid = c.CID;
+    let main_categ = c.Categories.length > 0 ? c.Categories[0].Name : "Other";
+    let alt_categ = c.Categories.length > 1 ? c.Categories[1].Name : "";
+    let code = c.Name.split(":")[0];
+    let short_desc = c.Name.split(":")[1].trim();
+    let full_desc = c.Description;
+    let eq_groups = c.EQClasses.map((c: { EQClass: number }) => c.EQClass);
+    let prereqs = c.Prerequisites.map((c: { EQClass: number }) => c.EQClass);
+    
+    return new CourseModel(cid, main_categ, alt_categ, code, short_desc, full_desc, eq_groups, prereqs);
+  }
 	
   /// Utility function to add a course to the catelog
 	private addCourse(c: CourseModel) {
@@ -93,6 +96,15 @@ export class CoursesService {
     }
     
     return res;
+  }
+  
+  getPrereqs(course: CourseModel): Observable<CourseModel[][]> {
+    return this.http.get(`/api/prereqs/${course.cid}`).map(
+        (res: Response) => {  
+          let prereq_groups = res.json() || [[]];
+          return prereq_groups.map((g: any[]) => g.map((c: any) => this.parseCourse(c)));
+        }
+      );
   }
   
   /// Call to broadcast a request for details to be shown on a given course

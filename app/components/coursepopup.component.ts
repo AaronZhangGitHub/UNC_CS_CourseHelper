@@ -1,6 +1,8 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CourseModel } from '../models/course.model';
 import { UserService } from '../services/user.service';
+import { CoursesService } from '../services/courses.service';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'coursepopup',
@@ -8,10 +10,25 @@ import { UserService } from '../services/user.service';
   <div class="modal bottom-sheet" [class.open]="open">
     <div class="modal-content">
       <a *ngIf="!course?.hasTaken(userService)" (click)="setTaken()" class="btn pull-right">
-        Mark as taken
+        Set as taken
       </a>
     
       <h4>Details on {{ course?.code }}</h4>
+      
+      <div class="row">
+        <div class="col m1 s12">
+          <b>Prereqs</b>
+        </div>
+        <div class="col m10 s12">
+          <div *ngFor="let group of prereqs | async">
+            <i *ngIf="group.length > 1">One of: &nbsp;</i>
+            <div class="chip" *ngFor="let course of group">
+              {{ course.code }}
+            </div>
+          </div>
+        </div>
+      </div>
+      
       <p>{{ course?.long_desc }}</p>
     </div>
     <div class="modal-footer">
@@ -28,15 +45,20 @@ import { UserService } from '../services/user.service';
 export class CoursePopupComponent implements OnInit {
 
   private open = false;
+  private course: CourseModel = null;
+  private prereqs: Observable<CourseModel[][]>;
+  
   close = new EventEmitter();
   
-  @Input()
-  course: CourseModel;
-  
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private coursesService: CoursesService) { }
   
   ngOnInit() {
     setTimeout(() => { this.open = true }, 50);
+  }
+  
+  public setCourse(c: CourseModel) {
+    this.course = c;
+    this.prereqs = this.coursesService.getPrereqs(this.course);
   }
   
   setTaken() {

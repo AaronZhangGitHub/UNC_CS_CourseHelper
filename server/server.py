@@ -89,10 +89,10 @@ def test():
 	response.content_type = 'application/json'
 	return json.dumps(result)
 
-@get('/api/prereqs/<className>')
+@get('/api/prereqs/<cid>')
 @db_session
-def get_prereqs(className):
-	instance = select(c for c in Class if className in c.Name).first()
+def get_prereqs(cid):
+	instance = select(c for c in Class if cid == c.CID).first()
 	if instance == None:
 		abort(404, 'The requested resource does not exist.')
 	result = []

@@ -51,7 +51,7 @@ export class AppComponent implements OnInit {
       let popupComponentRef = this.popupAnchor.createComponent(popupComponentFactory);
       
       // Bind inputs and outputs
-      popupComponentRef.instance.course = c;
+      popupComponentRef.instance.setCourse(c);
       popupComponentRef.instance.close.subscribe(() => {
         popupComponentRef.destroy();
       });

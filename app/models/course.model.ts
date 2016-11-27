@@ -6,7 +6,8 @@ export class CourseModel {
     "light-green", "lime", "yellow", "amber", "orange", "deep-orange", "blue-grey", "brown"
   ];
 
-	constructor(public readonly category: string, 
+	constructor(public readonly cid: number,
+        public readonly category: string, 
         public readonly alt_cat: string,
 				public readonly code: string, 
 				public readonly desc: string, 
