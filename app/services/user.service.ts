@@ -20,6 +20,8 @@ export class UserService {
 	}
 	
 	setTaken(course: CourseModel) {
+    if (this.taken_courses.hasOwnProperty(course.code)) return;
+  
     // TODO callback to server to set as taken, should return avaliable but untaken courses
   
 		this.taken_courses[course.code] = course;

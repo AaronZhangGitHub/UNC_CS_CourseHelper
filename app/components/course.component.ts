@@ -1,6 +1,6 @@
-import { Component, ComponentFactoryResolver, Input, Output, EventEmitter, ViewChild, ViewContainerRef } from '@angular/core';
-import { CoursePopupComponent } from './coursepopup.component';
+import { Component, Input, Output, EventEmitter, } from '@angular/core';
 import { CourseModel } from '../models/course.model';
+import { CoursesService } from '../services/courses.service';
 
 @Component({
     selector: 'course',
@@ -18,38 +18,23 @@ import { CourseModel } from '../models/course.model';
         <a href="javascript:void(0)" (click)="showDetails()">Details</a>
       </div>
 		</div>
-	</div>
-  
-  <div #popupAnchor></div>`
+	</div>`
 })
 export class CourseComponent {
-  // Dynamic popup view
-  @ViewChild('popupAnchor', {read: ViewContainerRef}) popupAnchor: ViewContainerRef;
-
 	@Input()
 	model: CourseModel;
 	
 	@Output()
 	clicked = new EventEmitter<CourseModel>();
   
-  constructor(private componentFactoryResolver: ComponentFactoryResolver) {}
+  constructor(private courseService: CoursesService) { }
 	
 	private onClick() {		
 		this.clicked.emit(this.model);
 	}
   
   private showDetails() {
-    // Close any already open dialogs
-    this.popupAnchor.clear();
-    
-    // Create component
-    let popupComponentFactory = this.componentFactoryResolver.resolveComponentFactory(CoursePopupComponent);
-    let popupComponentRef = this.popupAnchor.createComponent(popupComponentFactory);
-    
-    // Bind inputs and outputs
-    popupComponentRef.instance.course = this.model;
-    popupComponentRef.instance.close.subscribe(() => {
-      popupComponentRef.destroy();
-    });
+    // Request for the master page to show the details popup for this course
+    this.courseService.requestDetailsPopup(this.model);
   }
 }

@@ -30,9 +30,13 @@ export class CourseModel {
   getAltCatColor() {
     return this.strToColor(this.alt_cat);
   }
+  
+  hasTaken(userService: UserService) {
+    return userService.hasTaken(this.code);
+  }
 	
 	isShowing(userService: UserService) {
-		return (!userService.hasTaken(this.code) && this.hasPrereqs(userService));
+		return (!this.hasTaken(userService) && this.hasPrereqs(userService));
 	}
 	
 	private hasPrereqs(userService: UserService) {

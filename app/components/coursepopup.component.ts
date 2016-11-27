@@ -1,11 +1,16 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CourseModel } from '../models/course.model';
+import { UserService } from '../services/user.service';
 
 @Component({
     selector: 'coursepopup',
     template: `
   <div class="modal bottom-sheet" [class.open]="open">
     <div class="modal-content">
+      <a *ngIf="!course?.hasTaken(userService)" (click)="setTaken()" class="btn pull-right">
+        Mark as taken
+      </a>
+    
       <h4>Details on {{ course?.code }}</h4>
       <p>{{ course?.desc }}</p>
     </div>
@@ -28,8 +33,14 @@ export class CoursePopupComponent implements OnInit {
   @Input()
   course: CourseModel;
   
+  constructor(private userService: UserService) { }
+  
   ngOnInit() {
     setTimeout(() => { this.open = true }, 50);
+  }
+  
+  setTaken() {
+    this.userService.setTaken(this.course);
   }
   
   onClickClose() {
