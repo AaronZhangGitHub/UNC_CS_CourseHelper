@@ -14,3 +14,5 @@ _temp
 !protractor*.js
 !systemjs.config.js
 !wallaby.js
+server/websiteDatabase.db-journal
+server/pony_models.pyc

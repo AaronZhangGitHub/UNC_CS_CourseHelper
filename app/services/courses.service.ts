@@ -1,33 +1,47 @@
-import { Http }    from '@angular/http';
 import { Injectable } from '@angular/core';
+import { Http, Response } from '@angular/http';
 import { CourseModel } from '../models/course.model';
 import { UserService } from './user.service';
 import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class CoursesService {
 	private coursesByCategory: { [id: string] : CourseModel[] } = {};
   
-  private subjectCourseDetailsPopup = new Subject<CourseModel>();
+  private coursesLoaded = false;
+  private subjectLoadedCourses = new Subject();
   
-  /// Subscribe to this to be notified when a component requests details on a given course to be shown
+  private subjectCourseDetailsPopup = new Subject<CourseModel>();  
 	public courseDetailsPopupReq = this.subjectCourseDetailsPopup.asObservable();
 	
-	constructor(private http: Http, private userService: UserService) {
-		this.addCourse(new CourseModel("Introduction", "", "COMP 401", "Introduction to CS", [ "COMP 401" ], [ ]));
-    this.addCourse(new CourseModel("Introduction", "", "MATH 233", "Multivariable Calculus", [ "MATH 233" ], [ ]));
-		
-		this.addCourse(new CourseModel("Fundamentals", "", "COMP 410", "Data Structures", [ "COMP 410" ], [ "COMP 401" ]));
-		this.addCourse(new CourseModel("Fundamentals", "", "COMP 411", "Computer Organization", [ "COMP 411" ], [ "COMP 401" ]));
-		
-		this.addCourse(new CourseModel("Networking", "", "COMP 431", "Internet Services and Protocols", [ "COMP 431", "INTRO DS" ], [ "COMP 410", "COMP 411" ]));
-		this.addCourse(new CourseModel("Networking", "Grad School", "COMP 530", "Operating Systems", [ "COMP 530", "INTRO DS" ], [ "COMP 410", "COMP 411" ]));
-		this.addCourse(new CourseModel("Networking", "", "COMP 533", "Distributed Systems", [ "COMP 533" ], [ "INTRO DS" ]));
-    
-    this.addCourse(new CourseModel("Grad School", "App Dev", "COMP 555", "BioAlgorithms", [ "COMP 555" ], [ "COMP 410" ]));
-    
-    this.addCourse(new CourseModel("Graphics", "", "MATH 547", "Linear Algebra", [ "MATH 547" ], [ "MATH 233" ]));
-    this.addCourse(new CourseModel("Graphics", "", "COMP 572", "Graphics", [ "COMP 572" ], [ "MATH 547", "COMP 410" ]));
+	constructor(private http: Http, private userService: UserService) {    
+    this.http.get("/api/Class").map(
+        (res: Response) => { 
+          return res.json() || { }; 
+        }
+      ).subscribe(
+        (all_courses: any[]) => { 
+          for (let c of all_courses) {
+            console.log(c);
+            if (c.Categories.length == 0) continue;
+            
+            let main_categ = c.Categories[0].Name;
+            let alt_categ = c.Categories.length > 1 ? c.Categories[1].Name : "";
+            let code = c.Name.split(":")[0];
+            let short_desc = c.Name.split(":")[1].trim();
+            let full_desc = c.Description;
+            let eq_groups = c.EQClasses.map((c: { EQClass: number }) => c.EQClass);
+            let prereqs = c.Prerequisites.map((c: { EQClass: number }) => c.EQClass);
+            
+            this.addCourse(new CourseModel(main_categ, alt_categ, code, short_desc, full_desc, eq_groups, prereqs));
+          }
+          
+          this.coursesLoaded = true;
+          this.subjectLoadedCourses.next();
+        },
+        (err: any) => { alert(err); }
+      );
 	}
 	
   /// Utility function to add a course to the catelog
@@ -41,17 +55,27 @@ export class CoursesService {
 	}
 	
   /// Get all active courses sorted by category
-	getCourses(): Promise<CourseModel[][]> {
+	getAvailableCourses(): Promise<CourseModel[][]> {
 		return new Promise<CourseModel[][]>((resolve, reject) => {
-			var res: CourseModel[][] = [ ];
-			for (let categ of Object.values(this.coursesByCategory)) {
-				categ = categ.filter((c: CourseModel) => c.isShowing(this.userService));
-				if (categ.length > 0) res.push(categ);
-			}
-			
-			resolve(res);
+      if (this.coursesLoaded)
+        resolve(this.filterForActiveCourses());
+			else
+        this.subjectLoadedCourses.subscribe(() => { 
+          resolve(this.filterForActiveCourses());
+        });
 		});
 	}
+  
+  /// Filter loade course for the active ones (the ones the user has taken)
+  private filterForActiveCourses() : CourseModel[][] {
+    var res: CourseModel[][] = [ ];
+    for (let categ of Object.values(this.coursesByCategory)) {
+      categ = categ.filter((c: CourseModel) => c.isShowing(this.userService));
+      if (categ.length > 0) res.push(categ);
+    }
+    
+    return res;
+  }
   
   /// Find courses by name (autocomplete)
   findCourses(text: string, limit: number = 10): CourseModel[] {

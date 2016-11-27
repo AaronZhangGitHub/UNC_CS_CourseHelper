@@ -38,7 +38,7 @@ const appRoutes: Routes = [
     DragulaModule,
     HttpModule,
     FormsModule,
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes, { useHash: true })
   ],
   providers: [
     UserService,

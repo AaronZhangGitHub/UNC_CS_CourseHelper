@@ -12,7 +12,7 @@ import { UserService } from '../services/user.service';
       </a>
     
       <h4>Details on {{ course?.code }}</h4>
-      <p>{{ course?.desc }}</p>
+      <p>{{ course?.long_desc }}</p>
     </div>
     <div class="modal-footer">
       <a href="javascript:void(0)" (click)="onClickClose()" class="modal-action modal-close btn-flat">

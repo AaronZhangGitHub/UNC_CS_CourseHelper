@@ -56,7 +56,7 @@ export class CoursesContainerComponent implements OnInit, OnDestroy {
 	}
 	
 	private refreshCourses() {
-		this.coursesService.getCourses().then((coursesMatrix) => {
+		this.coursesService.getAvailableCourses().then((coursesMatrix) => {
 			this.initLoad = true;
 			this.coursesMatrix = coursesMatrix;
 		});

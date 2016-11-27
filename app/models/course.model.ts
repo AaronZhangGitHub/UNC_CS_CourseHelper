@@ -10,8 +10,9 @@ export class CourseModel {
         public readonly alt_cat: string,
 				public readonly code: string, 
 				public readonly desc: string, 
-				public readonly equivalence_groups: string[],
-				public readonly prereq_codes: string[]) 
+        public readonly long_desc: string,
+				public readonly equivalence_groups: number[],
+				public readonly prereq_codes: number[]) 
 	{
 		if (code.length < 8) throw "Invalid code: ${code}!";
     else if (equivalence_groups.length == 0) throw "Must provide at least one equivalence group for ${code}";
@@ -40,7 +41,10 @@ export class CourseModel {
 	}
 	
 	private hasPrereqs(userService: UserService) {
-		for (let pr_code of this.prereq_codes) {
+    let pr_code: number;
+		for (pr_code of this.prereq_codes) {
+      if (pr_code == 0) continue;
+    
 			if (!userService.hasEquivalent(pr_code)) return false;
 		}
 	

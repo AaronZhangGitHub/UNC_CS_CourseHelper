@@ -5,7 +5,7 @@ import { Subject } from 'rxjs/Subject';
 @Injectable()
 export class UserService {
 	private taken_courses: { [id: string]: CourseModel } = {};
-	private equivalent_prereqs: { [id: string]: number } = {};
+	private equivalent_prereqs: { [id: number]: number } = {};
 	
 	private subjectPrereqsChange = new Subject();
 	public prereqsChange = this.subjectPrereqsChange.asObservable();
@@ -14,8 +14,8 @@ export class UserService {
 		return !!this.taken_courses[course_code];
 	}
 	
-	hasEquivalent(course_code: string) {
-		let equ_count = this.equivalent_prereqs[course_code];
+	hasEquivalent(prereq_code: number) {
+		let equ_count = this.equivalent_prereqs[prereq_code];
 		return equ_count > 0;
 	}
 	
