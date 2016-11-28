@@ -1,0 +1,51 @@
+[
+
+	{
+		"code": "COMP 401",
+		"group": "Introduction",
+		"desc": "Introduction to CS",
+		"equivalence_groups": [ "COMP 401" ],
+		"prereqs": [ ]
+	},
+	
+	{
+		"code": "COMP 410",
+		"group": "Fundamentals",
+		"desc": "Data Structures",
+		"equivalence_groups": [ "COMP 410" ],
+		"prereqs": [ "COMP 401" ]
+	},
+
+	{
+		"code": "COMP 411",
+		"group": "Fundamentals",
+		"desc": "Computer Organization",
+		"equivalence_groups": [ "COMP 411" ],
+		"prereqs": [ "COMP 401" ]
+	},
+	
+	{
+		"code": "COMP 431",
+		"group": "Distributed Systems",
+		"desc": "Internet Services and Protocols",
+		"equivalence_groups": [ "COMP 431", "INTRO DS" ],
+		"prereqs": [ "COMP 410", "COMP 411" ]
+	},
+	
+	{
+		"code": "COMP 530",
+		"group": "Distributed Systems",
+		"desc": "Operating Systems",
+		"equivalence_groups": [ "COMP 530", "INTRO DS" ],
+		"prereqs": [ "COMP 410", "COMP 411" ]	
+	}
+	
+	{
+		"code": "COMP 533",
+		"group": "Distributed Systems",
+		"desc": "Distributed Systems",
+		"equivalence_groups": [ "COMP 533" ],
+		"prereqs": [ "INTRO DS" ]
+	},
+	
+]

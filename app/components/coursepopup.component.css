@@ -1,0 +1,32 @@
+.modal {
+  z-index: 1003; 
+  display: block; 
+  opacity: 1; 
+  bottom: -400px;
+  
+  -webkit-transition-duration: 300ms; /* Safari */
+  -moz-transition-duration: 300ms; /* Safari */
+  -o-transition-duration: 300ms; /* Safari */
+  transition-duration: 300ms;
+}
+.modal.open {  
+  transform: translateY(-400px);
+}
+
+.modal-overlay {
+  z-index: 1002;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  
+  -webkit-transition: background-color 300ms ease;
+  -moz-transition: background-color 300ms ease;
+  -o-transition: background-color 300ms ease;
+  transition: background-color 300ms ease;
+}
+.modal-overlay.open {
+  background: rgba(0,0,0,0.5);
+}

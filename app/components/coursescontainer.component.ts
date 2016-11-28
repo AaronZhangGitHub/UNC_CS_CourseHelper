@@ -1,42 +1,77 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { CoursesService } from '../services/courses.service';
 import { UserService } from '../services/user.service';
 import { CourseModel } from '../models/course.model';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: 'coursescontainer',
     template: `
-	<div class="row">
-		<bubble *ngFor="let c of courses" [model]="c" (clicked)="onCourseClicked($event)"></bubble>
-	</div>
+	<span *ngIf="!initLoad">
+		<div class="row">
+			<div class="center-align">
+				<div class="preloader-wrapper big active">
+					<div class="spinner-layer spinner-blue-only">
+						<div class="circle-clipper left">
+							<div class="circle"></div>
+						</div>
+						<div class="gap-patch">
+							<div class="circle"></div>
+						</div>
+						<div class="circle-clipper right">
+							<div class="circle"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</span>
+	
+	<span *ngIf="coursesMatrix && coursesMatrix.length">
+    <div class="category-group collection-item" *ngFor="let courses of coursesMatrix">
+      <span class="title">
+        <h5>{{courses[0].category}}</h5>
+        <hr />
+      </span>
+      <div class="row">
+        <course *ngFor="let c of courses" [model]="c" (clicked)="onCourseClicked($event)"></course>
+      </div>
+    </div>
+	</span>
 	`,
 	styles: [`
 		.row {
 			margin: 0px;
 		}
-		
-		.bubble {
-			margin-top: 20px;
-		}
 	`]
 })
-export class CoursesContainerComponent {
-	@Input() 
-	courses: CourseModel[];
+export class CoursesContainerComponent implements OnInit, OnDestroy {
 	
-	@Output()
-	courseClicked = new EventEmitter<CourseModel>();
+	private initLoad = false;
+	private coursesMatrix: CourseModel[][];
+	private subscription: Subscription;
 	
-	constructor(private userService: UserService) { }
+	constructor(private userService: UserService, private coursesService: CoursesService) {
+		this.subscription = userService.prereqsChange.subscribe(() => this.refreshCourses());
+	}
 	
-	hasOne(): boolean {
-		for (let c of this.courses) {
-			if (c.hasPrereqs(this.userService)) return true;
-		}
-		
-		return false;
+	private refreshCourses() {
+		this.coursesService.getAvailableCourses().then((coursesMatrix) => {
+			this.initLoad = true;
+			this.coursesMatrix = coursesMatrix;
+		});
 	}
 	
 	private onCourseClicked(course: CourseModel) {
-		this.courseClicked.emit(course);
+		this.userService.setTaken(course);
+	}
+	
+	ngOnInit() {
+		this.refreshCourses();
+	}
+	
+	ngOnDestroy() {
+		// prevent memory leak when component destroyed
+		this.subscription.unsubscribe();
 	}
 }
