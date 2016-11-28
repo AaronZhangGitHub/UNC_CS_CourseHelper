@@ -21,7 +21,7 @@ import { Observable } from 'rxjs/Observable';
         </div>
         <div class="col m10 s12">
           <div *ngFor="let group of prereqs | async">
-            <i *ngIf="group.length > 1">One of: &nbsp;</i>
+            <i *ngIf="group.length > 1">One of &nbsp;</i>
             <div class="chip" *ngFor="let course of group">
               {{ course.code }}
             </div>
