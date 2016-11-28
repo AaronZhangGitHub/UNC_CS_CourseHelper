@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { UserService } from '../services/user.service';
+import { CourseModel } from '../models/course.model';
 
 @Component({
     selector: 'takencourses',
@@ -27,7 +28,7 @@ export class TakenCoursesComponent {
 	
 	constructor(private userService: UserService) { }
 	
-	private getTakenCourses(): string[] {
+	private getTakenCourses(): CourseModel[] {
 		return this.userService.getTakenCourses();
 	}
 	

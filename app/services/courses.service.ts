@@ -83,11 +83,12 @@ export class CoursesService {
   /// Find courses by name (autocomplete)
   findCourses(text: string, limit: number = 10): CourseModel[] {
     if (text.length == 0) return [];
+    text = text.toLowerCase();
   
     var res: CourseModel[] = [];
     for (let categ of Object.values(this.coursesByCategory)) {
       for (let course of categ) {
-        if (course.code.includes(text) || course.desc.includes(text)) {
+        if (course.code.toLowerCase().includes(text) || course.desc.toLowerCase().includes(text)) {
           res.push(course);
           
           if (res.length >= limit) break;
