@@ -63,8 +63,8 @@ def user_register():
 def user_login():
 	body = read_body(request.body)
 	resp = {}
-	username = body['username']
-	password = body['password']
+	username = body['Username']
+	password = body['Password']
 	hpassword = hash(password)
 	
 	user = User.get(Username=username, Password=hpassword)
