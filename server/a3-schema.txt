@@ -1,0 +1,18 @@
+Student:
+	SID (primary key)
+	First_name
+	last_name
+Professor:
+	PID (primary key)
+	First_name
+	last_name
+Course: 
+	CID (primary key)
+	course_name
+	semester
+	section_num
+	exam date
+	PID (as foreign key) all except CID would be unique 
+Courses Taken (by a student):
+	SID (references student table)
+	CID (references course table), primary key would be the combination of CID and SID the edge case is that the student takes the 		same course twice, but that’s okay because the CID would be different

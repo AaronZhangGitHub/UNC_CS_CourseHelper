@@ -3,8 +3,6 @@ from pony_models import *
 from pony.orm import *
 from pony.orm.serialization import to_dict
 from bottle import route, post, get, put, delete, run, template, request, response, abort, static_file
-
-
 def get_model(modelName):
 	instance = None
 	try:
