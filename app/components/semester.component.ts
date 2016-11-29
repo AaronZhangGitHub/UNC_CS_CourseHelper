@@ -6,7 +6,9 @@ import { Component } from '@angular/core';
   template: `
     <topnotification text="Optionally categorize the courses you've taken by semester"></topnotification>
     
-    <semestercategorizer></semestercategorizer>
+    <div class="padded-container container">
+      <semestercategorizer></semestercategorizer>
+    </div>
     
     <div class="fixed-action-btn">
       <a routerLink="/home" routerLinkActive="active" class="btn-floating btn-large">
