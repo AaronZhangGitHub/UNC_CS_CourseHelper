@@ -42,7 +42,7 @@ template: `
 </div>
 <div *ngIf="showPopupLogin" class="modal-overlay open" id="materialize-modal-overlay-1" style="z-index: 1002; display: block; opacity: 0.5;"></div>
 <!-- Sign Up Popup -->
-<div *ngIf="showPopupSignUp" class="modal open" style="z-index: 1003; display: block; opacity: 1; transform: scaleX(1); top: 10%;">
+<div *ngIf="showPopupSignUp" class="modal open" style="z-index: 1003; display: block; opacity: 1; transform: scaleX(1); top: 10%; max-height: 100%;">
   <p style = "text-align: center">Sign Up for your Account, please use your UNC Email for Username</p>
   <div class="modal-content">
     <div class="row">
