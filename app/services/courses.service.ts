@@ -99,13 +99,11 @@ class EQClassTracker {
 
 class CourseSemesterTracker {
   private _onChange: BehaviorSubject<CourseModel[][]>;
-  private courseSemester: { [id: number]: number } = {};
-  // TODO store in array so don't get reordered
-  private maxSemester: number;
+  private semesters: CourseModel[][];
   
   constructor(private courseService: CoursesService) {
-    this._onChange = new BehaviorSubject([[]]);
-    this.maxSemester = 1;
+    this.semesters = [ [] ];
+    this._onChange = new BehaviorSubject(this.semesters);
   }
   
   getCourseSemesters(): Observable<CourseModel[][]> {
@@ -114,73 +112,78 @@ class CourseSemesterTracker {
   
   addEmptySemester() {
     // Limit to 8 semesters
-    if (this.maxSemester < 8) {
-      this.maxSemester += 1;
+    if (this.semesters.length < 8) {
+      this.semesters.push([]);
       this.emitChange();
     }
   }
   
   removeSemester(remove_id: number) {
     // Can't remove last semester
-    if (this.maxSemester > 1) {
-      let new_id = Math.max(remove_id-1, 1);
-      for (let key in this.courseSemester) {
-        let this_id = this.courseSemester[key];
-        if (this_id == remove_id) {
-          this.courseSemester[key] = new_id;
-        } else if (this_id > remove_id) {
-          this.courseSemester[key] = this_id-1;
-        }
-      }
+    if (this.semesters.length > 1) {
+      let removed: CourseModel[] = this.semesters.splice(remove_id, 1)[0];
       
-      this.maxSemester -= 1;      
+      let new_id = Math.max(0, remove_id-1);
+      for (let course of removed) {
+        this.setCourseSemester(course, new_id);
+      }
+  
       this.emitChange();
     }
+  }
+  
+  // Get the [ semester, idx in semester ]
+  private getCourseSemesterLocation(course: CourseModel) {
+    for (let i = 0, ii = this.semesters.length; i < ii; i++) {
+      let semester = this.semesters[i];
+      for (let j = 0, jj = semester.length; j < jj; j++) {
+        let sc = semester[j];
+        if (sc.CID == course.CID) {
+          return [ i, j ];
+        }
+      }
+    }
+    
+    return [ -1, -1 ];
   }
   
   getCourseSemester(course: CourseModel) {
-    return this.courseSemester[course.CID];
+    return this.getCourseSemesterLocation(course)[0];
   }
   
-  setCourseSemester(course: CourseModel, semester: number) {
-    if (this.forceCourseSemester(course, semester)) {
-      this.emitChange();
+  setCourseSemester(course: CourseModel, idx: number) {
+    if (idx < 0 || idx > 10) return; // Invalid
+  
+    let old_loc = this.getCourseSemesterLocation(course);
+    if (old_loc[0] == idx) {
+      // If already in correct semester
+      return;
+    } else if (old_loc[0] >= 0) {
+      // Remove from old location
+      this.semesters[old_loc[0]].splice(old_loc[1], 1);
     }
+    
+    // Create new semesters if need
+    while (this.semesters.length <= idx) {
+      this.semesters.push([]);
+    }
+    this.semesters[idx].push(course);
+    
+    this.emitChange();
   }
   
-  bulkSetCourseSemesters(semesters: CourseModel[][]) {
-    let changed = false;
-    for (let key in semesters) {
-      let semester_id = parseInt(key) + 1;
-      let courses = semesters[key];
-      for (let course of courses) {
-        if (this.forceCourseSemester(course, semester_id)) {
-          changed = true;
-        }
-      }
-    }
+  forceCourseSemesters(semesters: CourseModel[][]) {
+    this.semesters = semesters;
     
-    if (changed) {
-      this.emitChange();
-    }
-  }
-  
-  private forceCourseSemester(course: CourseModel, semester: number): boolean {
-    semester = ~~semester; // Make sure is int
+    // TODO postback all
     
-    if (this.courseSemester[course.CID] !== semester) {
-      if (semester > this.maxSemester) this.maxSemester = semester;
-    
-      this.courseSemester[course.CID] = semester;
-      return true;
-    } else {
-      return false;
-    }
+    this.emitChange();
   }
   
   removeCourse(course: CourseModel) {
-    if (this.courseSemester.hasOwnProperty(course.CID)) {
-      delete this.courseSemester[course.CID];
+    let old_loc = this.getCourseSemesterLocation(course);  
+    if (old_loc[0] >= 0) {
+      this.semesters[old_loc[0]].splice(old_loc[1], 1);
       
       this.emitChange();
     }
@@ -189,45 +192,15 @@ class CourseSemesterTracker {
   getMaxCoursesInSemester(): number {
     let maxVal = 0;
   
-    let arr: number[] = [];
-    for (let semester of Object.values(this.courseSemester)) {
-      let newVal = arr[semester] ? arr[semester]+1 : 1;
-      arr[semester] = newVal;
-      
-      if (newVal > maxVal) maxVal = newVal;
+    for (let semester of this.semesters) {      
+      if (semester.length > maxVal) maxVal = semester.length;
     }
     
     return maxVal;
   }
   
   private emitChange() {
-    this.getCoursesBySemester().then((cs: CourseModel[][]) => this._onChange.next(cs));
-  }
-  
-  private getCoursesBySemester(): Promise<CourseModel[][]> {   
-    // Load courses async
-    let loading_courses: Promise<CourseModel>[] = [];
-    for (let cid of Object.keys(this.courseSemester)) {
-      loading_courses.push(this.courseService.getById(parseInt(cid)));
-    }
-
-    return new Promise((resolve, reject) => {
-      Promise.all(loading_courses).then((courses: CourseModel[]) => {
-        // Create all inner arrays for all semesters
-        let res: CourseModel[][] = [];
-        for (let i = 1; i <= this.maxSemester; i++) {
-          res.push([]);
-        }
-        
-        // Add all loaded semesters to the correct semester
-        for (let course of courses) {
-          let semester = this.courseSemester[course.CID];
-          res[semester-1].push(course);
-        }
-        
-        resolve(res);
-      });
-    });
+    this._onChange.next(this.semesters);
   }
 }
 
@@ -323,7 +296,7 @@ export class CoursesService {
     else return !!this.takenCourses[course.CID];
   }
   
-  setAsTaken(course: CourseModel, semester: number = 1) {  
+  setAsTaken(course: CourseModel, semester: number = 0) {  
     if (this.takenCourses[course.CID]) return;
     
     // Update cache    
@@ -377,8 +350,8 @@ export class CoursesService {
   }
   
   /// Force courses into the given semesters
-  bulkSetCourseSemesters(semesters: CourseModel[][]) {
-    this.courseSemesters.bulkSetCourseSemesters(semesters);
+  forceCourseSemesters(semesters: CourseModel[][]) {
+    this.courseSemesters.forceCourseSemesters(semesters);
   }
   
   removeSemester(id: number) {

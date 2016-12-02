@@ -14,13 +14,13 @@ import { Subscription } from 'rxjs/Subscription';
           <td class="semester" *ngFor="let courses of semesters; let i = index;" [style.height.px]="cardHeight">
             <div class="card">
               <div class="card-content">
-                <span class="card-title">Semester {{ (i+1) }}</span>
+                <span class="card-title">Semester {{ i+1 }}</span>
                 <div class="semester-div" [dragula]="'semester'" [dragulaModel]="courses">
                   <course-chip [course]="c" [closeable]="false" *ngFor="let c of courses"></course-chip>
                 </div>
               </div>
               <div class="card-action" *ngIf="semesters.length > 1">
-                <a href="javascript:void(0)" (click)="removeSemester(i+1)">Remove</a>
+                <a href="javascript:void(0)" (click)="removeSemester(i)">Remove</a>
               </div>
             </div>
           </td>
@@ -49,7 +49,7 @@ export class SemesterCategorizerComponent implements OnInit, OnDestroy {
   
   ngOnInit() {
     this.dragulaSubscription = this.dragulaService.drop.subscribe((value: any) => {
-      this.courseService.bulkSetCourseSemesters(this.semesters);
+      this.courseService.forceCourseSemesters(this.semesters);
     });
 
     // Inital setup
@@ -58,8 +58,6 @@ export class SemesterCategorizerComponent implements OnInit, OnDestroy {
         this.semesters = semesters;
         this.onCourseOrderChanged();
       });
-      
-    this.onCourseOrderChanged();
   }
   
   private addSemester() {
