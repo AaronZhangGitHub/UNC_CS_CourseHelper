@@ -17,14 +17,14 @@ template: `
         <div class="row">
           <div class="input-field col s12">
             <i class="material-icons prefix">account_circle</i>
-            <input id="email-login" type="email" class="validate">
+            <input #email_login id="email-login" type="email" class="validate">
             <label for="email-login">Email</label>
           </div>
         </div>
         <div class="row">
           <div class="input-field col s12">
             <i class="material-icons prefix">vpn_key</i>
-            <input id="password-login" type="password" class="validate">
+            <input #password_login id="password-login" type="password" class="validate">
             <label for="password-login">Password</label>
           </div>
         </div>
@@ -36,7 +36,7 @@ template: `
       <a href="javascript:void(0)" (click)="hideDetailsLogin()" class="modal-close waves-effect waves-green btn-flat">Close</a>
     </div>
     <div class = "closeButton" style = "float: right;">
-      <a href="javascript:void(0)" (click)="hideDetailsLogin()" class="modal-close waves-effect waves-green btn-flat"><i class="material-icons prefix">input</i></a>
+      <a href="javascript:void(0)" (click)="loginUser(email_login.value, password_login.value)" class="modal-close waves-effect waves-green btn-flat"><i class="material-icons prefix">input</i></a>
     </div>
   </div>
 </div>
@@ -50,34 +50,34 @@ template: `
         <div class="row">
           <div class="input-field col s6">
             <i class="material-icons prefix">account_circle</i>
-            <input id="first-name-signup" type="text" class="validate">
+            <input #first_name_signup id="first-name-signup" type="text" class="validate">
             <label for="first-name-signup">First Name</label>
           </div>
           <div class="input-field col s6">
             <i class="material-icons prefix">account_circle</i>
-            <input id="last-name-signup" type="text" class="validate">
+            <input #last_name_signup id="last-name-signup" type="text" class="validate">
             <label for="last-name-signup">Last Name</label>
           </div>
         </div>
         <div class="row">
           <div class="input-field col s12">
             <i class="material-icons prefix">vpn_key</i>
-            <input id="password-signup" type="password" class="validate">
+            <input #password_signup id="password-signup" type="password" class="validate">
             <label for="password-signup">Password</label>
           </div>
         </div>
         <div class="row">
           <div class="input-field col s12">
             <i class="material-icons prefix">vpn_key</i>
-            <input id="password-signup-repeat" type="password" class="validate">
+            <input #password_signup_repeat id="password-signup-repeat" type="password" class="validate">
             <label for="password-signup">Repeat Password</label>
           </div>
         </div>
         <div class="row">
           <div class="input-field col s12">
             <i class="material-icons prefix">perm_identity</i>
-            <input id="email-signup" type="email" class="validate">
-            <label for="email-signup">Username</label>
+            <input #email_signup id="email-signup" type="email" class="validate">
+            <label for="email-signup">Username (Please Enter UNC Email)</label>
           </div>
         </div>
       </form>
@@ -88,7 +88,7 @@ template: `
       <a href="javascript:void(0)" (click)="hideDetailsSignUp()" class="modal-close waves-effect waves-green btn-flat">Close</a>
     </div>
     <div class = "closeButton" style = "float: right;">
-      <a href="javascript:void(0)" (click)="hideDetailsSignUp()" class="modal-close waves-effect waves-green btn-flat">Sign Up</a>
+      <a href="javascript:void(0)" (click)="signUpUser(first_name_signup.value, last_name_signup.value, password_signup.value, password_signup_repeat.value, email_signup.value)" class="modal-close waves-effect waves-green btn-flat">Sign Up</a>
     </div>
   </div>
 </div>
@@ -100,24 +100,39 @@ template: `
 `
 })
 export class LoginComponent {
-@Output()
-clicked = new EventEmitter();
-showPopupLogin: boolean;
-showPopupSignUp: boolean;
-constructor() {
-this.showPopupLogin = false;
-this.showPopupSignUp = false;
+  @Output()
+  clicked = new EventEmitter();
+  showPopupLogin: boolean;
+  showPopupSignUp: boolean;
+  constructor() {
+  this.showPopupLogin = false;
+  this.showPopupSignUp = false;
+}
+loginUser(email_login: string, password_login: string){
+  console.log(email_login);
+  console.log(password_login);
+}
+signUpUser(fnSU: string, lnSU: string, pwSU: string, pwSUR: string, emSU: string){
+  if(pwSU!==pwSUR ){
+    alert("Passwords do not match, please re-enter.");
+  }else if(emSU.substring(emSU.length-7,emSU.length)!=="unc.edu"){
+    alert("Not using UNC email as username, please re-enter.")
+  }
+  else{
+    //sign up the user
+  }
+
 }
 showDetailsLogin() {
-this.showPopupLogin = true;
+  this.showPopupLogin = true;
 }
 hideDetailsLogin() {
-this.showPopupLogin = false;
+  this.showPopupLogin = false;
 }
 showDetailsSignUp(){
-this.showPopupSignUp = true;
+  this.showPopupSignUp = true;
 }
 hideDetailsSignUp(){
-this.showPopupSignUp = false;
+  this.showPopupSignUp = false;
 }
 }
