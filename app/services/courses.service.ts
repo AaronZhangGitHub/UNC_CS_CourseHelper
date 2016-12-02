@@ -19,7 +19,7 @@ class EQClassesTracker {
     this._onChange = new BehaviorSubject(this);
   }
   
-  public asObservable(): Observable<EQClassesTracker> {
+  asObservable(): Observable<EQClassesTracker> {
     return this._onChange.asObservable();
   }
   
@@ -33,7 +33,7 @@ class EQClassesTracker {
     }
   }
   
-  public addCourse(course: CourseModel) {
+  addCourse(course: CourseModel) {
     let changed = false;
     for (let eqcode of course.eqcodes) {
       let tracker = this.getTracker(eqcode);
@@ -45,7 +45,7 @@ class EQClassesTracker {
     if (changed) this._onChange.next(this);
   }
   
-  public removeCourse(course: CourseModel) {
+  removeCourse(course: CourseModel) {
     let changed = false;
     for (let eqcode of course.eqcodes) {
       let tracker = this.getTracker(eqcode);
@@ -57,7 +57,7 @@ class EQClassesTracker {
     if (changed) this._onChange.next(this);
   }
   
-  public hasCoursesFor(course: CourseModel): boolean {
+  hasCoursesFor(course: CourseModel): boolean {
     for (let pr_code of course.prereq_eqcodes) {
       if (pr_code === 0) continue;
     
@@ -73,7 +73,7 @@ class EQClassTracker {
   private matchedCID: { [id: number]: boolean } = {};
   
   // Update to include the given course, return true if updating made a change
-  public addCourse(course: CourseModel): boolean {
+  addCourse(course: CourseModel): boolean {
     if (!this.matchedCID[course.CID]) {
       this.matchedCID[course.CID] = true;
       return true;
@@ -83,7 +83,7 @@ class EQClassTracker {
   }
   
   // Update to exclude a given course, return true if updating made a change
-  public removeCourse(course: CourseModel): boolean {
+  removeCourse(course: CourseModel): boolean {
     if (this.matchedCID[course.CID]) {
       delete this.matchedCID[course.CID];
       return true;
@@ -92,22 +92,172 @@ class EQClassTracker {
     }
   }
   
-  public hasOne() {
+  hasOne() {
     return Object.keys(this.matchedCID).length > 0;
+  }
+}
+
+class CourseSemesterTracker {
+  private _onChange: BehaviorSubject<CourseModel[][]>;
+  private courseSemester: { [id: number]: number } = {};
+  // TODO store in array so don't get reordered
+  private maxSemester: number;
+  
+  constructor(private courseService: CoursesService) {
+    this._onChange = new BehaviorSubject([[]]);
+    this.maxSemester = 1;
+  }
+  
+  getCourseSemesters(): Observable<CourseModel[][]> {
+    return this._onChange.asObservable();
+  }
+  
+  addEmptySemester() {
+    // Limit to 8 semesters
+    if (this.maxSemester < 8) {
+      this.maxSemester += 1;
+      this.emitChange();
+    }
+  }
+  
+  removeSemester(remove_id: number) {
+    // Can't remove last semester
+    if (this.maxSemester > 1) {
+      let new_id = Math.max(remove_id-1, 1);
+      for (let key in this.courseSemester) {
+        let this_id = this.courseSemester[key];
+        if (this_id == remove_id) {
+          this.courseSemester[key] = new_id;
+        } else if (this_id > remove_id) {
+          this.courseSemester[key] = this_id-1;
+        }
+      }
+      
+      this.maxSemester -= 1;      
+      this.emitChange();
+    }
+  }
+  
+  getCourseSemester(course: CourseModel) {
+    return this.courseSemester[course.CID];
+  }
+  
+  setCourseSemester(course: CourseModel, semester: number) {
+    if (this.forceCourseSemester(course, semester)) {
+      this.emitChange();
+    }
+  }
+  
+  bulkSetCourseSemesters(semesters: CourseModel[][]) {
+    let changed = false;
+    for (let key in semesters) {
+      let semester_id = parseInt(key) + 1;
+      let courses = semesters[key];
+      for (let course of courses) {
+        if (this.forceCourseSemester(course, semester_id)) {
+          changed = true;
+        }
+      }
+    }
+    
+    if (changed) {
+      this.emitChange();
+    }
+  }
+  
+  private forceCourseSemester(course: CourseModel, semester: number): boolean {
+    semester = ~~semester; // Make sure is int
+    
+    if (this.courseSemester[course.CID] !== semester) {
+      if (semester > this.maxSemester) this.maxSemester = semester;
+    
+      this.courseSemester[course.CID] = semester;
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  removeCourse(course: CourseModel) {
+    if (this.courseSemester.hasOwnProperty(course.CID)) {
+      delete this.courseSemester[course.CID];
+      
+      this.emitChange();
+    }
+  }
+  
+  getMaxCoursesInSemester(): number {
+    let maxVal = 0;
+  
+    let arr: number[] = [];
+    for (let semester of Object.values(this.courseSemester)) {
+      let newVal = arr[semester] ? arr[semester]+1 : 1;
+      arr[semester] = newVal;
+      
+      if (newVal > maxVal) maxVal = newVal;
+    }
+    
+    return maxVal;
+  }
+  
+  private emitChange() {
+    this.getCoursesBySemester().then((cs: CourseModel[][]) => this._onChange.next(cs));
+  }
+  
+  private getCoursesBySemester(): Promise<CourseModel[][]> {   
+    // Load courses async
+    let loading_courses: Promise<CourseModel>[] = [];
+    for (let cid of Object.keys(this.courseSemester)) {
+      loading_courses.push(this.courseService.getById(parseInt(cid)));
+    }
+
+    return new Promise((resolve, reject) => {
+      Promise.all(loading_courses).then((courses: CourseModel[]) => {
+        // Create all inner arrays for all semesters
+        let res: CourseModel[][] = [];
+        for (let i = 1; i <= this.maxSemester; i++) {
+          res.push([]);
+        }
+        
+        // Add all loaded semesters to the correct semester
+        for (let course of courses) {
+          let semester = this.courseSemester[course.CID];
+          res[semester-1].push(course);
+        }
+        
+        resolve(res);
+      });
+    });
+  }
+}
+
+class CourseMap {
+  private courses: { [id: number]: CourseModel } = {};
+  
+  add(course: CourseModel) {
+    this.courses[course.CID] = course;
+  }
+  
+  getById(cid: number) {
+    return this.courses[cid];
+  }
+  
+  asArray() {
+    return Object.values(this.courses);
   }
 }
 
 @Injectable()
 export class CoursesService {  
   // Mutable properties of courses
-  private _courses: ReplaySubject<CourseModel[]>;
+  private _courses: ReplaySubject<CourseMap>;
   get courses() { return this._courses.asObservable(); }
   
-  private planToTakeCourses: { [id: number]: boolean } = {};
-  
   private takenCourses: { [id: number]: boolean } = {};
-  private courseSemester: { [id: number]: number } = {};
+  private courseSemesters: CourseSemesterTracker;
   private takenEQClass: EQClassesTracker;
+  
+  private planToTakeCourses: { [id: number]: boolean } = {};
   
   // Observable to invoke to request the course details popup
   private subjectCourseDetailsPopup = new Subject<CourseModel>();  
@@ -115,9 +265,15 @@ export class CoursesService {
 	
 	constructor(private http: Http, private userService: UserService) {   
     this.takenEQClass = new EQClassesTracker();
+    this.courseSemesters = new CourseSemesterTracker(this);
   
     this._courses = new ReplaySubject(1);  
-    this.loadAllCourses().subscribe((courses: CourseModel[]) => this._courses.next(courses));
+    this.loadAllCourses().subscribe((courses: CourseModel[]) => {
+      let map = new CourseMap();
+      for (let course of courses) map.add(course);
+      
+      this._courses.next(map);
+    });
 	}
   
   private loadAllCourses(): Observable<CourseModel[]> {
@@ -154,15 +310,10 @@ export class CoursesService {
   getById(cid: number): Promise<CourseModel> {
     return new Promise<CourseModel>((resolve, reject) => {
       // Once courses are loaded, search through them and try to find the given cid
-      this.courses.take(1).subscribe((courses: CourseModel[]) => {
-        for (let course of courses) {
-          if (course.CID == cid) {
-            resolve(course);
-            return;
-          }
-        }
-        
-        reject();
+      this.courses.take(1).subscribe((courses: CourseMap) => {
+        let course = courses.getById(cid);
+        if (course) resolve(course);
+        else reject();
       });
     });
   }
@@ -172,15 +323,15 @@ export class CoursesService {
     else return !!this.takenCourses[course.CID];
   }
   
-  setAsTaken(course: CourseModel, semester: number) {  
+  setAsTaken(course: CourseModel, semester: number = 1) {  
     if (this.takenCourses[course.CID]) return;
     
     // Update cache    
     this.takenCourses[course.CID] = true;
-    this.courseSemester[course.CID] = semester;
     
-    // Update equivalence codes and notify view
+    // Update equivalence codes and notify view (order here matters)
     this.takenEQClass.addCourse(course);
+    this.courseSemesters.setCourseSemester(course, semester);
     
     // Postback
     this.userService.getUser().then((user: UserModel) => {
@@ -198,21 +349,44 @@ export class CoursesService {
   unsetAsTaken(course: CourseModel) {
     if (!this.takenCourses[course.CID]) return;
   
+    let semester = this.courseSemesters.getCourseSemester(course);
+  
     // Update cache
     this.takenCourses[course.CID] = false;
     
     // Update equivalence codes and notify view
     this.takenEQClass.removeCourse(course);
+    this.courseSemesters.removeCourse(course);
     
     // Postback
-    let semester = this.courseSemester[course.CID];
     this.userService.getUser().then((user: UserModel) => {
       this.http.delete(`/api/ClassesTaken/${course.CID},${user.UID},${semester}`);
     });
   }
   
+  getCourseSemesters(): Observable<CourseModel[][]> {
+    return this.courseSemesters.getCourseSemesters();
+  }
+  
+  addSemester() {
+    this.courseSemesters.addEmptySemester();
+  }
+  
   setSemester(course: CourseModel, semester: number) {
-    // TODO
+    this.courseSemesters.setCourseSemester(course, semester);
+  }
+  
+  /// Force courses into the given semesters
+  bulkSetCourseSemesters(semesters: CourseModel[][]) {
+    this.courseSemesters.bulkSetCourseSemesters(semesters);
+  }
+  
+  removeSemester(id: number) {
+    this.courseSemesters.removeSemester(id);
+  }
+  
+  getMaxCoursesInSemester(): number {
+    return this.courseSemesters.getMaxCoursesInSemester();
   }
 	
   /// Get all active courses sorted by category
@@ -221,9 +395,9 @@ export class CoursesService {
       // Will update each time the taken EQ classes changes
       this.takenEQClass.asObservable().subscribe((takenEQClass: EQClassesTracker) => {
         // Wait for courses to be loaded
-        this.courses.take(1).subscribe((courses: CourseModel[]) => {
+        this.courses.take(1).subscribe((courses: CourseMap) => {
           let categories: { [id: string]: CourseModel[] } = {};
-          for (let course of courses) {
+          for (let course of courses.asArray()) {
             if (!this.hasTaken(course) && takenEQClass.hasCoursesFor(course)) {
               let my_cat = categories[course.category];
               if (!my_cat) {
@@ -247,9 +421,9 @@ export class CoursesService {
       // Will update each time the taken EQ classes changes
       this.takenEQClass.asObservable().subscribe(() => {
         // Wait for courses to be loaded
-        this.courses.take(1).subscribe((courses: CourseModel[]) => {
+        this.courses.take(1).subscribe((courses: CourseMap) => {
           let res: CourseModel[] = [];
-          for (let course of courses) {
+          for (let course of courses.asArray()) {
             if (this.hasTaken(course)) res.push(course);
           }
           
@@ -262,12 +436,12 @@ export class CoursesService {
   /// Find courses by name (autocomplete)
   findCourses(text: string, limit: number = 10): Observable<CourseModel[]> {
     return Observable.create((observer: Observer<CourseModel[]>) => {
-      this.courses.take(1).subscribe((courses: CourseModel[]) => {
+      this.courses.take(1).subscribe((courses: CourseMap) => {
         if (text.length == 0) return [];
         text = text.toLowerCase();
       
         var res: CourseModel[] = [];
-        for (let course of courses) {
+        for (let course of courses.asArray()) {
           if (course.code.toLowerCase().includes(text) || course.desc.toLowerCase().includes(text)) {
             res.push(course);
             

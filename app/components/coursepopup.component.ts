@@ -62,7 +62,7 @@ export class CoursePopupComponent implements OnInit {
   }
   
   setTaken() {
-    this.coursesService.setAsTaken(this.course, 0);
+    this.coursesService.setAsTaken(this.course);
   }
   
   onClickClose() {

@@ -33,6 +33,6 @@ export class CoursesContainerComponent {
   }
 	
 	private onCourseClicked(course: CourseModel) {
-		this.coursesService.setAsTaken(course, 0);
+		this.coursesService.setAsTaken(course);
 	}
 }

@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy  } from '@angular/core';
 import { CourseModel } from '../models/course.model';
-import { SemesterModel } from '../models/semester.model';
-import { UserService } from '../services/user.service';
+import { CoursesService } from '../services/courses.service';
 import { DragulaService } from '../../node_modules/ng2-dragula/ng2-dragula.js';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -12,16 +11,16 @@ import { Subscription } from 'rxjs/Subscription';
     <table id="semester-wrapper" [style.height.px]="cardHeight * 2">
       <tbody>
         <tr id="semester-row">
-          <td class="semester" *ngFor="let sm of semesters" [style.height.px]="cardHeight">
+          <td class="semester" *ngFor="let courses of semesters; let i = index;" [style.height.px]="cardHeight">
             <div class="card">
               <div class="card-content">
-                <span class="card-title">{{ sm.name }}</span>
-                <div class="semester-div" [dragula]="'semester'" [dragulaModel]="sm.courses">
-                  <course-chip [course]="c" [closeable]="false" *ngFor="let c of sm.courses"></course-chip>
+                <span class="card-title">Semester {{ (i+1) }}</span>
+                <div class="semester-div" [dragula]="'semester'" [dragulaModel]="courses">
+                  <course-chip [course]="c" [closeable]="false" *ngFor="let c of courses"></course-chip>
                 </div>
               </div>
               <div class="card-action" *ngIf="semesters.length > 1">
-                <a href="javascript:void(0)" (click)="removeSemester(sm)">Remove</a>
+                <a href="javascript:void(0)" (click)="removeSemester(i+1)">Remove</a>
               </div>
             </div>
           </td>
@@ -37,62 +36,48 @@ import { Subscription } from 'rxjs/Subscription';
 export class SemesterCategorizerComponent implements OnInit, OnDestroy {
   
   // Default to only one semester
-  semesters: SemesterModel[];
+  semesters: CourseModel[][];
   cardHeight: number;
   
   private dragulaSubscription: Subscription;
-  private prereqsSubscription: Subscription;
+  private semestersSubscription: Subscription;
   
-  constructor(private dragulaService: DragulaService, private userService: UserService) { 
+  constructor(private dragulaService: DragulaService, private courseService: CoursesService) { 
     this.cardHeight = 0;
+    this.semesters = [];
   }
   
   ngOnInit() {
     this.dragulaSubscription = this.dragulaService.drop.subscribe((value: any) => {
-      // At this point object has been moved in arrays, save changes    
-      this.onCourseOrderChanged();
+      this.courseService.bulkSetCourseSemesters(this.semesters);
     });
 
-    // Load semesters
-    this.semesters = this.userService.getCourseSemesters();
-    
-    // Setup view and save
+    // Inital setup
+    this.semestersSubscription = this.courseService.getCourseSemesters()
+      .subscribe((semesters: CourseModel[][]) => {
+        this.semesters = semesters;
+        this.onCourseOrderChanged();
+      });
+      
     this.onCourseOrderChanged();
   }
   
   private addSemester() {
-    this.semesters.push(new SemesterModel("Semester " + (this.semesters.length+1)));
+    this.courseService.addSemester();
   }
   
-  private removeSemester(sm: any) {
-    let idx = this.semesters.indexOf(sm);
-    if (idx >= 0 && this.semesters.length > 1) {
-      this.semesters.splice(idx, 1);
-      
-      // Move courses
-      let nextSm: SemesterModel = this.semesters[ Math.min(idx, this.semesters.length-1) ];
-      for (let c of sm.courses) nextSm.addCourse(c);
-      
-      // Rename semesters
-      this.semesters.forEach((sm, idx) => { sm.name = "Semester " + (idx+1) });
-      
-      this.onCourseOrderChanged();
-    }
+  private removeSemester(id: number) {
+    this.courseService.removeSemester(id);
   }
   
+  // Recalculate height
   private onCourseOrderChanged() {  
-    var max_cnt = 0;
-    for (let i = 0, ii = this.semesters.length; i < ii; i++) {
-      let sm: SemesterModel = this.semesters[i];    
-      if (sm.courses.length > max_cnt) max_cnt = sm.courses.length;
-    }
-    
-    this.userService.postCourseSemesters(this.semesters);    
+    var max_cnt = this.courseService.getMaxCoursesInSemester();    
     this.cardHeight = (max_cnt+1)*37 + 150;
   }
   
   ngOnDestroy() {
     if (this.dragulaSubscription) this.dragulaSubscription.unsubscribe();
-    if (this.prereqsSubscription) this.prereqsSubscription.unsubscribe();
+    if (this.semestersSubscription) this.semestersSubscription.unsubscribe();
   }
 }
