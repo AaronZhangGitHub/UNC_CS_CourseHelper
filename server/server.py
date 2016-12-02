@@ -148,6 +148,12 @@ def table_delete_item(table, id):
 		abort(404, "The requested resource does not exist.")
 	instance.delete()
 
+@delete('/api/User/ClassesTaken/<uid>')
+@db_session
+def user_delete_all_classes_taken(uid):
+	result = select(u.ClassesTaken for u in User if u.UID == uid)
+	for ct in result:
+		ct.delete()
 
 
   
