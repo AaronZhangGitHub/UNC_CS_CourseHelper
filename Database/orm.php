@@ -271,9 +271,12 @@ class Comment{
       if ($result) {
         $coid = SQLiteDatabase::lastInsertRowid('websiteDatabase.db');
         $reply=array();
-        $conn->query("insert into CommentHierarchy values (" .
-            $parentID . ", " .
-            $coid . ")");
+
+        if($parentID!=""){
+          $conn->query("insert into CommentHierarchy values (" .
+              $parentID . ", " .
+              $coid . ")");
+        }
         return new Comment($coid, $pid,$cid, $uid, $title, $text, $datetime, $weight, $reply);
       }
       return null;
