@@ -3,6 +3,7 @@ import { CoursePopupComponent } from './components/coursepopup.component';
 import { CourseModel } from './models/course.model';
 import { CoursesService } from './services/courses.service';
 import { UserService } from './services/user.service';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'my-app',
@@ -17,8 +18,8 @@ import { UserService } from './services/user.service';
     </div>
   </nav>
   
-  <ul class="dropdown-content" [class.active]="search_res.length > 0" (click)="clearSearch()">
-    <li *ngFor="let course of search_res" (click)="showDetails(course)">
+  <ul class="dropdown-content" [class.active]="(search_res | async)?.length > 0" (click)="clearSearch()">
+    <li *ngFor="let course of search_res | async" (click)="showDetails(course)">
       <a href="javascript:;">{{ course.code }} - Details</a>
     </li>
   </ul>
@@ -34,11 +35,9 @@ export class AppComponent implements OnInit {
   @ViewChild('popupAnchor', {read: ViewContainerRef}) popupAnchor: ViewContainerRef;
   
   private txt_search: string;
-  private search_res: CourseModel[];
+  private search_res: Observable<CourseModel[]>;
   
-  constructor(private courseService: CoursesService, private componentFactoryResolver: ComponentFactoryResolver) { 
-    this.search_res = [];
-  }
+  constructor(private courseService: CoursesService, private componentFactoryResolver: ComponentFactoryResolver) { }
 
   ngOnInit() {
     // Global handler for when someone requests a course popup
@@ -64,7 +63,7 @@ export class AppComponent implements OnInit {
   
   clearSearch() {
     this.txt_search = "";
-    this.search_res = [];
+    this.search_res = null;
   }
   
   private showDetails(course: CourseModel) {

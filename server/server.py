@@ -98,7 +98,7 @@ def get_prereqs(cid):
 	result = []
 	for eqclass in instance.Prerequisites.EQClass:
 		classes = select(c for c in Class if eqclass in c.EQClasses.EQClass)
-		result.append(resolve_result(classes, 'Class')[0])
+		result.append(resolve_result(classes, 'Class'))
 	response.content_type = 'application/json'
 	return json.dumps(result)
 

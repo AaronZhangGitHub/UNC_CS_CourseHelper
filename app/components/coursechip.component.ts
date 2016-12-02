@@ -4,7 +4,7 @@ import { CourseModel } from '../models/course.model';
 @Component({
     selector: 'course-chip',
     template: `
-	<div class="chip white-text darken-2" [ngClass]="course.getCatColor()">
+	<div class="chip white-text darken-2" [ngClass]="course.categoryColor">
     {{ course.code }}
     <i class="close material-icons" *ngIf="closeable" (click)="onClickClose()">close</i>
   </div>

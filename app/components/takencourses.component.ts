@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { UserService } from '../services/user.service';
+import { CoursesService } from '../services/courses.service';
 import { CourseModel } from '../models/course.model';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'takencourses',
@@ -9,7 +10,8 @@ import { CourseModel } from '../models/course.model';
 		<div class="container">
 			<div class="row taken-courses">
 				<div class="col s12">
-					<course-chip [course]="c" [closeable]="true" (onClose)="unsetTaken($event.code)" *ngFor="let c of getTakenCourses()"></course-chip>
+					<course-chip [course]="c" [closeable]="true" (onClose)="unsetTaken($event)" 
+              *ngFor="let c of takenCourses | async"></course-chip>
 				</div>
 			</div>
 		</div>
@@ -25,15 +27,14 @@ import { CourseModel } from '../models/course.model';
 	]
 })
 export class TakenCoursesComponent {
+	takenCourses: Observable<CourseModel[]>;
+  
+	constructor(private courseService: CoursesService) {
+    this.takenCourses = this.courseService.getTakenCourses();
+  }
 	
-	constructor(private userService: UserService) { }
-	
-	private getTakenCourses(): CourseModel[] {
-		return this.userService.getTakenCourses();
-	}
-	
-	private unsetTaken(course_code: string) {
-		this.userService.unsetTaken(course_code);
+	private unsetTaken(course: CourseModel) {
+		this.courseService.unsetAsTaken(course);
 	}
 	
 }

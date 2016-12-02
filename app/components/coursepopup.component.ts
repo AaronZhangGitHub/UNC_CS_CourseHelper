@@ -9,7 +9,7 @@ import { Observable } from 'rxjs/Observable';
     template: `
   <div class="modal bottom-sheet" [class.open]="open">
     <div class="modal-content">
-      <a *ngIf="!course?.hasTaken(userService)" (click)="setTaken()" class="btn pull-right">
+      <a *ngIf="!coursesService.hasTaken(course)" (click)="setTaken()" class="btn pull-right">
         Set as taken
       </a>
     
@@ -50,7 +50,7 @@ export class CoursePopupComponent implements OnInit {
   
   close = new EventEmitter();
   
-  constructor(private userService: UserService, private coursesService: CoursesService) { }
+  constructor(private coursesService: CoursesService) { }
   
   ngOnInit() {
     setTimeout(() => { this.open = true }, 50);
@@ -62,7 +62,7 @@ export class CoursePopupComponent implements OnInit {
   }
   
   setTaken() {
-    this.userService.setTaken(this.course);
+    this.coursesService.setAsTaken(this.course, 0);
   }
   
   onClickClose() {

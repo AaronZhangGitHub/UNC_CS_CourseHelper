@@ -7,8 +7,8 @@ import { CoursesService } from '../services/courses.service';
     template: `
 	<div class="col s12 m6 l4">
 		<div class="click-card card">
-			<div class="card-content darken-2 white-text" [ngClass]="model.getCatColor()" (click)="onClick()">
-        <span class="badge white-text darken-3" [ngClass]="model.getAltCatColor()">{{ model.alt_cat }}</span>
+			<div class="card-content darken-2 white-text" [ngClass]="model.categoryColor" (click)="onClick()">
+        <span class="badge white-text darken-3" [ngClass]="model.altCategoryColor">{{ model.alt_cat }}</span>
 				<span class="card-title">
           {{model.code}}
         </span>
