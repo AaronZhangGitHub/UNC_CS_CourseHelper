@@ -23,7 +23,7 @@ import { SemesterCategorizerComponent } from './components/semestercategorizer.c
 
 import { CoursePlannerComponent } from './components/home/courseplanner.component';
 import { SemesterPlannerComponent } from './components/home/semesterplanner.component';
-
+import { FormComponent} from './components/form.component';
 
 const appRoutes: Routes = [
   { path: 'semester', component: SemesterComponent },
@@ -60,7 +60,8 @@ const appRoutes: Routes = [
     SemesterCategorizerComponent,
     
     CoursePlannerComponent,
-    SemesterPlannerComponent
+    SemesterPlannerComponent,
+    FormComponent
   ],
   entryComponents: [ CoursePopupComponent ],
   bootstrap: [ AppComponent ]
