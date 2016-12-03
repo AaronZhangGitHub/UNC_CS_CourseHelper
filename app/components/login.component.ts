@@ -1,6 +1,9 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { CourseModel } from '../models/course.model';
+import { UserModel } from '../models/user.model';
+import { UserService } from '../services/user.service';
+
 @Component({
 selector: 'login',
 template: `
@@ -105,7 +108,7 @@ export class LoginComponent {
   clicked = new EventEmitter();
   showPopupLogin: boolean;
   showPopupSignUp: boolean;
-  constructor(public http: Http) {
+  constructor(public http: Http, public userservice: UserService) {
   this.showPopupLogin = false;
   this.showPopupSignUp = false;
 }
@@ -116,10 +119,11 @@ loginUser(email_login: string, password_login: string){
   this.http.post('/user/login', {
      Username: email_login,
      Password: password_login
-  }).subscribe(() => {
-    // Load the UID into the user service, go to welcome page
-
-  });
+  }).map((res: Response) => res.json() || {})
+    .subscribe((user: UserModel) => {
+      this.userservice.login(user);
+      // Load the UID into the user service, go to welcome page
+    });
 }
 signUpUser(fnSU: string, lnSU: string, pwSU: string, pwSUR: string, emSU: string){
   var name = fnSU + " "+lnSU;
@@ -134,8 +138,8 @@ signUpUser(fnSU: string, lnSU: string, pwSU: string, pwSUR: string, emSU: string
       Username:emSU,
       Password:pwSU
     }).subscribe(() => {
-      // DO something here
-
+      //Logs the user in immediately after 
+      this.loginUser(emSU,pwSU);
     });
   }
 

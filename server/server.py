@@ -74,8 +74,7 @@ def user_login():
 		result = resolve_result(user, 'User')[0]
 		result.pop('Password', None)
 		resp = result
-
-	response.set_cookie("auth", username, path="/")
+		response.set_cookie("auth", str(user.UID), path="/")
 	response.content_type = 'application/json'
 	return json.dumps(resp)
 
