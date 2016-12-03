@@ -54,7 +54,13 @@ def user_register():
 	username = body['Username']
 	password = body['Password']
 	hpassword = hash(password)
-	user = User(Name=name, Username=username, Password=hpassword)
+	try:
+		user = User(Name=name, Username=username, Password=hpassword)
+	except pony.orm.core.TransactionIntegrityError as e:
+		resp = {"message": "Username already exists."}
+		response.content_type = 'application/json'
+		response.status_code = 409
+		return json.dumps(resp)
 
 # logs a user in
 @post('/user/login')
