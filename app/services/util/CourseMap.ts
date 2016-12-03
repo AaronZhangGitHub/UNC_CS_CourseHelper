@@ -1,3 +1,5 @@
+import { CourseModel } from '../../models/course.model';
+
 export class CourseMap {
   private courses: { [id: number]: CourseModel } = {};
   

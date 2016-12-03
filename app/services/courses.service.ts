@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { CourseModel } from '../models/course.model';
+import { EQClassesTracker } from './util/EQClassesTracker';
+import { CourseSemesterTracker } from './util/CourseSemesterTracker';
+import { CourseMap } from './util/CourseMap';
 import { UserModel, UserTakenCourseModel } from '../models/user.model';
 import { UserService } from './user.service';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { Observer } from 'rxjs/Observer';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/filter';
