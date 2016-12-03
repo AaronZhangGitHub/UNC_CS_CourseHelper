@@ -278,20 +278,11 @@ class Comment{
               $coid . ")");
 
           $uidResult=$conn->query("Select c.uid from Comment c where c.CoID='$parentID'");
+          $postuidResult=$conn->query("Select p.uid from Post p where p.pid='$pid'");
           $puid = $uidResult->fetchArray();
-          $url = 'http://localhost:8080';
-          $data = array('user' => '$puid[0]', 'message' => '<a href="http://localhost/4/forum.php/4/1/1">Someone has replied to your comment</a>');
-
-          $options = array(
-              'http' => array(
-                  'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-                  'method'  => 'POST',
-                  'content' => http_build_query($data)
-              )
-          );
-          $context  = stream_context_create($options);
-          $result = file_get_contents($url, false, $context);
-          if ($result === FALSE) {}
+          $postuid = $postuidResult->fetchArray();
+          Comment::notifyUser($puid[0]);
+          Comment::notifyUser($postuid[0]);
         }
         return new Comment($coid, $pid,$cid, $uid, $title, $text, $datetime, $weight, $reply);
       }
@@ -316,6 +307,24 @@ class Comment{
   public static function deleteComment(){
       $conn = Comment::connect();
       $conn->query("delete from Comment where CoID = " . $this->coid);
+  }
+
+  public function notifyUser($uid, $post){
+      if($post){$message="post";}
+      else{$message="comment";}
+      $url = 'http://localhost:8080';
+          $data = array('user' => '$uid', 'message' => '<a href="http://localhost/4/forum.php/4/1/1">Someone has replied to your '.$message .'</a>');
+
+          $options = array(
+              'http' => array(
+                  'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                  'method'  => 'POST',
+                  'content' => http_build_query($data)
+              )
+          );
+          $context  = stream_context_create($options);
+          $result = file_get_contents($url, false, $context);
+          if ($result === FALSE) {}
   }
 }
 ?>
