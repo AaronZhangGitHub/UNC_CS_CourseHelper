@@ -10,14 +10,15 @@ import 'rxjs/add/operator/filter';
 export class UserService {
   private _user: BehaviorSubject<UserModel>;
   
-  constructor(private http: Http) {
-    let uid = 1; // TEST USER ID
-    
+  constructor(private http: Http) {    
     this._user = new BehaviorSubject<UserModel>(null);
+    
+    /*
     this.http.get(`/api/User/${uid}`).map(this.extractData).subscribe(
       (users: UserModel[]) => this._user.next(users[0]),
       (err: any) => alert(err)
     );
+    */
   }
   
   private extractData(res: Response) {
@@ -27,5 +28,9 @@ export class UserService {
   /// Get the current user (once) or wait for a user
   getUser(): Observable<UserModel> {
     return this._user.asObservable().filter((user: UserModel) => user != null).take(1);
+  }
+  
+  login(user: UserModel) {
+    this._user.next(user);
   }
 }
