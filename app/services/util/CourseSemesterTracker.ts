@@ -145,9 +145,9 @@ export class CourseSemesterTracker {
   
   private emitChange() {
     // Clone semester to make internal state immutable from outside
-    let cloned_semesters = [];
+    let cloned_semesters: CourseModel[][] = [];
     for (let semester of this.semesters) {
-      let cloned_semester = [];
+      let cloned_semester: CourseModel[] = [];
       for (let course of semester) {
         cloned_semester.push(course);
       }
