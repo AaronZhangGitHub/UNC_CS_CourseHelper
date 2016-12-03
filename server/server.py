@@ -69,7 +69,7 @@ def user_login():
 	user = User.get(Username=username, Password=hpassword)
 
 	if user is None:
-		resp['authenticated'] = False
+		abort(401, 'Unauthorized login')
 	else:
 		result = resolve_result(user, 'User')[0]
 		result.pop('Password', None)
