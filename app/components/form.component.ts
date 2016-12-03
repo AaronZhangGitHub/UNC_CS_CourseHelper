@@ -1,6 +1,9 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CourseModel } from '../models/course.model';
 import { CoursesService } from '../services/courses.service';
+import { UserService } from '../services/user.service';
+import { Observable } from 'rxjs/Observable';
+import { UserModel } from '../models/user.model';
 
 //loads the posts and comments from a particular course
 @Component({
@@ -11,8 +14,8 @@ template: `
 		<div class="background">
 			<img src="images/chapelhill.jpg">
 		</div>
-		<a href="#!name"><span class="white-text name">John Doe</span></a>
-		<a href="#!email"><span class="white-text email">jdandturk@gmail.com</span></a>
+		<a href="#!name"><span class="white-text name" style = "text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">{{ (user | async)?.Name }}</span></a>
+		<a href="#!email"><span class="white-text email" style = "text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">{{(user | async)?.Username}}</span></a>
 	</div>
 </li>
   <ul style = "overflow-y: auto;" class="collapsible" data-collapsible="accordion">
@@ -54,7 +57,9 @@ margin-top: 112px;
 })
 export class FormComponent{
 	open: boolean;
-	constructor(public courseService: CoursesService) {
+  user: Observable<UserModel>;
+	constructor(public courseService: CoursesService, public userService: UserService) {
+    this.user = userService.getUser();
 	}
 
 }
