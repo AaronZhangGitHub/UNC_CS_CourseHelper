@@ -99,10 +99,10 @@ export class CourseSemesterTracker {
   
   /// Force all the semesters for the user
   forceCourseSemesters(semesters: CourseModel[][]) {
-    for (let idx = 0, ii = semesters.length; idx < ii; idx++) {
-      let semester = semesters[idx];
-      for (let course of semester) {
-        this.courseService.userService.getUser().subscribe((user: UserModel) => {
+    this.courseService.userService.getUser().subscribe((user: UserModel) => {
+      for (let idx = 0, ii = semesters.length; idx < ii; idx++) {
+        let semester = semesters[idx];
+        for (let course of semester) {
           let body = {
             User: user.UID,
             Class: course.CID,
@@ -116,13 +116,12 @@ export class CourseSemesterTracker {
                 .subscribe(() => console.log("ok"));
           else
             this.courseService.http.post("/api/ClassesTaken", body);
-        });
+        }
       }
-    }
-    
-    this.semesters = semesters;
-    
-    this.emitChange();
+      
+      this.semesters = semesters;
+      this.emitChange();
+    });
   }
   
   removeCourse(course: CourseModel) {
@@ -145,6 +144,16 @@ export class CourseSemesterTracker {
   }
   
   private emitChange() {
-    this._onChange.next(this.semesters);
+    // Clone semester to make internal state immutable from outside
+    let cloned_semesters = [];
+    for (let semester of this.semesters) {
+      let cloned_semester = [];
+      for (let course of semester) {
+        cloned_semester.push(course);
+      }
+      cloned_semesters.push(cloned_semester);
+    }
+  
+    this._onChange.next(cloned_semesters);
   }
 }
