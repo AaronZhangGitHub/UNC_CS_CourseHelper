@@ -276,6 +276,22 @@ class Comment{
           $conn->query("insert into CommentHierarchy values (" .
               $parentID . ", " .
               $coid . ")");
+
+          $uidResult=$conn->query("Select c.uid from Comment c where c.CoID='$parentID'");
+          $puid = $uidResult->fetchArray();
+          $url = 'http://localhost:8080';
+          $data = array('user' => '$puid[0]', 'message' => '<a href="http://localhost/4/forum.php/4/1/1">Someone has replied to your comment</a>');
+
+          $options = array(
+              'http' => array(
+                  'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                  'method'  => 'POST',
+                  'content' => http_build_query($data)
+              )
+          );
+          $context  = stream_context_create($options);
+          $result = file_get_contents($url, false, $context);
+          if ($result === FALSE) {}
         }
         return new Comment($coid, $pid,$cid, $uid, $title, $text, $datetime, $weight, $reply);
       }
