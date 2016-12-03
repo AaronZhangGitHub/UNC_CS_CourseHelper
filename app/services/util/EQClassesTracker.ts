@@ -1,3 +1,10 @@
+import { CourseModel } from '../../models/course.model';
+import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/map';
+
 export class EQClassesTracker {
   private _onChange: BehaviorSubject<EQClassesTracker>;
   private eqClasses: { [id: number]: EQClassTracker } = {};

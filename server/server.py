@@ -55,7 +55,6 @@ def user_register():
 	password = body['Password']
 	hpassword = hash(password)
 	user = User(Name=name, Username=username, Password=hpassword)
-	response.set_cookie("auth", hash(username), path="/")
 
 # logs a user in
 @post('/user/login')
@@ -76,6 +75,7 @@ def user_login():
 		result.pop('Password', None)
 		resp = result
 
+	response.set_cookie("auth", username, path="/")
 	response.content_type = 'application/json'
 	return json.dumps(resp)
 
