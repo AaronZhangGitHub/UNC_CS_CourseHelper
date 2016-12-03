@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { DragulaModule, DragulaService } from '../node_modules/ng2-dragula/ng2-dragula.js';
+import { CookieService } from '../node_modules/angular2-cookie/services/cookies.service';
 
 import { UserService } from './services/user.service';
 import { CoursesService } from './services/courses.service';
@@ -43,7 +44,8 @@ const appRoutes: Routes = [
   providers: [
     UserService,
     CoursesService,
-    DragulaService
+    DragulaService,
+    CookieService
   ],
   declarations: [ 
     AppComponent,

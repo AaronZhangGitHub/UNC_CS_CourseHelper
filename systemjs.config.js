@@ -27,6 +27,7 @@
       // other libraries
       'rxjs':                      'npm:rxjs',
       'angular-in-memory-web-api': 'npm:angular-in-memory-web-api/bundles/in-memory-web-api.umd.js',
+      'angular2-cookie':            'npm:angular2-cookie',
       
       // dragula
       'dragula': 'node_modules/dragula',
@@ -50,6 +51,10 @@
       },
       'ng2-dragula': {
         map: 'node_modules/ng2-dragula/ng2-dragula.js',
+        defaultExtension: 'js'
+      },
+      'angular2-cookie': {
+        main: './core.js',
         defaultExtension: 'js'
       },
       'dragula': { main: 'dragula.js', defaultExtension: 'js' },
