@@ -18,5 +18,4 @@ server/websiteDatabase.db-journal
 server/pony_models.pyc
 server/__pycache__/
 .DS_Store
-server/websiteDatabase.db
 Database/.ipynb_checkpoints/SQLGen-checkpoint.ipynb

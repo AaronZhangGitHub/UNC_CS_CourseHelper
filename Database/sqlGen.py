@@ -81,15 +81,15 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS ClassTag(CID INTEGER,
 #CREATES TABLE TO RECORD CLASSES TAKEN BY STUDENTS
 cursor.execute("""CREATE TABLE IF NOT EXISTS ClassesTaken(UID INTEGER,
     CID INTEGER,
-    Semester TINYTEXT,
-    Primary Key(UID, CID, Semester),
+    Semester INTEGER,
+    Primary Key(UID, CID),
     Foreign Key(UID) References User(UID),
     Foreign Key(CID) References Class(CID))""")
 
 cursor.execute("""CREATE TABLE IF NOT EXISTS ClassesToTake(UID INTEGER,
     CID INTEGER,
-    Semester TINYTEXT,
-    Primary Key(UID, CID, Semester),
+    Semester INTEGER,
+    Primary Key(UID, CID),
     Foreign Key(UID) References User(UID),
     Foreign Key(CID) References Class(CID))""")
 
