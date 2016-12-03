@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Http, Response } from '@angular/http';
 import { CourseModel } from '../models/course.model';
 @Component({
 selector: 'login',
@@ -104,22 +105,32 @@ export class LoginComponent {
   clicked = new EventEmitter();
   showPopupLogin: boolean;
   showPopupSignUp: boolean;
-  constructor() {
+  constructor(public http: Http) {
   this.showPopupLogin = false;
   this.showPopupSignUp = false;
 }
 loginUser(email_login: string, password_login: string){
   console.log(email_login);
   console.log(password_login);
+
+  this.http.post('/user/login', {
+     Username: email_login,
+     Password: password_login
+  });
 }
 signUpUser(fnSU: string, lnSU: string, pwSU: string, pwSUR: string, emSU: string){
+  var name = fnSU + " "+lnSU;
   if(pwSU!==pwSUR ){
     alert("Passwords do not match, please re-enter.");
   }else if(emSU.substring(emSU.length-7,emSU.length)!=="unc.edu"){
     alert("Not using UNC email as username, please re-enter.")
   }
   else{
-    //sign up the user
+    this.http.post('/user/register',{
+      Name:name,
+      Username:emSU,
+      Password:pwSU
+    });
   }
 
 }

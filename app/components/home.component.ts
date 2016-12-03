@@ -24,8 +24,8 @@ import { CourseModel } from '../models/course.model';
       <div #semester_planner [hidden]="!isTab(semester_planner)" class="col s12">
         <semesterplanner></semesterplanner>
       </div>
-      <div #semester_planner [hidden]="!isTab(forum)" class="col s12">
-        
+      <div #form [hidden]="!isTab(forum)" class="col s12">
+        <forumc></forumc>
       </div>
     </div>
     
