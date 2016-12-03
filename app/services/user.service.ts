@@ -24,6 +24,7 @@ export class UserService {
     return res.json() || { };
   }
   
+  /// Get the current user (once) or wait for a user
   getUser(): Observable<UserModel> {
     return this._user.asObservable().filter((user: UserModel) => user != null).take(1);
   }
