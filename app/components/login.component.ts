@@ -116,6 +116,9 @@ loginUser(email_login: string, password_login: string){
   this.http.post('/user/login', {
      Username: email_login,
      Password: password_login
+  }).subscribe(() => {
+    // Load the UID into the user service, go to welcome page
+
   });
 }
 signUpUser(fnSU: string, lnSU: string, pwSU: string, pwSUR: string, emSU: string){
@@ -130,6 +133,9 @@ signUpUser(fnSU: string, lnSU: string, pwSU: string, pwSUR: string, emSU: string
       Name:name,
       Username:emSU,
       Password:pwSU
+    }).subscribe(() => {
+      // DO something here
+
     });
   }
 
