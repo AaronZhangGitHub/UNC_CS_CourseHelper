@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { CourseModel } from '../models/course.model';
 import { UserModel } from '../models/user.model';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/toPromise';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/filter';
 
 @Injectable()
 export class UserService {
-  private _user: ReplaySubject<UserModel>;
+  private _user: BehaviorSubject<UserModel>;
   
   constructor(private http: Http) {
     let uid = 1; // TEST USER ID
     
-    this._user = new ReplaySubject(1);
+    this._user = new BehaviorSubject<UserModel>(null);
     this.http.get(`/api/User/${uid}`).map(this.extractData).subscribe(
-      (user: UserModel) => this._user.next(user),
+      (users: UserModel[]) => this._user.next(users[0]),
       (err: any) => alert(err)
     );
   }
@@ -24,7 +24,7 @@ export class UserService {
     return res.json() || { };
   }
   
-  getUser(): Promise<UserModel> {
-    return this._user.toPromise();
+  getUser(): Observable<UserModel> {
+    return this._user.asObservable().filter((user: UserModel) => user != null).take(1);
   }
 }

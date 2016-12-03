@@ -2,7 +2,7 @@ export class UserTakenCourseModel {
   
   public readonly User: number;
   public readonly Class: number;
-  public readonly Semester: string;
+  public readonly Semester: number;
   
 }
 

@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { CourseModel } from '../models/course.model';
-import { UserModel } from '../models/user.model';
+import { UserModel, UserTakenCourseModel } from '../models/user.model';
 import { UserService } from './user.service';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { Observer } from 'rxjs/Observer';
 import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/map';
 
@@ -125,7 +126,7 @@ class CourseSemesterTracker {
       
       let new_id = Math.max(0, remove_id-1);
       for (let course of removed) {
-        this.setCourseSemester(course, new_id);
+        this.setCourseSemester(course, new_id, false);
       }
   
       this.emitChange();
@@ -151,7 +152,7 @@ class CourseSemesterTracker {
     return this.getCourseSemesterLocation(course)[0];
   }
   
-  setCourseSemester(course: CourseModel, idx: number) {
+  setCourseSemester(course: CourseModel, idx: number, emit: boolean = true) {
     if (idx < 0 || idx > 10) return; // Invalid
   
     let old_loc = this.getCourseSemesterLocation(course);
@@ -160,7 +161,12 @@ class CourseSemesterTracker {
       return;
     } else if (old_loc[0] >= 0) {
       // Remove from old location
-      this.semesters[old_loc[0]].splice(old_loc[1], 1);
+      let old_semester_idx = old_loc[0];
+      this.semesters[old_semester_idx].splice(old_loc[1], 1);
+      
+      this.courseService.userService.getUser().subscribe((user: UserModel) => {
+        this.courseService.http.delete(`/api/ClassesTaken/${course.CID},${user.UID}`);
+      });
     }
     
     // Create new semesters if need
@@ -169,13 +175,41 @@ class CourseSemesterTracker {
     }
     this.semesters[idx].push(course);
     
-    this.emitChange();
+    this.courseService.userService.getUser().subscribe((user: UserModel) => {
+      this.courseService.http.post("/api/ClassesTaken", {
+        User: user.UID,
+        Class: course.CID,
+        Semester: idx
+      });
+    });
+    
+    if (emit) this.emitChange();
   }
   
   forceCourseSemesters(semesters: CourseModel[][]) {
-    this.semesters = semesters;
+    // Postback all
+    for (let idx = 0, ii = semesters.length; idx < ii; idx++) {
+      let semester = semesters[idx];
+      for (let course of semester) {
+        this.courseService.userService.getUser().subscribe((user: UserModel) => {
+          let body = {
+            User: user.UID,
+            Class: course.CID,
+            Semester: idx
+          };
+          
+          let old_idx = this.getCourseSemester(course);
+          if (old_idx >= 0) // Already exists
+            if (old_idx != idx) // Different
+              this.courseService.http.put(`/api/ClassesTaken/${course.CID},${user.UID}`, body)
+                .subscribe(() => console.log("ok"));
+          else
+            this.courseService.http.post("/api/ClassesTaken", body);
+        });
+      }
+    }
     
-    // TODO postback all
+    this.semesters = semesters;
     
     this.emitChange();
   }
@@ -223,8 +257,7 @@ class CourseMap {
 @Injectable()
 export class CoursesService {  
   // Mutable properties of courses
-  private _courses: ReplaySubject<CourseMap>;
-  get courses() { return this._courses.asObservable(); }
+  private _courses: BehaviorSubject<CourseMap>;
   
   private takenCourses: { [id: number]: boolean } = {};
   private courseSemesters: CourseSemesterTracker;
@@ -236,18 +269,31 @@ export class CoursesService {
   private subjectCourseDetailsPopup = new Subject<CourseModel>();  
 	public courseDetailsPopupReq = this.subjectCourseDetailsPopup.asObservable();
 	
-	constructor(private http: Http, private userService: UserService) {   
+	constructor(public http: Http, public userService: UserService) {   
     this.takenEQClass = new EQClassesTracker();
     this.courseSemesters = new CourseSemesterTracker(this);
   
-    this._courses = new ReplaySubject(1);  
+    this._courses = new BehaviorSubject(null);
     this.loadAllCourses().subscribe((courses: CourseModel[]) => {
       let map = new CourseMap();
       for (let course of courses) map.add(course);
       
       this._courses.next(map);
     });
+    
+    // Load already taken courses
+    this.userService.getUser().subscribe((user: UserModel) => {
+      user.ClassesTaken.forEach((taken_course: UserTakenCourseModel) => {
+        this.getById(taken_course.Class).then((course: CourseModel) => {
+          this.setAsTaken(course, taken_course.Semester, false);
+        });
+      });
+    });
 	}
+  
+  getCourses(): Observable<CourseMap> {
+    return this._courses.asObservable().filter((courses: CourseMap) => courses != null).take(1);
+  }
   
   private loadAllCourses(): Observable<CourseModel[]> {
     return this.http.get("/api/Class").map((res:Response) => {
@@ -283,7 +329,7 @@ export class CoursesService {
   getById(cid: number): Promise<CourseModel> {
     return new Promise<CourseModel>((resolve, reject) => {
       // Once courses are loaded, search through them and try to find the given cid
-      this.courses.take(1).subscribe((courses: CourseMap) => {
+      this.getCourses().subscribe((courses: CourseMap) => {
         let course = courses.getById(cid);
         if (course) resolve(course);
         else reject();
@@ -296,7 +342,7 @@ export class CoursesService {
     else return !!this.takenCourses[course.CID];
   }
   
-  setAsTaken(course: CourseModel, semester: number = 0) {  
+  setAsTaken(course: CourseModel, semester: number = 0, postback: boolean = true) {  
     if (this.takenCourses[course.CID]) return;
     
     // Update cache    
@@ -306,17 +352,19 @@ export class CoursesService {
     this.takenEQClass.addCourse(course);
     this.courseSemesters.setCourseSemester(course, semester);
     
-    // Postback
-    this.userService.getUser().then((user: UserModel) => {
-      this.http.post("/api/ClassesTaken", {
-        User: user.UID,
-        Class: course.CID,
-        Semester: semester
-      }).subscribe(
-        (res: Response) => {},
-        (err: any) => alert(err)
-      );
-    });
+    if (postback) {
+      // Postback
+      this.userService.getUser().subscribe((user: UserModel) => {
+        this.http.post("/api/ClassesTaken", {
+          User: user.UID,
+          Class: course.CID,
+          Semester: semester
+        }).subscribe(
+          (res: Response) => {},
+          (err: any) => alert(err)
+        );
+      });
+    }
   }
   
   unsetAsTaken(course: CourseModel) {
@@ -332,7 +380,7 @@ export class CoursesService {
     this.courseSemesters.removeCourse(course);
     
     // Postback
-    this.userService.getUser().then((user: UserModel) => {
+    this.userService.getUser().subscribe((user: UserModel) => {
       this.http.delete(`/api/ClassesTaken/${course.CID},${user.UID},${semester}`);
     });
   }
@@ -368,7 +416,7 @@ export class CoursesService {
       // Will update each time the taken EQ classes changes
       this.takenEQClass.asObservable().subscribe((takenEQClass: EQClassesTracker) => {
         // Wait for courses to be loaded
-        this.courses.take(1).subscribe((courses: CourseMap) => {
+        this.getCourses().subscribe((courses: CourseMap) => {
           let categories: { [id: string]: CourseModel[] } = {};
           for (let course of courses.asArray()) {
             if (!this.hasTaken(course) && takenEQClass.hasCoursesFor(course)) {
@@ -394,7 +442,7 @@ export class CoursesService {
       // Will update each time the taken EQ classes changes
       this.takenEQClass.asObservable().subscribe(() => {
         // Wait for courses to be loaded
-        this.courses.take(1).subscribe((courses: CourseMap) => {
+        this.getCourses().subscribe((courses: CourseMap) => {
           let res: CourseModel[] = [];
           for (let course of courses.asArray()) {
             if (this.hasTaken(course)) res.push(course);
@@ -409,7 +457,7 @@ export class CoursesService {
   /// Find courses by name (autocomplete)
   findCourses(text: string, limit: number = 10): Observable<CourseModel[]> {
     return Observable.create((observer: Observer<CourseModel[]>) => {
-      this.courses.take(1).subscribe((courses: CourseMap) => {
+      this.getCourses().subscribe((courses: CourseMap) => {
         if (text.length == 0) return [];
         text = text.toLowerCase();
       

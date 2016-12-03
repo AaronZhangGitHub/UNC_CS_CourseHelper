@@ -71,23 +71,23 @@ class User(db.Entity):
 class ClassesTaken(db.Entity):
 	User = Required(User, column='UID')
 	Class = Required(Class, column='CID')
-	Semester = Required(str)
-	PrimaryKey(Class, User, Semester)
+	Semester = Required(int)
+	PrimaryKey(Class, User)
 
 	class Meta:
 		collections = []
-		primary_key = 'Class,User,Semester'
+		primary_key = 'Class,User'
 
 
 class ClassesToTake(db.Entity):
 	User = Required(User, column='UID')
 	Class = Required(Class, column='CID')
-	Semester = Required(str)
-	PrimaryKey(Class, User, Semester)
+	Semester = Required(int)
+	PrimaryKey(Class, User)
 
 	class Meta:
 		collections = []
-		primary_key = 'Class,User,Semester'
+		primary_key = 'Class,User'
 
 class EQC(db.Entity):
 	EQClass = PrimaryKey(int, auto=True)
