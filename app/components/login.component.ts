@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { CourseModel } from '../models/course.model';
 import { UserModel } from '../models/user.model';
+import { UserService } from '../services/user.service';
 
 @Component({
 selector: 'login',
@@ -107,7 +108,7 @@ export class LoginComponent {
   clicked = new EventEmitter();
   showPopupLogin: boolean;
   showPopupSignUp: boolean;
-  constructor(public http: Http) {
+  constructor(public http: Http, public userservice: UserService) {
   this.showPopupLogin = false;
   this.showPopupSignUp = false;
 }
@@ -120,8 +121,8 @@ loginUser(email_login: string, password_login: string){
      Password: password_login
   }).map((res: Response) => res.json() || {})
     .subscribe((user: UserModel) => {
+      this.userservice.login(user);
       // Load the UID into the user service, go to welcome page
-      
     });
 }
 signUpUser(fnSU: string, lnSU: string, pwSU: string, pwSUR: string, emSU: string){
