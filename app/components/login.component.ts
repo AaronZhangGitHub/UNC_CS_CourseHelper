@@ -1,6 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { CourseModel } from '../models/course.model';
+import { UserModel } from '../models/user.model';
+
 @Component({
 selector: 'login',
 template: `
@@ -116,10 +118,11 @@ loginUser(email_login: string, password_login: string){
   this.http.post('/user/login', {
      Username: email_login,
      Password: password_login
-  }).subscribe(() => {
-    // Load the UID into the user service, go to welcome page
-
-  });
+  }).map((res: Response) => res.json() || {})
+    .subscribe((user: UserModel) => {
+      // Load the UID into the user service, go to welcome page
+      
+    });
 }
 signUpUser(fnSU: string, lnSU: string, pwSU: string, pwSUR: string, emSU: string){
   var name = fnSU + " "+lnSU;
@@ -134,8 +137,8 @@ signUpUser(fnSU: string, lnSU: string, pwSU: string, pwSUR: string, emSU: string
       Username:emSU,
       Password:pwSU
     }).subscribe(() => {
-      // DO something here
-
+      //Logs the user in immediately after 
+      this.loginUser(emSU,pwSU);
     });
   }
 
