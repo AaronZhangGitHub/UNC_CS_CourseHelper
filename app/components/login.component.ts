@@ -3,6 +3,7 @@ import { Http, Response } from '@angular/http';
 import { CourseModel } from '../models/course.model';
 import { UserModel } from '../models/user.model';
 import { UserService } from '../services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
 selector: 'login',
@@ -97,10 +98,6 @@ template: `
   </div>
 </div>
 <div *ngIf="showPopupSignUp" class="modal-overlay open" id="materialize-modal-overlay-1" style="z-index: 1002; display: block; opacity: 0.5;"></div>
-<!-- This is the correct way to do a link in angular -->
-<a routerLink="/welcome" routerLinkActive="active" class="btn-floating btn-large">
-  <i class="large material-icons">done</i>
-</a>
 `
 })
 export class LoginComponent {
@@ -108,7 +105,7 @@ export class LoginComponent {
   clicked = new EventEmitter();
   showPopupLogin: boolean;
   showPopupSignUp: boolean;
-  constructor(public http: Http, public userservice: UserService) {
+  constructor(public http: Http, public userservice: UserService, public router: Router) {
   this.showPopupLogin = false;
   this.showPopupSignUp = false;
 }
@@ -122,6 +119,8 @@ loginUser(email_login: string, password_login: string){
   }).map((res: Response) => res.json() || {})
     .subscribe((user: UserModel) => {
       this.userservice.login(user);
+      this.router.navigateByUrl('/welcome');
+      (err: any) => alert(err)
       // Load the UID into the user service, go to welcome page
     });
 }
