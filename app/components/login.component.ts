@@ -108,6 +108,11 @@ export class LoginComponent {
   constructor(public http: Http, public userservice: UserService, public router: Router) {
   this.showPopupLogin = false;
   this.showPopupSignUp = false;
+  
+  // Forward if already logged in
+  userservice.getUser().subscribe(() => {
+    this.router.navigateByUrl('/welcome');
+  });
 }
 loginUser(email_login: string, password_login: string){
   console.log(email_login);
