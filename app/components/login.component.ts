@@ -66,6 +66,13 @@ template: `
         </div>
         <div class="row">
           <div class="input-field col s12">
+            <i class="material-icons prefix">perm_identity</i>
+            <input #email_signup id="email-signup" type="email" class="validate">
+            <label for="email-signup">Username (Please Enter UNC Email)</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
             <i class="material-icons prefix">vpn_key</i>
             <input #password_signup id="password-signup" type="password" class="validate">
             <label for="password-signup">Password</label>
@@ -76,13 +83,6 @@ template: `
             <i class="material-icons prefix">vpn_key</i>
             <input #password_signup_repeat id="password-signup-repeat" type="password" class="validate">
             <label for="password-signup">Repeat Password</label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="input-field col s12">
-            <i class="material-icons prefix">perm_identity</i>
-            <input #email_signup id="email-signup" type="email" class="validate">
-            <label for="email-signup">Username (Please Enter UNC Email)</label>
           </div>
         </div>
       </form>

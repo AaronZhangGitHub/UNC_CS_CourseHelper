@@ -15,7 +15,8 @@ template: `
 			<img src="images/chapelhill.jpg">
 		</div>
 		<a href="#!name"><span class="white-text name" style = "text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">{{ (user | async)?.Name }}</span></a>
-		<a href="#!email"><span class="white-text email" style = "text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">{{(user | async)?.Username}}</span></a>
+		<a href="#!email"><span class="white-text email" style = "text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">{{(user | async)?.Username
+    }}</span></a>
 	</div>
 </li>
   <ul style = "overflow-y: auto;" class="collapsible" data-collapsible="accordion">
