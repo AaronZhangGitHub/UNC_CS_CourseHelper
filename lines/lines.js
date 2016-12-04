@@ -15,7 +15,18 @@ function start() {
 
 	// scroll handling
 	var windowWidth = $(window).width();
-	var 
+	var pageX = 0;
+	$(document).on( "mousemove", function( event ) {
+	  pageX = event.pageX;
+	});
+
+	if(pageX / windowWidth > .8) {
+		var leftPos = $('#lines-graphic').scrollLeft();
+	    console.log(leftPos);    
+	    $("#lines-graphic").animate({
+	        scrollLeft: leftPos - 200
+	    }, 800);
+	}
 
 
 

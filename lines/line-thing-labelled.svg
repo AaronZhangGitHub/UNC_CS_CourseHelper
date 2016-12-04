@@ -73,7 +73,7 @@
     <g id="cid-36" (click)="open(36)">
       <circle cx="968.13" cy="665.32" r="29.01"/>
       <text class="cls-10" transform="translate(948.34 663.46)">COMP <tspan x="8.06" y="16.71">655</tspan></text>
-    </g>
+    </g
     <g id="cid-25" (click)="open(25)">
       <circle cx="1536.76" cy="281.21" r="29.01"/>
       <text class="cls-10" transform="translate(1516.97 279.35)">COMP <tspan x="8.06" y="16.71">562</tspan></text>
