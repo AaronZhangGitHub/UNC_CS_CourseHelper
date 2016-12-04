@@ -53,8 +53,8 @@ export class SemesterCategorizerComponent implements OnInit, OnDestroy {
     });
 
     // Inital setup
-    this.semestersSubscription = this.courseService.getCourseSemestersAsObservable()
-      .subscribe((semesters: CourseModel[][]) => {
+    let obs = this.courseService.getCourseSemestersAsObservable();
+    this.semestersSubscription = obs.subscribe((semesters: CourseModel[][]) => {
         this.semesters = semesters;
         this.onCourseOrderChanged();
       });

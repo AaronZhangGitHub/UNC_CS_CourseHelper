@@ -18,6 +18,11 @@ export class CourseSemesterTracker {
     this._onChange = new BehaviorSubject(this.semesters);
   }
   
+  reset() {
+    this.semesters = [ [] ]; 
+    this.emitChange();
+  }
+  
   asObservable(): Observable<CourseModel[][]> {
     return this._onChange.asObservable();
   }

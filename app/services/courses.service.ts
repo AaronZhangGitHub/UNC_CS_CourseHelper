@@ -30,7 +30,9 @@ export class CoursesService {
 	public courseDetailsPopupReq = this.subjectCourseDetailsPopup.asObservable();
 	
 	constructor(public http: Http, public userService: UserService) {
-    this.initCaches();
+    this.takenCourses = {};
+    this.takenEQClass = new EQClassesTracker();
+    this.courseSemesters = new CourseSemesterTracker(this);
   
     this._courses = new BehaviorSubject(null);
     this.loadAllCourses().subscribe((courses: CourseModel[]) => {
@@ -55,8 +57,8 @@ export class CoursesService {
   
   private initCaches() {
     this.takenCourses = {};
-    this.takenEQClass = new EQClassesTracker();
-    this.courseSemesters = new CourseSemesterTracker(this);
+    this.takenEQClass.reset();
+    this.courseSemesters.reset();
   }
   
   /// Get courses (once), once they have loaded
@@ -150,7 +152,10 @@ export class CoursesService {
     
     // Postback
     this.userService.getUser().subscribe((user: UserModel) => {
-      this.http.delete(`/api/ClassesTaken/${course.CID},${user.UID},${semester}`);
+      this.http.delete(`/api/ClassesTaken/${course.CID},${user.UID}`).subscribe(
+        (res: Response) => console.log(res),
+        (err: any) => console.log(err)
+      );
     });
   }
   

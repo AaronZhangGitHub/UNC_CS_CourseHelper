@@ -13,6 +13,11 @@ export class EQClassesTracker {
     this._onChange = new BehaviorSubject(this);
   }
   
+  reset() {
+    this.eqClasses = {};
+    this._onChange.next(this);
+  }
+  
   asObservable(): Observable<EQClassesTracker> {
     return this._onChange.asObservable();
   }

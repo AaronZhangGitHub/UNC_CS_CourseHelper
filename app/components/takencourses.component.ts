@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CoursesService } from '../services/courses.service';
 import { CourseModel } from '../models/course.model';
 import { Observable } from 'rxjs/Observable';
@@ -26,13 +26,15 @@ import { Observable } from 'rxjs/Observable';
 		`
 	]
 })
-export class TakenCoursesComponent {
+export class TakenCoursesComponent implements OnInit {
 	takenCourses: Observable<CourseModel[]>;
   
-	constructor(private courseService: CoursesService) {
+	constructor(private courseService: CoursesService) { }
+	
+  ngOnInit() {
     this.takenCourses = this.courseService.getTakenCourses();
   }
-	
+  
 	private unsetTaken(course: CourseModel) {
 		this.courseService.unsetAsTaken(course);
 	}
