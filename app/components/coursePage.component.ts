@@ -9,7 +9,7 @@ import { UserModel } from '../models/user.model';
 selector: 'coursePage',
 template: `
 <div class = "col s3">
-  <ul id="slide-out" class="side-nav">
+  <ul id="slide-out" style="position:absolute;"class="side-nav">
     <li><div class="userView" style = "width: 300px; height: 175px;">
       <div class="background">
         <img src="images/chapelhill.jpg">
@@ -65,7 +65,6 @@ margin-top: 112px;
 display: block !important;
 }
 .form-wrapper {
-  width: 100%;
   margin-left: 300px;
 }
 `

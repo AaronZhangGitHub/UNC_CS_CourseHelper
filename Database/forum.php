@@ -5,6 +5,10 @@ $path=substr($path, strpos($path, ".php")+4);
 $path_components = explode('/', $path);
 
 header('Access-Control-Allow-Origin: *');  
+header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE");
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
 if ($_SERVER['REQUEST_METHOD'] == "GET") {
    if (sizeof($path_components)>=4 && $path_components[3]!=""&& $path_components[2]!=""&& $path_components[1]!="") {
       $coid= intval($path_components[3]);
