@@ -1,5 +1,6 @@
 <?php
 require_once('./orm.php');
+
 $path=$_SERVER['REQUEST_URI'];
 $path=substr($path, strpos($path, ".php")+4);
 $path_components = explode('/', $path);
@@ -55,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
   }
 } else if ($_SERVER['REQUEST_METHOD'] == "POST") {
   if (sizeof($path_components)>=3 && $path_components[2]!=""&& $path_components[1]!="") {
+      $cid= intval($path_components[1]);
       $pid= intval($path_components[2]);
 
       if ($post == null) {
@@ -99,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
       $weight = 1;
       $parentID = trim($input['parentID']);
 
-      $new_comment = Comment::create($pid, $uid, $text, $datetime, $weight, $parentID);
+      $new_comment = Comment::create($pid, $uid, $text, $datetime, $weight, $parentID, $cid);
 
       if ($new_comment == null) {
         header("HTTP/1.0 500 Server Error");
@@ -157,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
       $new_post = Post::create($cid, $uid, $title, $text, $datetime, $weight);
 
-      if ($new_todo == null) {
+      if ($new_post == null) {
         header("HTTP/1.0 500 Server Error");
         print("Server couldn't create new post.");
         exit();

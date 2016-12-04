@@ -25,7 +25,7 @@ class Post{
     }
 
     public static function connect() {
-      return new SQLite3('websiteDatabase.db');
+      return new SQLite3('../server/websiteDatabase.db');
     }
 
     public static function findByCID($cid){
@@ -126,7 +126,7 @@ class Post{
             $weight.")");
       
       if ($result) {
-        $pid = SQLiteDatabase::lastInsertRowid('websiteDatabase.db');
+        $pid = $conn->lastInsertRowID();
         $com=array();
         return new Post($pid,$cid, $uid, $title, $text, $datetime, $weight, $com);
       }
@@ -259,7 +259,7 @@ class Comment{
       return $result;
   }
 
-  public static function create($pid, $uid, $text, $datetime, $weight, $parentID) {
+  public static function create($pid, $uid, $text, $datetime, $weight, $parentID, $cid) {
       $conn= Post::connect();
       $result = $conn->query("insert into Comment(pid, uid, text, datetime, weight) values (" .
             $pid . ", " .
@@ -269,7 +269,7 @@ class Comment{
             $weight.")");
       
       if ($result) {
-        $coid = SQLiteDatabase::lastInsertRowid('websiteDatabase.db');
+        $coid = $conn->lastInsertRowID();
         $reply=array();
 
         if($parentID!=""){
@@ -281,8 +281,8 @@ class Comment{
           $postuidResult=$conn->query("Select p.uid from Post p where p.pid='$pid'");
           $puid = $uidResult->fetchArray();
           $postuid = $postuidResult->fetchArray();
-          Comment::notifyUser($puid[0]);
-          Comment::notifyUser($postuid[0]);
+          Comment::notifyUser($puid[0], false, $cid, $pid);
+          Comment::notifyUser($postuid[0], true, $cid, $pid);
         }
         return new Comment($coid, $pid,$cid, $uid, $title, $text, $datetime, $weight, $reply);
       }
@@ -309,12 +309,12 @@ class Comment{
       $conn->query("delete from Comment where CoID = " . $this->coid);
   }
 
-  public function notifyUser($uid, $post){
+  public function notifyUser($uid, $post, $cid, $pid){
       if($post){$message="post";}
       else{$message="comment";}
       $url = 'http://localhost:8080';
-          $data = array('user' => '$uid', 'message' => '<a href="http://localhost/4/forum.php/4/1/1">Someone has replied to your '.$message .'</a>');
-
+      $href= 'http://localhost/$cid/$pid';
+      $data = array('user' => '$uid', 'message' => '<a href=$href>Someone has replied to your '.$message .'</a>');
           $options = array(
               'http' => array(
                   'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
