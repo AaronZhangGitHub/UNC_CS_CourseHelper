@@ -26,10 +26,10 @@ import { SemesterCategorizerComponent } from './components/semestercategorizer.c
 import { CoursePlannerComponent } from './components/home/courseplanner.component';
 import { SemesterPlannerComponent } from './components/home/semesterplanner.component';
 import { CoursePageComponent} from './components/coursePage.component';
-import {ResourceComponent} from './components/resources.component';
-import {FormComponent} from './components/form.component';
-import {PostComponent} from './components/post.component';
-
+import { ResourceComponent } from './components/resources.component';
+import { FormComponent } from './components/form.component';
+import { PostComponent } from './components/post.component';
+import { CommentComponent } from './components/comment.component';
 const appRoutes: Routes = [
   { path: 'semester', component: SemesterComponent },
   { path: 'welcome', component: WelcomeComponent },
@@ -71,7 +71,8 @@ const appRoutes: Routes = [
     CoursePageComponent,
     ResourceComponent,
     FormComponent,
-    PostComponent
+    PostComponent,
+    CommentComponent
   ],
   entryComponents: [ CoursePopupComponent ],
   bootstrap: [ AppComponent ]

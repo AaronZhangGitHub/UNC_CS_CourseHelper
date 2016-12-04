@@ -4,9 +4,8 @@ import { Http, Response } from '@angular/http';
 import { UserService } from '../services/user.service';
 
 @Component({
-	selector:'post',
+	selector:'comment',
 	template: `
-		<div class="{{ color }}">
 			<div class = "post-Info" style = "font-size: 8pt">
 				<div class = "post-title" style = "float: left">&nbsp;{{post.title}}</div>
 				<div class = "post-date" style = "float: left">&nbsp;Date-Posted: {{post.datetime}}</div>
@@ -23,28 +22,16 @@ import { UserService } from '../services/user.service';
 	    	<span style = "width: 33%;"><i class="fa fa-arrow-down" aria-hidden="true"></i></span>
 	    	<a href = "">&nbsp;Add Comment</a>
 	    </div>
-
-    </div>
 	`})
 
-export class PostComponent implements OnInit {
-	commentURL: string;
+export class CommentComponent  {
+	@Input()
+	comment:any;
 	
 	@Input()
-	post: any;
+	cid: number;
 
-	@Input()
-	color: string;
+	constructor(private http: Http) { }
 
-	constructor(private http: Http) { 
-		this.commentURL = 'http://localhost/final/Database/forum.php';
-	}
-
-	ngOnInit() {
-		this.http.get(`${this.commentURL}/${this.cid}`).subscribe((res: Response) => {
-			this.posts	= res.json();
-		});
-
-	}
 
 }
