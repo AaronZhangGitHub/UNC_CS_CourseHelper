@@ -35,16 +35,17 @@ export class PostComponent implements OnInit {
 
 	@Input()
 	color: string;
+  
+  comments: any;
 
 	constructor(private http: Http) { 
 		this.commentURL = 'http://localhost/final/Database/forum.php';
 	}
 
 	ngOnInit() {
-		this.http.get(`${this.commentURL}/${this.cid}`).subscribe((res: Response) => {
-			this.posts	= res.json();
+		this.http.get(`${this.commentURL}/${this.post.cid}/${this.post.pid}`).subscribe((res: Response) => {
+			this.comments	= res.json();
 		});
-
 	}
 
 }

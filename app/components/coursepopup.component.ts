@@ -15,7 +15,11 @@ import { Observable } from 'rxjs/Observable';
     
       <h4>Details on {{ course?.code }}</h4>
       
-      <div class="row">
+      <h6>Category: {{ course?.category }} <small>{{ course?.alt_cat }}</small></h6>
+      
+      <p>{{ course?.long_desc }}</p>
+      
+      <div class="row" *ngIf="(prereqs | async)?.length > 0">
         <div class="col m1 s12">
           <b>Prereqs</b>
         </div>
@@ -28,8 +32,6 @@ import { Observable } from 'rxjs/Observable';
           </div>
         </div>
       </div>
-      
-      <p>{{ course?.long_desc }}</p>
     </div>
     <div class="modal-footer">
       <a href="javascript:void(0)" (click)="onClickClose()" class="modal-action modal-close btn-flat">

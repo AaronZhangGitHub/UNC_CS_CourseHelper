@@ -10,18 +10,16 @@ import { Observable } from 'rxjs/Observable';
   selector: 'my-app',
   template: `
   <nav class="blue lighten-1" *ngIf="logged_in">
-    <div class="nav-wrapper">
-      <div class="row">
-        <div class="col l11 s10">
-          <div class="input-field">
-            <input [(ngModel)]="txt_search" type="search" (keyup)="search()">
-            <label for="search"><i class="material-icons">search</i></label>
-            <i class="material-icons" (click)="clearSearch()">close</i>
-          </div>
+    <div class="nav-wrapper row">
+      <div class="col l11 s10" style="height: 100%">
+        <div class="input-field">
+          <input [(ngModel)]="txt_search" type="search" (keyup)="search()">
+          <label for="search"><i class="material-icons">search</i></label>
+          <i class="material-icons" (click)="clearSearch()">close</i>
         </div>
-        <div class="col l1 s2">
-          <a href="javascript:;" (click)="logout()"><i class="fa fa-fw fa-sign-out fa-3"></i></a>
-        </div>
+      </div>
+      <div class="col l1 s2" style="height: 100%">
+        <a href="javascript:;" (click)="logout()"><i class="fa fa-fw fa-sign-out fa-3"></i></a>
       </div>
     </div>
   </nav>
