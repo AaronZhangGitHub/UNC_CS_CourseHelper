@@ -14,6 +14,7 @@ import { HomeComponent } from './components/home.component';
 import { LoginComponent } from './components/login.component';
 import { CourseComponent } from './components/course.component';
 import { WelcomeComponent } from './components/welcome.component';
+import { InnerSVGComponent } from './components/innersvg.component';
 import { SemesterComponent } from './components/semester.component';
 import { CourseChipComponent } from './components/coursechip.component';
 import { CoursePopupComponent } from './components/coursepopup.component';
@@ -56,6 +57,7 @@ const appRoutes: Routes = [
     LoginComponent,
     CourseComponent,
     WelcomeComponent,
+    InnerSVGComponent,
     SemesterComponent,
     CourseChipComponent,
     CoursePopupComponent,

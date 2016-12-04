@@ -1,12 +1,15 @@
 window.loadSVG = function() {
   window.lineSvg = Snap("#lines-graphic");
-  Snap.load("lines/line-thing.svg", doneLoading);
+  start();
+  // Snap.load("lines/line-thing.svg", doneLoading);
 }
 
+/*
 function doneLoading(data) {
 	window.lineSvg.append(data);
 	start();
 }
+*/
 
 function start() {
 
