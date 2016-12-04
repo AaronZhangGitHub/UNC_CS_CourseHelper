@@ -19,14 +19,14 @@ import { CourseModel } from '../models/course.model';
   
     <!-- SVG wrap entire width -->
     <div #course_planner [hidden]="!isTab(course_planner)" class="col s12">
-      <div id="lines-wrapper" style="height: 800px; overflow-x: scroll; overflow-y: hidden;">
+      <div id="lines-wrapper" style="padding-left: 5px; height: 800px; overflow-x: scroll; overflow-y: hidden;">
         <innersvg></innersvg>
       </div>
     </div>
     <div #form [hidden]="!isTab(forum)" class="col s12">
       <div class = "row">
         <coursePage></coursePage>
-      <div>
+      </div>
     </div>
   
     <div class="padded-container container" [hidden]="!isTab(semester_planner)">    
