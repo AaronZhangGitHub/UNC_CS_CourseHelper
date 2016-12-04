@@ -34,12 +34,6 @@ import { CourseModel } from '../models/course.model';
         <semesterplanner></semesterplanner>
       </div>
     </div>
-    
-    <div class="fixed-action-btn">
-      <a class="btn-floating btn-large">
-        <i class="large material-icons">menu</i>
-      </a>
-    </div>
   `,
   styleUrls: [ 'app/components/home.component.css' ]
 })
