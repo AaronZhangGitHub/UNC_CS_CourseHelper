@@ -1,12 +1,15 @@
 window.loadSVG = function() {
   window.lineSvg = Snap("#lines-graphic");
-  Snap.load("lines/line-thing.svg", doneLoading);
+  start();
+  // Snap.load("lines/line-thing.svg", doneLoading);
 }
 
+/*
 function doneLoading(data) {
 	window.lineSvg.append(data);
 	start();
 }
+*/
 
 function start() {
 	var cidMapping = {1: [0], 2: [0], 3: [1], 4: [1], 5: [1], 6: [1], 7: [2, 3], 8: [2], 9: [1], 10: [4], 11: [4], 14: [5], 15: [3, 5], 17: [5], 18: [2, 5], 19: [2], 20: [6], 21: [5], 22: [5], 23: [4, 5], 24: [4], 25: [4, 5], 26: [7], 27: [7], 28: [7], 29: [3], 30: [4], 31: [3], 32: [2], 33: [2], 34: [2], 35: [7], 36: [6], 37: [4, 7], 38: [7]};

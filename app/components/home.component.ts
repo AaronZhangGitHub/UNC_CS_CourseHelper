@@ -20,9 +20,7 @@ import { CourseModel } from '../models/course.model';
     <!-- SVG wrap entire width -->
     <div #course_planner [hidden]="!isTab(course_planner)" class="col s12">
       <div id="lines-wrapper" style="height: 800px; overflow-x: scroll; overflow-y: hidden;">
-        <svg width="2200px" height="100%" id="lines-graphic">
-          <innersvg></innersvg>
-        </svg>
+        <innersvg></innersvg>
       </div>
     </div>
     <div #form [hidden]="!isTab(forum)" class="col s12">
