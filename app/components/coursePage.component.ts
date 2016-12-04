@@ -43,7 +43,7 @@ template: `
   </ul>
 </ul>
 </div>
-<div class = "col s9" style = "width: 100%">
+<div class = "form-wrapper">
   <div *ngIf = "!forumB && !recourcesB">
     <p>Select a course to access its Forum and Recources.</p>
   </div>
@@ -63,6 +63,10 @@ margin-top: 112px;
 }
 .collapsible li.active .collapsible-body {
 display: block !important;
+}
+.form-wrapper {
+  width: 100%;
+  margin-left: 300px;
 }
 `
 ]

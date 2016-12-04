@@ -6,37 +6,31 @@ import { UserService } from '../services/user.service';
 @Component({
 	selector:'formPage',
 	template: `
-		<div *ngIf = "posts.size!==0" stlye = "width: 100%" >
-			<div *ngFor="let post of posts" class = "post-container blue lighten-3" style = "width: 100%; border-style: groove;" >
-					<div class = "post-Info" style = "font-size: 8pt">
-						<div class = "post-title" style = "float: left">&nbsp;{{post.title}}</div>
-						<div class = "post-date" style = "float: left">&nbsp;Date-Posted: {{post.datetime}}</div>
-						<div class = "post-pid" style = "float: left">&nbsp;PID: {{post.pid}}</div>
-						<div class = "post-cid" style = "float: left">&nbsp;CID: {{post.cid}}</div>
-						<div class = "post-uid" style = "float: left">&nbsp;UID: {{post.uid}}</div>
-					</div>
-          <div class = "post-Body" style = "font-size: 12pt">
-          	<br>&nbsp;{{post.text}}
-          </div>  
-          <div class = "" style = "width: 100%;">
-          	<span style = "width: 33%;"><i class="fa fa-arrow-up" aria-hidden="true"></i></span>
-          	<span style = "width: 33%;">&nbsp; Score: {{post.weight}} &nbsp;</span>
-          	<span style = "width: 33%;"><i class="fa fa-arrow-down" aria-hidden="true"></i></span>
-          	<a href = "">&nbsp;Add Comment</a>
-          </div>
+		<div *ngIf = "posts.size!==0" >
+			<div *ngFor="let post of posts" class = "post-container" style = "width: 100%; border-style: groove;" >
+					<post [post]="post" [color]="'blue lighten-3'"></post>
 			</div>
 		</div>
-
 		<div *ngIf = "posts.length==0">
 			<p>No Posts to Show</p>
 		</div>
-
-		<textarea rows="4" cols="50">Enter your text here
-		</textarea>
+		<br>
+		<div class="row">
+    <form class="col s12">
+      <div class="row">
+        <div class="input-field col s16">
+          <input #postTitle id="post_title" type="text" class="validate">
+          <label for="post_title">Post Title</label>
+        </div>
+      </div>
+    </form>
+  </div>
+	<textarea #textEntry rows="4" cols="50">Enter your text here</textarea>
+		<button ref="javascript:void(0)" (click)="signUpUser(postTitle.value, textEntry.value)" class="btn waves-effect waves-light" type="submit" name="action">Enter
+    <i class="material-icons right">send</i></button>
 
 		<p>{{posts | json}}</p>
-	`,
-  styles:[]
+	`
 })
 export class FormComponent{
 	commentURL: string;
@@ -52,7 +46,6 @@ export class FormComponent{
 				});
 		}
 	}
-
 	get cid() {
 		return this._cid;
 	}
@@ -60,5 +53,9 @@ export class FormComponent{
 	constructor(public http: Http, public userservice: UserService){
 		this.commentURL = 'http://localhost/final/Database/forum.php';
 		this.posts = [];
+	}
+	signUpUser(pt: String, te: String){
+		console.log(pt);
+		console.log(te);
 	}
 }

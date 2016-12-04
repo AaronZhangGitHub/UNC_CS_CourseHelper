@@ -24,15 +24,15 @@ require("../../../lines/lines.js");
         <svg width="2200px" height="100%" id="lines-graphic"></svg>
       </div>
     </div>
+    <div #form [hidden]="!isTab(forum)" class="col s12">
+      <div class = "row">
+        <coursePage></coursePage>
+      <div>
+    </div>
   
-    <div class="padded-container container" [hidden]="isTab(course_planner)">    
-      <div #semester_planner [hidden]="!isTab(semester_planner)" class="col s12">
+    <div class="padded-container container" [hidden]="!isTab(semester_planner)">    
+      <div #semester_planner class="col s12">
         <semesterplanner></semesterplanner>
-      </div>
-      <div #form [hidden]="!isTab(forum)" class="col s12">
-        <div class = "row">
-          <coursePage></coursePage>
-        <div>
       </div>
     </div>
     
