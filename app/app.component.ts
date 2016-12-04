@@ -1,6 +1,7 @@
 import { Component, OnInit, ComponentFactoryResolver, ViewChild, ViewContainerRef } from '@angular/core';
 import { CoursePopupComponent } from './components/coursepopup.component';
 import { CourseModel } from './models/course.model';
+import { UserModel } from './models/user.model';
 import { CoursesService } from './services/courses.service';
 import { UserService } from './services/user.service';
 import { Observable } from 'rxjs/Observable';
@@ -8,13 +9,20 @@ import { Observable } from 'rxjs/Observable';
 @Component({
   selector: 'my-app',
   template: `
-  <nav class="blue lighten-1">
+  <nav class="blue lighten-1" *ngIf="logged_in">
     <div class="nav-wrapper">
-        <div class="input-field">
-          <input [(ngModel)]="txt_search" type="search" (keyup)="search()">
-          <label for="search"><i class="material-icons">search</i></label>
-          <i class="material-icons" (click)="clearSearch()">close</i>
+      <div class="row">
+        <div class="col l11 s10">
+          <div class="input-field">
+            <input [(ngModel)]="txt_search" type="search" (keyup)="search()">
+            <label for="search"><i class="material-icons">search</i></label>
+            <i class="material-icons" (click)="clearSearch()">close</i>
+          </div>
         </div>
+        <div class="col l1 s2">
+          <a href="javascript:;" (click)="logout()"><i class="fa fa-fw fa-sign-out fa-3"></i></a>
+        </div>
+      </div>
     </div>
   </nav>
   
@@ -34,10 +42,17 @@ export class AppComponent implements OnInit {
   // Dynamic popup view
   @ViewChild('popupAnchor', {read: ViewContainerRef}) popupAnchor: ViewContainerRef;
   
+  private logged_in: boolean;
   private txt_search: string;
   private search_res: Observable<CourseModel[]>;
   
-  constructor(private courseService: CoursesService, private componentFactoryResolver: ComponentFactoryResolver) { }
+  constructor(private courseService: CoursesService, private userService: UserService, private componentFactoryResolver: ComponentFactoryResolver) { 
+    this.logged_in = false;
+    
+    userService.getUserAsObservable().subscribe((user: UserModel) => {
+      this.logged_in = (user != null);
+    });
+  }
 
   ngOnInit() {
     // Global handler for when someone requests a course popup
@@ -55,6 +70,10 @@ export class AppComponent implements OnInit {
         popupComponentRef.destroy();
       });
     });
+  }
+  
+  logout() {
+    this.userService.logout();
   }
   
   search() {

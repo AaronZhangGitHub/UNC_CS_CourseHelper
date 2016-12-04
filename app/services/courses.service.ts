@@ -19,7 +19,7 @@ export class CoursesService {
   // Mutable properties of courses
   private _courses: BehaviorSubject<CourseMap>;
   
-  private takenCourses: { [id: number]: boolean } = {};
+  private takenCourses: { [id: number]: boolean };
   private courseSemesters: CourseSemesterTracker;
   private takenEQClass: EQClassesTracker;
   
@@ -29,9 +29,8 @@ export class CoursesService {
   private subjectCourseDetailsPopup = new Subject<CourseModel>();  
 	public courseDetailsPopupReq = this.subjectCourseDetailsPopup.asObservable();
 	
-	constructor(public http: Http, public userService: UserService) {   
-    this.takenEQClass = new EQClassesTracker();
-    this.courseSemesters = new CourseSemesterTracker(this);
+	constructor(public http: Http, public userService: UserService) {
+    this.initCaches();
   
     this._courses = new BehaviorSubject(null);
     this.loadAllCourses().subscribe((courses: CourseModel[]) => {
@@ -41,8 +40,11 @@ export class CoursesService {
       this._courses.next(map);
     });
     
-    // Load already taken courses
-    this.userService.getUser().subscribe((user: UserModel) => {
+    // Load already taken courses each time the user changes
+    this.userService.getUserAsObservable().subscribe((user: UserModel) => {
+      this.initCaches();
+      if (user == null) return;
+    
       user.ClassesTaken.forEach((taken_course: UserTakenCourseModel) => {
         this.getById(taken_course.Class).then((course: CourseModel) => {
           this.setAsTaken(course, taken_course.Semester, false);
@@ -50,6 +52,12 @@ export class CoursesService {
       });
     });
 	}
+  
+  private initCaches() {
+    this.takenCourses = {};
+    this.takenEQClass = new EQClassesTracker();
+    this.courseSemesters = new CourseSemesterTracker(this);
+  }
   
   /// Get courses (once), once they have loaded
   getCourses(): Observable<CourseMap> {
