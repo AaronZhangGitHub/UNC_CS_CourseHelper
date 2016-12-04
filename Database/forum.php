@@ -4,6 +4,9 @@ $path=$_SERVER['REQUEST_URI'];
 $path=substr($path, strpos($path, ".php")+4);
 $path_components = explode('/', $path);
 
+$inputJSON = file_get_contents('php://input');
+$input = json_decode($inputJSON, TRUE);
+
 header('Access-Control-Allow-Origin: *');  
 header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE");
 header("Access-Control-Max-Age: 3600");
@@ -60,33 +63,33 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         exit();
       }
 
-      if (!isset($_REQUEST['uid'])) {
+      if (!isset($input['uid'])) {
         header("HTTP/1.0 400 Bad Request");
         print("Missing user");
         exit();
       }
       
-      $uid = trim($_REQUEST['uid']);
+      $uid = trim($input['uid']);
       if ($uid == "") {
         header("HTTP/1.0 400 Bad Request");
         print("Bad user");
         exit();
       }
 
-      if (!isset($_REQUEST['text'])) {
+      if (!isset($input['text'])) {
         header("HTTP/1.0 400 Bad Request");
         print("Missing text");
         exit();
       }
       
-      $text = trim($_REQUEST['text']);
+      $text = trim($input['text']);
       if ($text == "") {
         header("HTTP/1.0 400 Bad Request");
         print("Bad text");
         exit();
       }
 
-      if (!isset($_REQUEST['parentID'])) {
+      if (!isset($input['parentID'])) {
         header("HTTP/1.0 400 Bad Request");
         print("Missing parentID");
         exit();
@@ -94,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
       
       $datetime= date('m/d/Y h:i:s a');
       $weight = 1;
-      $parentID = trim($_REQUEST['parentID']);
+      $parentID = trim($input['parentID']);
 
       $new_comment = Comment::create($pid, $uid, $text, $datetime, $weight, $parentID);
 
@@ -110,39 +113,39 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
   }if(sizeof($path_components)>=2 && $path_components[1]!=""){
       $cid= intval($path_components[1]);
     
-      if (!isset($_REQUEST['uid'])) {
+      if (!isset($input['uid'])) {
         header("HTTP/1.0 400 Bad Request");
         print("Missing user");
         exit();
       }
       
-      $uid = trim($_REQUEST['uid']);
+      $uid = trim($input['uid']);
       if ($uid == "") {
         header("HTTP/1.0 400 Bad Request");
         print("Bad user");
         exit();
       }
 
-      if (!isset($_REQUEST['title'])) {
+      if (!isset($input['title'])) {
         header("HTTP/1.0 400 Bad Request");
         print("Missing title");
         exit();
       }
       
-      $title = trim($_REQUEST['title']);
+      $title = trim($input['title']);
       if ($title == "") {
         header("HTTP/1.0 400 Bad Request");
         print("Bad title");
         exit();
       }
 
-      if (!isset($_REQUEST['text'])) {
+      if (!isset($input['text'])) {
         header("HTTP/1.0 400 Bad Request");
         print("Missing text");
         exit();
       }
       
-      $text = trim($_REQUEST['text']);
+      $text = trim($input['text']);
       if ($text == "") {
         header("HTTP/1.0 400 Bad Request");
         print("Bad text");
@@ -177,8 +180,8 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
       }
       
       $upvote=false;
-      if(isset($_REQUEST['upvote'])){
-          $upvote=trim($_REQUEST['upvote']);
+      if(isset($input['upvote'])){
+          $upvote=trim($input['upvote']);
       }
 
       if($upvote){
@@ -188,8 +191,8 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
       }
 
       $downvote=false;
-      if(isset($_REQUEST['downvote'])){
-          $downvote=trim($_REQUEST['downvote']);
+      if(isset($input['downvote'])){
+          $downvote=trim($input['downvote']);
       }
 
       if($downvote){
@@ -199,8 +202,8 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
       }
 
       $newText = false;
-      if (isset($_REQUEST['text'])) {
-        $newText = trim($_REQUEST['text']);
+      if (isset($input['text'])) {
+        $newText = trim($input['text']);
       }
 
       if ($newText != false) {
@@ -223,8 +226,8 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
       }
 
       $upvote=false;
-      if(isset($_REQUEST['upvote'])){
-          $upvote=trim($_REQUEST['upvote']);
+      if(isset($input['upvote'])){
+          $upvote=trim($input['upvote']);
       }
 
       if($upvote){
@@ -234,8 +237,8 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
       }
 
       $downvote=false;
-      if(isset($_REQUEST['downvote'])){
-          $downvote=trim($_REQUEST['downvote']);
+      if(isset($input['downvote'])){
+          $downvote=trim($input['downvote']);
       }
 
       if($downvote){
@@ -245,8 +248,8 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
       }
 
       $newText = false;
-      if (isset($_REQUEST['text'])) {
-        $newText = trim($_REQUEST['text']);
+      if (isset($input['text'])) {
+        $newText = trim($input['text']);
       }
 
       if ($newText != false) {

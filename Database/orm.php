@@ -175,7 +175,7 @@ class Comment{
     }
 
     public static function connect() {
-        return new SQLite3('websiteDatabase.db');
+        return new SQLite3('../server/websiteDatabase.db');
     }
 
     public static function findByCOID($coid){

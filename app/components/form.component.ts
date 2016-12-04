@@ -64,7 +64,7 @@ export class FormComponent{
 		console.log(pt);
 		console.log(te);
 		this.userservice.getUser().subscribe((user: UserModel) => {
-			this.http.post(`${this.commentURL}/`,{
+			this.http.post(`${this.commentURL}/${this.cid}`,{
 				uid: user.UID,
 				title: pt,
 				text: te
