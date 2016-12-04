@@ -1,6 +1,6 @@
 window.loadSVG = function() {
   window.lineSvg = Snap("#lines-graphic");
-  Snap.load("lines/line-thing-image.svg", doneLoading);
+  Snap.load("lines/line-thing.svg", doneLoading);
 }
 
 function doneLoading(data) {
@@ -23,7 +23,7 @@ function start() {
 			for(var j = 0; j < categoryLines.length; j++) {
 				var currCatId = parseInt(categoryLines[j].node.id.split("-")[1]);
 				if(currCatId != selectedCatId) {
-					categoryLines[j].attr({opacity: .1});
+					categoryLines[j].animate({opacity: .1}, 150);
 				}
 			}
 
@@ -31,7 +31,7 @@ function start() {
 				var currCid = parseInt(classNodes[k].node.id.split("-")[1]);
 				console.log(classNodes[k].node);
 				if(catidMapping[selectedCatId].indexOf(currCid) == -1) {
-					classNodes[k].attr({opacity: .1});
+					classNodes[k].animate({opacity: .1}, 150);
 				}
 			}
 		});
@@ -41,14 +41,14 @@ function start() {
 			for(var j = 0; j < categoryLines.length; j++) {
 				var currCatId = categoryLines[j].id.split("-")[1];
 				if(currCatId != selectedCatId) {
-					categoryLines[j].attr({opacity: 1});
+					categoryLines[j].animate({opacity: 1}, 150);
 				}
 			}
 
 			for(var k = 0; k < classNodes.length; k++) {
 				var currCid = classNodes[k].node.id.split("-")[1];
 				if(catidMapping[parseInt(selectedCatId)].indexOf(parseInt(currCid)) == -1) {
-					classNodes[k].attr({opacity: 1});
+					classNodes[k].animate({opacity: 1}, 150);
 				}
 			}
 		});
