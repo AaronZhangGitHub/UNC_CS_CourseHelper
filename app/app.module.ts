@@ -24,7 +24,9 @@ import { SemesterCategorizerComponent } from './components/semestercategorizer.c
 
 import { CoursePlannerComponent } from './components/home/courseplanner.component';
 import { SemesterPlannerComponent } from './components/home/semesterplanner.component';
-import { FormComponent} from './components/form.component';
+import { CoursePageComponent} from './components/coursePage.component';
+import {ResourceComponent} from './components/resources.component';
+import {FormComponent} from './components/form.component';
 
 const appRoutes: Routes = [
   { path: 'semester', component: SemesterComponent },
@@ -63,6 +65,8 @@ const appRoutes: Routes = [
     
     CoursePlannerComponent,
     SemesterPlannerComponent,
+    CoursePageComponent,
+    ResourceComponent,
     FormComponent
   ],
   entryComponents: [ CoursePopupComponent ],

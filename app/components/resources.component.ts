@@ -2,12 +2,12 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CourseModel } from '../models/course.model';
 
 @Component({
-	selector:'formPage',
+	selector:'resourcePage',
 	template: `
-		<p>Form will go here.</p>
+		<p>Resources will go here.</p>
 	`,
   styles:[]
 })
-export class FormComponent{
+export class ResourceComponent{
 
 }

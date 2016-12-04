@@ -13,7 +13,7 @@ import { CourseModel } from '../models/course.model';
         <a class="grey-text text-lighten-5" (click)="switchTab(semester_planner)">Semester Planner</a>
       </li>
       <li class="tab" [class.active]="isTab(forum)">
-        <a class="grey-text text-lighten-5" (click)="switchTab(forum)">Forum</a>
+        <a class="grey-text text-lighten-5" (click)="switchTab(forum)">Course Page</a>
       </li>
     </ul>
   
@@ -25,7 +25,9 @@ import { CourseModel } from '../models/course.model';
         <semesterplanner></semesterplanner>
       </div>
       <div #form [hidden]="!isTab(forum)" class="col s12">
-        <forumc></forumc>
+        <div class = "row">
+          <coursePage></coursePage>
+        <div>
       </div>
     </div>
     
