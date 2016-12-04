@@ -26,7 +26,7 @@ import { CourseModel } from '../models/course.model';
     <div #form [hidden]="!isTab(forum)" class="col s12">
       <div class = "row">
         <coursePage></coursePage>
-      <div>
+      </div>
     </div>
   
     <div class="padded-container container" [hidden]="!isTab(semester_planner)">    
