@@ -43,7 +43,7 @@ template: `
   </ul>
 </ul>
 </div>
-<div class = "col s9">
+<div class = "form-wrapper">
   <div *ngIf = "!forumB && !recourcesB">
     <p>Select a course to access its Forum and Recources.</p>
   </div>
@@ -51,7 +51,7 @@ template: `
     <resourcePage></resourcePage>
   </div>
   <div *ngIf = "forumB && !recourcesB">
-    <formPage></formPage>
+    <formPage [cid]="cid"></formPage>
   </div>
 </div>
 `,
@@ -63,6 +63,10 @@ margin-top: 112px;
 }
 .collapsible li.active .collapsible-body {
 display: block !important;
+}
+.form-wrapper {
+  width: 100%;
+  margin-left: 300px;
 }
 `
 ]
@@ -77,7 +81,7 @@ export class CoursePageComponent{
   constructor(public courseService: CoursesService, public userService: UserService) {
     this.user = userService.getUser();
     this.open = true;
-    this.cid = 0;
+    this.cid = null;
     this.course = "Not Entered";
     this.forumB = false;
     this.recourcesB = false;

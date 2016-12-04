@@ -27,6 +27,7 @@ import { SemesterPlannerComponent } from './components/home/semesterplanner.comp
 import { CoursePageComponent} from './components/coursePage.component';
 import {ResourceComponent} from './components/resources.component';
 import {FormComponent} from './components/form.component';
+import {PostComponent} from './components/post.component';
 
 const appRoutes: Routes = [
   { path: 'semester', component: SemesterComponent },
@@ -67,7 +68,8 @@ const appRoutes: Routes = [
     SemesterPlannerComponent,
     CoursePageComponent,
     ResourceComponent,
-    FormComponent
+    FormComponent,
+    PostComponent
   ],
   entryComponents: [ CoursePopupComponent ],
   bootstrap: [ AppComponent ]
