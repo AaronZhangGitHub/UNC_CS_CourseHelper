@@ -43,7 +43,7 @@ template: `
   </ul>
 </ul>
 </div>
-<div class = "col s9">
+<div class = "col s9" style = "width: 100%">
   <div *ngIf = "!forumB && !recourcesB">
     <p>Select a course to access its Forum and Recources.</p>
   </div>
@@ -51,7 +51,7 @@ template: `
     <resourcePage></resourcePage>
   </div>
   <div *ngIf = "forumB && !recourcesB">
-    <formPage></formPage>
+    <formPage [cid]="cid"></formPage>
   </div>
 </div>
 `,
@@ -77,7 +77,7 @@ export class CoursePageComponent{
   constructor(public courseService: CoursesService, public userService: UserService) {
     this.user = userService.getUser();
     this.open = true;
-    this.cid = 0;
+    this.cid = null;
     this.course = "Not Entered";
     this.forumB = false;
     this.recourcesB = false;

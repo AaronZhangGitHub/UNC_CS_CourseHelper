@@ -3,6 +3,8 @@ require_once('./orm.php');
 $path=$_SERVER['REQUEST_URI'];
 $path=substr($path, strpos($path, ".php")+4);
 $path_components = explode('/', $path);
+
+header('Access-Control-Allow-Origin: *');  
 if ($_SERVER['REQUEST_METHOD'] == "GET") {
    if (sizeof($path_components)>=4 && $path_components[3]!=""&& $path_components[2]!=""&& $path_components[1]!="") {
       $coid= intval($path_components[3]);
