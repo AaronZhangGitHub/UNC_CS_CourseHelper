@@ -1,5 +1,6 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { CourseModel } from '../models/course.model';
+require("../../../lines/lines.js");
 
 // After user has created an account and selected their taken courses this is the default page
 @Component({
@@ -17,10 +18,14 @@ import { CourseModel } from '../models/course.model';
       </li>
     </ul>
   
-    <div class="padded-container container">    
-      <div #course_planner [hidden]="!isTab(course_planner)" class="col s12">
-        <courseplanner></courseplanner>
+    <!-- SVG wrap entire width -->
+    <div #course_planner [hidden]="!isTab(course_planner)" class="col s12">
+      <div id="lines-wrapper" style="height: 800px; overflow-x: scroll; overflow-y: hidden;">
+        <svg width="2200px" height="100%" id="lines-graphic"></svg>
       </div>
+    </div>
+  
+    <div class="padded-container container" [hidden]="isTab(course_planner)">    
       <div #semester_planner [hidden]="!isTab(semester_planner)" class="col s12">
         <semesterplanner></semesterplanner>
       </div>
@@ -39,7 +44,7 @@ import { CourseModel } from '../models/course.model';
   `,
   styleUrls: [ 'app/components/home.component.css' ]
 })
-export class HomeComponent {
+export class HomeComponent implements AfterViewInit {
   
   private tab: any;
   
@@ -49,6 +54,10 @@ export class HomeComponent {
   
   private isTab(t: any) {
     return this.tab === t;
+  }
+  
+  ngAfterViewInit() {
+    (window as any).loadSVG();
   }
   
 }
