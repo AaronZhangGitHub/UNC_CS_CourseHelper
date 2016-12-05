@@ -1,5 +1,7 @@
 <?php
 require_once('./orm.php');
+ini_set('display_errors', 1);
+error_reporting(E_ALL ^ E_NOTICE);
 
 $path=$_SERVER['REQUEST_URI'];
 $path=substr($path, strpos($path, ".php")+4);
@@ -58,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
   if (sizeof($path_components)>=3 && $path_components[2]!=""&& $path_components[1]!="") {
       $cid= intval($path_components[1]);
       $pid= intval($path_components[2]);
+      $post = Post::findByPID($pid);
 
       if ($post == null) {
         header("HTTP/1.0 404 Not Found");
@@ -210,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
       if ($newText != false) {
         $comment->setText($newText);
-        $time= date('m-d-Y h:i:s a');
+        $time= date('m/d/Y h:i:s a');
         $comment->setDatetime($time);
         print($comment->getJSON());
       }
@@ -256,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
       if ($newText != false) {
         $post->setText($newText);
-        $time= date('m-xd-Y h:i:s a');
+        $time= date('m/d/Y h:i:s a');
         $post->setDatetime($time);
         print($post->getJSON());
       }

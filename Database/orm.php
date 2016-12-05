@@ -138,17 +138,17 @@ class Post{
     return $this->update();
   }
 
-  public static function upvotePost(){
+  public function upvotePost(){
     $updatedWeight= $this->weight;
     $this->setWeight($updatedWeight+1);
   }
 
-  public static function downvotePost(){
+  public function downvotePost(){
     $updatedWeight= $this->weight;
     $this->setWeight($updatedWeight-1);
   }
 
-  public static function deletePost(){
+  public function deletePost(){
       $conn = Post::connect();
       $conn->query("delete from Post where pid = " . $this->pid);
   }
@@ -260,7 +260,7 @@ class Comment{
   }
 
   public static function create($pid, $uid, $text, $datetime, $weight, $parentID, $cid) {
-      $conn= Post::connect();
+      $conn= Comment::connect();
       $result = $conn->query("insert into Comment(pid, uid, text, datetime, weight) values (" .
             $pid . ", " .
             $uid . ", " .
@@ -284,7 +284,7 @@ class Comment{
           Comment::notifyUser($puid[0], false, $cid, $pid);
           Comment::notifyUser($postuid[0], true, $cid, $pid);
         }
-        return new Comment($coid, $pid,$cid, $uid, $title, $text, $datetime, $weight, $reply);
+        return new Comment($coid, $pid,$uid, $text, $datetime, $weight, $reply);
       }
       return null;
   }
@@ -294,17 +294,17 @@ class Comment{
     return $this->update();
   }
   
-  public static function upvoteComment(){
+  public function upvoteComment(){
     $updatedWeight= $this->weight;
     $this->setWeight($updatedWeight+1);
   }
 
-  public static function downvoteComment(){
+  public function downvoteComment(){
     $updatedWeight= $this->weight;
     $this->setWeight($updatedWeight-1);
   }
 
-  public static function deleteComment(){
+  public function deleteComment(){
       $conn = Comment::connect();
       $conn->query("delete from Comment where CoID = " . $this->coid);
   }
