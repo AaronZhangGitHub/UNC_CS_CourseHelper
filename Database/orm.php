@@ -309,7 +309,7 @@ class Comment{
       $conn->query("delete from Comment where CoID = " . $this->coid);
   }
 
-  public function notifyUser($uid, $post, $cid, $pid){
+  public static function notifyUser($uid, $post, $cid, $pid){
       if($post){$message="post";}
       else{$message="comment";}
       $url = 'http://localhost:8080';
