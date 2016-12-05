@@ -107,7 +107,7 @@ export class PostComponent implements OnInit {
 			this.http.post(`${this.commentURL}/${this.post.cid}/${this.post.pid}`,{
 				text:textEntryVal,
 				uid: user.UID,
-				parentID: this.post.pid
+				parentID: ""
 			}).subscribe((res: Response)=>{
 				this.hidePostCommentModal();
 				this.refresh();

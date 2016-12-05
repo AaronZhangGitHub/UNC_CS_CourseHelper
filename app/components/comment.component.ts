@@ -11,6 +11,7 @@ import { UserService } from '../services/user.service';
 				<div class = "post-pid" style = "float: left">&nbsp;PID: {{comment.pid}}</div>
 				<div class = "post-cid" style = "float: left">&nbsp;CID: {{comment.cid}}</div>
 				<div class = "post-uid" style = "float: left">&nbsp;UID: {{comment.uid}}</div>
+				<div class = "post-ParentID" style = "float: left">&nbsp;parentID: {{comment.parentID}}</div>
 			</div>
 	    <div class = "post-Body" style = "font-size: 12pt">
 	    	<br>&nbsp;{{comment.text}}
@@ -51,6 +52,7 @@ export class CommentComponent  {
 		this.URL = 'http://localhost/final/Database/forum.php';
 		this.replies = [];
 	 }
+
 	ngOnInit() {
 		this.http.get(`${this.URL}/${this.post.cid}/${this.post.pid}/${this.comment.CoID}`).subscribe((res: Response) => {
 			this.thisComment	= res.json();
