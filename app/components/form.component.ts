@@ -9,7 +9,7 @@ import { UserService } from '../services/user.service';
 	template: `
 		<div *ngIf = "posts.size!==0" >
 			<div *ngFor="let post of posts" class = "post-container" style = "width: 100%; border-style: groove;" >
-					<post [post]="post" [color]="'blue lighten-3'"></post>
+					<post [post]="post" [color]="'blue lighten-0'"></post>
 			</div>
 		</div>
 		<div *ngIf = "posts.length==0">
@@ -60,7 +60,11 @@ export class FormComponent{
 		});
 	}
 
+
 	postPost(pt: string, te: string){
+		if(pt==="" || te ===""){
+			//do nothing
+		}else{
 		console.log(pt);
 		console.log(te);
 		this.userservice.getUser().subscribe((user: UserModel) => {
@@ -74,4 +78,5 @@ export class FormComponent{
 			}, (err) => console.log(err));
 		});
 	}
+}
 }
