@@ -210,7 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
       if ($newText != false) {
         $comment->setText($newText);
-        $time= date('m/d/Y h:i:s a');
+        $time= date('m-d-Y h:i:s a');
         $comment->setDatetime($time);
         print($comment->getJSON());
       }
@@ -256,7 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
       if ($newText != false) {
         $post->setText($newText);
-        $time= date('m/d/Y h:i:s a');
+        $time= date('m-xd-Y h:i:s a');
         $post->setDatetime($time);
         print($post->getJSON());
       }
