@@ -16,9 +16,10 @@ import { UserService } from '../services/user.service';
 	    	<br>&nbsp;{{comment.text}}
 	    </div>  
 	    <div class = "" style = "width: 100%;">
-	    	<span style = "width: 33%;"><i class="fa fa-arrow-up" aria-hidden="true"></i></span>
-	    	<span style = "width: 33%;">&nbsp; Score: {{comment.weight}} &nbsp;</span>
-	    	<span style = "width: 33%;"><i class="fa fa-arrow-down" aria-hidden="true"></i></span>
+	    	<button (click)="upvote()" class = "blue lighten-0" style = "width: 30px;"><i class="fa fa-arrow-up " aria-hidden="true"></i></button>
+	    	<span  style = "width: 33%;">&nbsp; Score: {{comment.weight}} &nbsp;</span>
+	    	<button (click)="downvote()" class = "blue lighten-0" style = "width: 30px;"><i class="fa fa-arrow-down blue lighten-0" aria-hidden="true"></i></button>
+	    	<button class = "blue lighten-0" (click)="addComment" href = "">&nbsp;Reply</button>
 	    	<a href = "">&nbsp;Add Comment</a>
 	    	<div *ngIf="replies.length>0"  class="postComment">
 	        <div *ngFor="let rep of replies" style="border-left-style:groove;">
