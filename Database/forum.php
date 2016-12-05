@@ -1,4 +1,8 @@
 <?php
+header('Access-Control-Allow-Origin: *');  
+header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE");
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 require_once('./orm.php');
 ini_set('display_errors', 1);
 error_reporting(E_ALL ^ E_NOTICE);
@@ -9,11 +13,6 @@ $path_components = explode('/', $path);
 
 $inputJSON = file_get_contents('php://input');
 $input = json_decode($inputJSON, TRUE);
-
-header('Access-Control-Allow-Origin: *');  
-header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE");
-header("Access-Control-Max-Age: 3600");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 if ($_SERVER['REQUEST_METHOD'] == "GET") {
    if (sizeof($path_components)>=4 && $path_components[3]!=""&& $path_components[2]!=""&& $path_components[1]!="") {
@@ -104,6 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
       $weight = 1;
       $parentID = trim($input['parentID']);
 
+      header("Content-type: application/json");
       $new_comment = Comment::create($pid, $uid, $text, $datetime, $weight, $parentID, $cid);
 
       if ($new_comment == null) {
@@ -112,7 +112,6 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         exit();
       }
       
-      header("Content-type: application/json");
       print($new_comment->getJSON());
       exit();
   }if(sizeof($path_components)>=2 && $path_components[1]!=""){
