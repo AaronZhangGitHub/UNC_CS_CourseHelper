@@ -57,5 +57,4 @@ export class CommentComponent  {
 			this.replies= this.thisComment.replies;
 		});
 	}
-
 }

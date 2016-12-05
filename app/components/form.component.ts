@@ -17,25 +17,39 @@ import { UserService } from '../services/user.service';
 		</div>
 		<br>
 	<div class="row">
-    <form class="col s12">
-      <div class="row">
-        <div class="input-field col s6">
-          <input #postTitle id="post_title" type="text" class="validate">
-          <label for="post_title">Post Title</label>
-        </div>
-      </div>
-    </form>
-		<textarea class="s6" #textEntry rows="8" cols="35" style="width:80%; height:10em">Enter your text here</textarea>
-		<br>
-		<button ref="javascript:void(0)" (click)="postPost(postTitle.value, textEntry.value)" class="btn waves-effect waves-light" type="submit" name="action">Enter
+		<button ref="javascript:void(0)" (click)="showPostPostModal()" class="btn waves-effect waves-light" type="submit" name="action">Create Post
     <i class="material-icons right">send</i></button>
   </div>
+
+  <div *ngIf="showPopUpModal" class="modal open" style="z-index: 1003; display: block; opacity: 1; transform: scaleX(1); top: 10%;">
+  	<div class="modal-content">
+     	 <form class="col s12">
+      	  <div class="row">
+        	  <div class="input-field col s6">
+          		<input #postTitle id="post_title" type="text" class="validate">
+          		<label for="post_title">Post Title</label>
+        		</div>
+        			<textarea #textEntry rows="4" cols="50">Post body goes here. </textarea>
+        	</div>
+      	</form>
+  	</div>
+  	<div class="modal-footer">
+    	<div class = "closeButton" style = "float: left;">
+      	<a href="javascript:void(0)" (click)="hidePostPostModal()" class="modal-close waves-effect waves-green btn-flat">Close</a>
+    	</div>
+    	<div class = "closeButton" style = "float: right;">
+      	<a href="javascript:void(0)" (click)="postPost(postTitle.value, textEntry.value)" class="modal-close waves-effect waves-green btn-flat"><i class="material-icons prefix">input</i></a>
+    	</div>
+  	</div>
+	</div>
 		<p>{{posts | json}}</p>
 	`
 })
 export class FormComponent{
 	commentURL: string;
 	posts: any;
+	showPopUpModal: boolean;
+	
 	private _cid: number;
 
 	@Input()
@@ -52,6 +66,14 @@ export class FormComponent{
 	constructor(public http: Http, public userservice: UserService){
 		this.commentURL = 'http://localhost/final/Database/forum.php';
 		this.posts = [];
+		this.showPopUpModal = false;
+	}
+
+	showPostPostModal(){
+		this.showPopUpModal = true;
+	}
+	hidePostPostModal(){
+		this.showPopUpModal = false;
 	}
 
 	loadPosts() {
@@ -74,6 +96,7 @@ export class FormComponent{
 				text: te
 			}).subscribe((res: Response) => {
 				console.log(res)
+				this.hidePostPostModal();
 				this.loadPosts();
 			}, (err) => console.log(err));
 		});
