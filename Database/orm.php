@@ -64,7 +64,7 @@ class Post{
             if(in_array($next_row[0], $childComments)){
               continue;
             }
-            $comment=array('CoID'=> $next_row[0], 'pid'=> $next_row[1], 'uid'=> $next_row[2], 'text'=> $next_row[3],
+            $comment=array('coid'=> $next_row[0], 'pid'=> $next_row[1], 'uid'=> $next_row[2], 'text'=> $next_row[3],
                           'datetime'=> $next_row[4], 'weight'=> $next_row[5]);
             $replies=Comment::findChildren($next_row[0]);
             $comment["replies"]=$replies;
@@ -183,7 +183,7 @@ class Comment{
         $commentResult = $conn->query("select * from Comment c where c.CoID='$coid'");
         $comment=array();
         while ($next_row = $commentResult->fetchArray()) {
-              $comment=array('CoID'=> $next_row[0], 'pid'=> $next_row[1], 'uid'=> $next_row[2], 'text'=> $next_row[3],
+              $comment=array('coid'=> $next_row[0], 'pid'=> $next_row[1], 'uid'=> $next_row[2], 'text'=> $next_row[3],
                             'datetime'=> $next_row[4], 'weight'=> $next_row[5]);
               $replies=Comment::findChildren($next_row[0]);
               $comment["replies"]=$replies;
