@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CourseModel } from '../models/course.model';
 import { Http, Response } from '@angular/http';
 import { UserService } from '../services/user.service';
+import { UserModel } from '../models/user.model';
 
 @Component({
 	selector:'comment',
@@ -20,7 +21,7 @@ import { UserService } from '../services/user.service';
 	    	<button (click)="upvote()" class = "blue lighten-0" style = "width: 30px;"><i class="fa fa-arrow-up " aria-hidden="true"></i></button>
 	    	<span  style = "width: 33%;">&nbsp; Score: {{comment.weight}} &nbsp;</span>
 	    	<button (click)="downvote()" class = "blue lighten-0" style = "width: 30px;"><i class="fa fa-arrow-down blue lighten-0" aria-hidden="true"></i></button>
-	    	<button class = "blue lighten-0" (click)="addComment" href = "">&nbsp;Reply</button>
+	    	<button class = "blue lighten-0" (click)="showPostCommentModal()" href = "">&nbsp;Reply</button>
 	    	<a href = "">&nbsp;Add Comment</a>
 	    	<div *ngIf="replies.length>0"  class="postComment">
 	        <div *ngFor="let rep of replies" style="border-left-style:groove;">
@@ -28,6 +29,23 @@ import { UserService } from '../services/user.service';
     			</div>
     		</div>
 	    </div>
+			<div *ngIf="showPopUpModal" class="modal open" style="z-index: 1003; display: block; opacity: 1; transform: scaleX(1); top: 10%;">
+				<div class="modal-content">
+				 	 <form class="col s12">
+				  	  <div class="row">
+				    			<textarea #textEntry rows="8" cols="60">Reply Goes Here</textarea>
+				    	</div>
+				  	</form>
+				</div>
+				<div class="modal-footer">
+					<div class = "closeButton" style = "float: left;">
+				  	<a href="javascript:void(0)" (click)="hidePostCommentModal()" class="modal-close waves-effect waves-green btn-flat">Close</a>
+					</div>
+					<div class = "closeButton" style = "float: right;">
+				  	<a href="javascript:void(0)" (click)="addComment(textEntry.value)" class="modal-close waves-effect waves-green btn-flat"><i class="material-icons prefix">input</i></a>
+					</div>
+				</div>
+			</div>
 	`
 	,
 	styles:[
@@ -42,21 +60,68 @@ export class CommentComponent  {
 	URL: string;
 	thisComment: any;
 	replies: any;
+	showPopUpModal: boolean;
 	@Input()
 	comment:any;
 
 	@Input()
 	post:any;
 
-	constructor(private http: Http) {
+	constructor(private http: Http, public userservice: UserService) {
 		this.URL = 'http://localhost/final/Database/forum.php';
 		this.replies = [];
+		this.showPopUpModal = false;
+		console.log(this.comment);
 	 }
-
+	showPostCommentModal(){
+		this.showPopUpModal = true;
+	}
+	hidePostCommentModal(){
+		this.showPopUpModal = false;
+	}
+	downvote(){
+		console.log("downvote");
+		this.http
+		.put(`${this.URL}/${this.post.cid}/${this.post.pid}/${this.comment.coid}`,{downvote: true})
+		.subscribe((res: Response)=>{
+			//need to refresh posts
+			//this.refresh();
+		});
+	}
+	upvote(){
+		console.log("upvote");
+		this.http.put(`${this.URL}/${this.post.cid}/${this.post.pid}/${this.comment.coid}`,{
+			upvote: true
+		}).subscribe((res: Response)=>{
+			//this.refresh();
+		}, (err) => console.log(err));
+	}
+	addComment(textEntryVal: string){
+		console.log(textEntryVal);
+		console.log(this.post.pid);
+		this.userservice.getUser().subscribe((user: UserModel) => {
+			this.http.post(`${this.URL}/${this.post.cid}/${this.post.pid}/${this.comment.coid}`,{
+				text:textEntryVal,
+				uid: user.UID,
+				parentID: ""
+			}).subscribe((res: Response)=>{
+				this.hidePostCommentModal();
+				this.refresh();
+			}, (err) => console.log(err));
+		});
+	}
 	ngOnInit() {
-		this.http.get(`${this.URL}/${this.post.cid}/${this.post.pid}/${this.comment.CoID}`).subscribe((res: Response) => {
-			this.thisComment	= res.json();
-			this.replies= this.thisComment.replies;
+		this.refresh();
+	}
+	refresh(){
+			this.http.get(`${this.URL}/${this.post.cid}/${this.post.pid}/${this.comment.coid}`).subscribe((res: Response) => {
+			console.log(this.comment.coid);
+			//console.log(res);
+			this.comment	= res.json();
+			//console.log(this.comment);
+			//console.log(this.replies);
+			this.replies= this.comment.replies;
+			//console.log(this.replies);
 		});
 	}
 }

@@ -26,6 +26,7 @@ import { UserService } from '../services/user.service';
 	    </div>
 	        <div *ngIf="postComment.length>0"  class="postComment">
 	        	<div *ngFor="let pc of postComment" style="border-left-style:groove;">
+	        		<p>{{pc|json}}</p>
     					<comment [comment]="pc" [post]="post"></comment>
     				</div>
     			</div>
