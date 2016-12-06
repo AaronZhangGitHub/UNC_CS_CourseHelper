@@ -42,7 +42,6 @@ import { UserService } from '../services/user.service';
     	</div>
   	</div>
 	</div>
-		<p>{{posts | json}}</p>
 	`
 })
 export class FormComponent{

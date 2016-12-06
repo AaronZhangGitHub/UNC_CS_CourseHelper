@@ -24,7 +24,6 @@ import { UserModel } from '../models/user.model';
 	    	<button class = "blue lighten-0" (click)="showPostCommentModal()" href = "">&nbsp;Reply</button>
 	    	<div *ngIf="replies.length>0"  class="postComment">
 	        <div *ngFor="let rep of replies" style="border-left-style:groove;">
-	        <p>{{rep|json}}</p>
     				<comment [comment]="rep" [post]="post"></comment>
     			</div>
     		</div>
@@ -98,15 +97,20 @@ export class CommentComponent  {
 		}, (err) => console.log(err));
 	}
 	addComment(textEntryVal: string){
-		console.log(textEntryVal);
+		console.log(this.post.cid);
+		console.log(this.post.pid);
 		console.log(this.comment.coid);
+		console.log(`${this.URL}/${this.post.cid}/${this.post.pid}`);
 		this.userservice.getUser().subscribe((user: UserModel) => {
-			this.http.post(`${this.URL}/${this.post.cid}/${this.post.pid}/${this.comment.coid}`,{
+			this.http.post(`${this.URL}/${this.post.cid}/${this.post.pid}/`,{
 				text:textEntryVal,
 				uid: user.UID,
-				parentID: ""
+				parentID: this.comment.coid
 			}).subscribe((res: Response)=>{
 				console.log(res);
+				console.log(this.comment.replies);
+				//this.comment.replies.push(res.json());
+				console.log(this.comment.replies);
 				this.hidePostCommentModal();
 				this.refresh();
 			}, (err) => console.log(err));

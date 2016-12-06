@@ -281,8 +281,8 @@ class Comment{
           $postuidResult=$conn->query("Select p.uid from Post p where p.pid='$pid'");
           $puid = $uidResult->fetchArray();
           $postuid = $postuidResult->fetchArray();
-          Comment::notifyUser($puid[0], false, $cid, $pid);
-          Comment::notifyUser($postuid[0], true, $cid, $pid);
+          // Comment::notifyUser($puid[0], false, $cid, $pid);
+          // Comment::notifyUser($postuid[0], true, $cid, $pid);
         }
         return new Comment($coid, $pid,$uid, $text, $datetime, $weight, $reply);
       }

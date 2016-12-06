@@ -26,7 +26,6 @@ import { UserService } from '../services/user.service';
 	    </div>
 	        <div *ngIf="postComment.length>0"  class="postComment">
 	        	<div *ngFor="let pc of postComment" style="border-left-style:groove;">
-	        		<p>{{pc|json}}</p>
     					<comment [comment]="pc" [post]="post"></comment>
     				</div>
     			</div>
@@ -77,6 +76,10 @@ export class PostComponent implements OnInit {
 		this.postComment = [];
 		this.showPopUpModal = false;
 	}
+	deletePost(){
+		console.log("Delete Post");
+		this.http.delete(`${this.commentURL}/${this.post.cid}/${this.post.pid}`),{}
+	}
 	downvote(){
 		console.log("downvote");
 		this.http
@@ -108,7 +111,6 @@ export class PostComponent implements OnInit {
 				uid: user.UID,
 				parentID: ""
 			}).subscribe((res: Response)=>{
-				console.log(res);
 				this.hidePostCommentModal();
 				this.refresh();
 			}, (err) => console.log(err));
