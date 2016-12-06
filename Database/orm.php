@@ -204,7 +204,7 @@ class Comment{
         $comments=0;
         while ($next_row = $childResult->fetchArray()) {
               $comments++;
-              $child=array('CoID'=> $next_row[2], 'pid'=> $next_row[3], 'uid'=> $next_row[4], 'text'=> $next_row[5],
+              $child=array('coid'=> $next_row[2], 'pid'=> $next_row[3], 'uid'=> $next_row[4], 'text'=> $next_row[5],
                             'datetime'=> $next_row[6], 'weight'=> $next_row[7]) ;
               $nestedChildren = Comment::findChildren($next_row[1]);
               $childComments[]=$next_row[2];
