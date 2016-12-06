@@ -188,7 +188,7 @@ class Comment{
               $replies=Comment::findChildren($next_row[0]);
               $comment["replies"]=$replies;
         }
-        return new Comment($comment['CoID'],
+        return new Comment($comment['coid'],
                           $comment['pid'],
                           $comment['uid'],
                           $comment['text'],

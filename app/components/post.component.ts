@@ -102,14 +102,13 @@ export class PostComponent implements OnInit {
 	}
 
 	addComment(textEntryVal: string){
-		console.log(textEntryVal);
-		console.log(this.post.pid);
 		this.userservice.getUser().subscribe((user: UserModel) => {
 			this.http.post(`${this.commentURL}/${this.post.cid}/${this.post.pid}`,{
 				text:textEntryVal,
 				uid: user.UID,
 				parentID: ""
 			}).subscribe((res: Response)=>{
+				console.log(res);
 				this.hidePostCommentModal();
 				this.refresh();
 			}, (err) => console.log(err));

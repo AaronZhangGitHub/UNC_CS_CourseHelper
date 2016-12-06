@@ -22,9 +22,9 @@ import { UserModel } from '../models/user.model';
 	    	<span  style = "width: 33%;">&nbsp; Score: {{comment.weight}} &nbsp;</span>
 	    	<button (click)="downvote()" class = "blue lighten-0" style = "width: 30px;"><i class="fa fa-arrow-down blue lighten-0" aria-hidden="true"></i></button>
 	    	<button class = "blue lighten-0" (click)="showPostCommentModal()" href = "">&nbsp;Reply</button>
-	    	<a href = "">&nbsp;Add Comment</a>
 	    	<div *ngIf="replies.length>0"  class="postComment">
 	        <div *ngFor="let rep of replies" style="border-left-style:groove;">
+	        <p>{{rep|json}}</p>
     				<comment [comment]="rep" [post]="post"></comment>
     			</div>
     		</div>
@@ -61,6 +61,7 @@ export class CommentComponent  {
 	thisComment: any;
 	replies: any;
 	showPopUpModal: boolean;
+
 	@Input()
 	comment:any;
 
@@ -71,7 +72,7 @@ export class CommentComponent  {
 		this.URL = 'http://localhost/final/Database/forum.php';
 		this.replies = [];
 		this.showPopUpModal = false;
-		console.log(this.comment);
+		//console.log("c: "+ this.comment);
 	 }
 	showPostCommentModal(){
 		this.showPopUpModal = true;
@@ -85,26 +86,27 @@ export class CommentComponent  {
 		.put(`${this.URL}/${this.post.cid}/${this.post.pid}/${this.comment.coid}`,{downvote: true})
 		.subscribe((res: Response)=>{
 			//need to refresh posts
-			//this.refresh();
+			this.refresh();
 		});
 	}
 	upvote(){
-		console.log("upvote");
+		console.log(this.comment.coid);
 		this.http.put(`${this.URL}/${this.post.cid}/${this.post.pid}/${this.comment.coid}`,{
 			upvote: true
 		}).subscribe((res: Response)=>{
-			//this.refresh();
+			this.refresh();
 		}, (err) => console.log(err));
 	}
 	addComment(textEntryVal: string){
 		console.log(textEntryVal);
-		console.log(this.post.pid);
+		console.log(this.comment.coid);
 		this.userservice.getUser().subscribe((user: UserModel) => {
 			this.http.post(`${this.URL}/${this.post.cid}/${this.post.pid}/${this.comment.coid}`,{
 				text:textEntryVal,
 				uid: user.UID,
 				parentID: ""
 			}).subscribe((res: Response)=>{
+				console.log(res);
 				this.hidePostCommentModal();
 				this.refresh();
 			}, (err) => console.log(err));
@@ -114,8 +116,9 @@ export class CommentComponent  {
 		this.refresh();
 	}
 	refresh(){
+			//console.log(this.comment.coid);
 			this.http.get(`${this.URL}/${this.post.cid}/${this.post.pid}/${this.comment.coid}`).subscribe((res: Response) => {
-			console.log(this.comment.coid);
+			//console.log(this.comment.coid);
 			//console.log(res);
 			this.comment	= res.json();
 			//console.log(this.comment);
