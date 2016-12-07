@@ -31,7 +31,7 @@ var Materialize = (window as any).Materialize || {};
 				</div>
 				<div class="card-action">
 					<a *ngIf="postComment.length>0" (click)="toggleComments()" class="blue-text text-lighten-5">{{showComments ? "Hide" : "Show"}} comments</a>
-					<a (click)="showCreateCommentModal()" class="blue-text text-lighten-5">Add comment</a>
+					<a (click)="showCreateCommentModal(post.pid)" class="blue-text text-lighten-5">Add comment</a>
 
 				</div>
 			</div>
@@ -44,7 +44,7 @@ var Materialize = (window as any).Materialize || {};
 			</div>
 		</div>
 
-	    <div id="createCommentModal" class="modal bottom-sheet">
+	    <div id="createCommentModal-{{ post.pid }}" class="modal bottom-sheet">
 		  	<div class="modal-content">
 		 	 	<form class="col s12">
 		      	  	<div class="row">
@@ -56,7 +56,7 @@ var Materialize = (window as any).Materialize || {};
 		      	</form>
 		  	</div>
 		  	<div class="modal-footer">
-		      	<a (click)="hideCreateCommentModal()" class="left modal-close waves-effect waves-green btn-flat">Close</a>
+		      	<a (click)="hideCreateCommentModal(post.pid)" class="left modal-close waves-effect waves-green btn-flat">Close</a>
 		      	<a (click)="addComment(textEntry.value)" class="left modal-close waves-effect waves-green btn-flat">Submit</a>
 		  	</div>
 		</div>
@@ -140,13 +140,13 @@ export class PostComponent implements OnInit, AfterViewInit {
 			this.refresh(false);
 		}, (err) => console.log(err));
 	}
-	showCreateCommentModal(){
-		$("#createCommentModal").modal('open');
+	showCreateCommentModal(id: number){
+		$("#createCommentModal-" + id).modal('open');
 		$("#createCommentBody").val("");
 		
 	}
-	hideCreateCommentModal(){
-		$("#createCommentModal").modal('close');
+	hideCreateCommentModal(id: number){
+		$("#createCommentModal-" + id).modal('close');
 
 	}
 
@@ -157,7 +157,7 @@ export class PostComponent implements OnInit, AfterViewInit {
 				uid: user.UID,
 				parentID: ""
 			}).subscribe((res: Response)=>{
-				this.hideCreateCommentModal();
+				this.hideCreateCommentModal(this.post.pid);
 				this.refresh(true);
 			}, (err) => console.log(err));
 		});
