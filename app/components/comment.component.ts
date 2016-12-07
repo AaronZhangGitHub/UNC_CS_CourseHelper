@@ -31,15 +31,8 @@ var Materialize = (window as any).Materialize || {};
 					<a (click)="showCreateCommentModal(comment.coid)" class="blue-text text-lighten-5">Reply</a>
 				</div>
 	        </div>
-	    </div>
 
-	    <div *ngIf="replies.length>0"  class="postComment">
-		    <div *ngFor="let rep of replies">
-				<comment [comment]="rep" [post]="post" [depth]="depth+1"></comment>
-			</div>
-		</div>
-	    
-		<div id="createCommentModal-{{ comment.coid }}" class="modal bottom-sheet">
+	        <div id="createCommentModal-{{ comment.coid }}" style="position: absolute; z-index: 100" class="modal bottom-sheet">
 		  	<div class="modal-content">
 		 	 	<form class="col s12">
 		      	  	<div class="row">
@@ -55,6 +48,15 @@ var Materialize = (window as any).Materialize || {};
 		      	<a (click)="addComment(textEntry.value)" class="left modal-close waves-effect waves-green btn-flat">Submit</a>
 		  	</div>
 		</div>
+	    </div>
+
+	    <div *ngIf="replies.length>0"  class="postComment">
+		    <div *ngFor="let rep of replies">
+				<comment [comment]="rep" [post]="post" [depth]="depth+1"></comment>
+			</div>
+		</div>
+	    
+		
 	`
 	,
 	styles:[

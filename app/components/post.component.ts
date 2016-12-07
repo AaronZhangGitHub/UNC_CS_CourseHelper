@@ -35,16 +35,8 @@ var Materialize = (window as any).Materialize || {};
 
 				</div>
 			</div>
-			
-		</div>
-        
-		<div *ngIf="postComment.length>0 && showComments"  class="postComment">
-        	<div *ngFor="let pc of postComment">
-					<comment [comment]="pc" [post]="post" [depth]="1"></comment>
-			</div>
-		</div>
 
-	    <div id="createCommentModal-{{ post.pid }}" class="modal bottom-sheet">
+			<div id="createCommentModal-{{ post.pid }}" class="modal bottom-sheet">
 		  	<div class="modal-content">
 		 	 	<form class="col s12">
 		      	  	<div class="row">
@@ -60,6 +52,16 @@ var Materialize = (window as any).Materialize || {};
 		      	<a (click)="addComment(textEntry.value)" class="left modal-close waves-effect waves-green btn-flat">Submit</a>
 		  	</div>
 		</div>
+			
+		</div>
+        
+		<div *ngIf="postComment.length>0 && showComments"  class="postComment">
+        	<div *ngFor="let pc of postComment">
+					<comment [comment]="pc" [post]="post" [depth]="1"></comment>
+			</div>
+		</div>
+
+	    
 	`
 	,
 	styles:[
