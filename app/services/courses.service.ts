@@ -255,7 +255,7 @@ export class CoursesService {
   
     return this.http.get(`/api/prereqs/${course.CID}`).map(
         (res: Response) => {  
-          let prereq_groups = res.json() || [[]];
+          let prereq_groups = res.json() || [];
           return prereq_groups.map((g: any[]) => g.map((c: any) => this.parseCourse(c)));
         }
       );

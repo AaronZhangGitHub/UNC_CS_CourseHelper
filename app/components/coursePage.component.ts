@@ -14,7 +14,7 @@ selector: 'coursePage',
 template: `
 <div class="row">
     <div class="col s3">
-        <ul id="slide-out" style="position:absolute;" class="side-nav">
+        <ul id="slide-out" style="position:absolute; z-index: 10;" class="side-nav">
             <li>
                 <div class="userView" style="width: 300px; height: 175px;">
                     <div class="background">
@@ -25,12 +25,12 @@ template: `
                     <a href="#!class"><span class="white-text email" style = "text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">Selected Course: {{ course }}</span></a>
                 </div>
             </li>
-            <ul style="overflow-y: auto;" class="collapsible collapsible-accordion" data-collapsible="accordion">
+            <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
                 <li [class.active]="open">
                     <div class="collapsible-header" (click)="open = !open" [class.active]="open"><i class="fa fa-book" aria-hidden="true"></i>Class</div>
                     <div class="collapsible-body">
                         <ul>
-                            <div style="max-height:250px; overflow-y: auto;">
+                            <div>
                                 <li style="cursor: pointer" class="collection-item" *ngFor="let course of courseService.getTakenCourses() | async" ng-class="{course.code: true}" href="javascript:void(0)" (click)="setCurrentUserClass(course.CID, course.code)">
                                     <a>
                 						{{ course.code }}
@@ -105,6 +105,8 @@ export class CoursePageComponent implements AfterViewInit {
     this.cid = cidI;
     this.course = courseI;
     this.showForum();
+    $('ul.tabs').tabs();
+
   }
   showForum(){
   	$("#forumTab > a").addClass("active");

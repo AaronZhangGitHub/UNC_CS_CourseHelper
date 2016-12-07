@@ -19,7 +19,7 @@ var Materialize = (window as any).Materialize || {};
 		<p>No Posts to Show</p>
 	</div>
 	<br>
-  	<div id="createPostModal" class="modal bottom-sheet">
+  	<div id="createPostModal" style="position: absolute; z-index: 100" class="modal bottom-sheet">
 	  	<div class="modal-content">
 	 	 	<form class="col s12">
 	 	 		<div class="row">

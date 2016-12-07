@@ -33,7 +33,16 @@ import { Observable } from 'rxjs/Observable';
   <router-outlet (activate)="onActivate($event, outlet)" #outlet></router-outlet>
   
   <div #popupAnchor></div>
-  `
+  `,
+  styles: [`
+    .dropdown-content.active {
+      display: block;
+      width: 100%;
+      opacity: 1;
+      z-index: 1005;
+    }
+  `]
+
 })
 export class AppComponent implements OnInit {
   

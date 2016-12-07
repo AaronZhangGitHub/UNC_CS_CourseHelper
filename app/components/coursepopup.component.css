@@ -21,11 +21,7 @@
   width: 100%;
   height: 100%;
   display: block;
-  
-  -webkit-transition: background-color 300ms ease;
-  -moz-transition: background-color 300ms ease;
-  -o-transition: background-color 300ms ease;
-  transition: background-color 300ms ease;
+  background: rgba(0,0,0,0);
 }
 .modal-overlay.open {
   background: rgba(0,0,0,0.5);
