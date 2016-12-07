@@ -1,8 +1,9 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { CourseModel } from '../models/course.model';
 import { UserService } from '../services/user.service';
 import { CoursesService } from '../services/courses.service';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: 'coursepopup',
@@ -19,16 +20,15 @@ import { Observable } from 'rxjs/Observable';
       
       <p>{{ course?.long_desc }}</p>
       
-      <div class="row" *ngIf="(prereqs | async)?.length > 0">
+      <div class="row" *ngIf="prereqs.length > 0 && prereqs[0].length > 0">
         <div class="col m1 s12">
           <b>Prereqs</b>
         </div>
         <div class="col m10 s12">
-          <div *ngFor="let group of prereqs | async">
+          <div *ngFor="let group of prereqs">
             <i *ngIf="group.length > 1">One of &nbsp;</i>
-            <div class="chip" [class.green]="coursesService.hasTaken(course)" *ngFor="let course of group">
-              {{ course.code }}
-            </div>
+            <course-chip [crossout]="coursesService.hasTaken(course)" *ngFor="let course of group" 
+                [closeable]="false" [course]="course"></course-chip>
           </div>
         </div>
       </div>
@@ -44,15 +44,18 @@ import { Observable } from 'rxjs/Observable';
 	`,
   styleUrls: [ 'app/components/coursepopup.component.css' ]
 })
-export class CoursePopupComponent implements OnInit {
+export class CoursePopupComponent implements OnInit, OnDestroy {
 
   private open = false;
   private course: CourseModel = null;
-  private prereqs: Observable<CourseModel[][]>;
+  private prereqs: CourseModel[][];
+  private prereqsSub: Subscription;
   
   close = new EventEmitter();
   
-  constructor(private coursesService: CoursesService) { }
+  constructor(private coursesService: CoursesService) {
+    this.prereqs = [];
+  }
   
   ngOnInit() {
     setTimeout(() => { this.open = true }, 50);
@@ -60,7 +63,9 @@ export class CoursePopupComponent implements OnInit {
   
   public setCourse(c: CourseModel) {
     this.course = c;
-    this.prereqs = this.coursesService.getPrereqs(this.course);
+    this.prereqsSub = this.coursesService.getPrereqs(this.course).subscribe((prereqs: CourseModel[][]) => {
+      this.prereqs = prereqs;
+    });
   }
   
   setTaken() {
@@ -72,4 +77,8 @@ export class CoursePopupComponent implements OnInit {
     setTimeout(() => { this.close.emit() }, 500);
   }
   
+  ngOnDestroy() {
+    if (this.prereqsSub) this.prereqsSub.unsubscribe();
+  }
+
 }
