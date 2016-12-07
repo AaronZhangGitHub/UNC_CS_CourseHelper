@@ -12,52 +12,63 @@ var Materialize = (window as any).Materialize || {};
 @Component({
 selector: 'coursePage',
 template: `
-<div class = "col s3">
-  <ul id="slide-out" style="position:absolute;"class="side-nav">
-    <li><div class="userView" style = "width: 300px; height: 175px;">
-      <div class="background">
-        <img src="images/chapelhill.jpg">
-      </div>
-      <a href="#!name"><span class="white-text name" style = "text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">{{ (user | async)?.Name }}</span></a>
-      <a href="#!email"><span class="white-text email" style = "text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">{{(user | async)?.Username}}</span></a>
-      <a href = "#!class"><span class="white-text email" style = "text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">Selected Course: {{ course }}</span></a>
-    </div>
-  </li>
-  <ul style = "overflow-y: auto;" class="collapsible collapsible-accordion" data-collapsible="accordion">
-    <li [class.active]="open">
-      <div class="collapsible-header" (click)="open = !open" [class.active]="open"><i class="fa fa-book" aria-hidden="true"></i>Class</div>
-      <div class="collapsible-body">
-        <ul>
-          <div style = "max-height:250px; overflow-y: auto;">
-            <li style="cursor: pointer" class="collection-item" *ngFor="let course of courseService.getTakenCourses() | async" ng-class="{course.code: true}" href="javascript:void(0)" (click)="setCurrentUserClass(course.CID, course.code)">
-              <a>
-                {{ course.code }}
-              </a>
+<div class="row">
+    <div class="col s3">
+        <ul id="slide-out" style="position:absolute;" class="side-nav">
+            <li>
+                <div class="userView" style="width: 300px; height: 175px;">
+                    <div class="background">
+                        <img src="images/chapelhill-grad.png">
+                    </div>
+                    <a href="#!name"><span class="white-text name" style = "text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">{{ (user | async)?.Name }}</span></a>
+                    <a href="#!email"><span class="white-text email" style = "text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">{{(user | async)?.Username}}</span></a>
+                    <a href="#!class"><span class="white-text email" style = "text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">Selected Course: {{ course }}</span></a>
+                </div>
             </li>
-          </div>
+            <ul style="overflow-y: auto;" class="collapsible collapsible-accordion" data-collapsible="accordion">
+                <li [class.active]="open">
+                    <div class="collapsible-header" (click)="open = !open" [class.active]="open"><i class="fa fa-book" aria-hidden="true"></i>Class</div>
+                    <div class="collapsible-body">
+                        <ul>
+                            <div style="max-height:250px; overflow-y: auto;">
+                                <li style="cursor: pointer" class="collection-item" *ngFor="let course of courseService.getTakenCourses() | async" ng-class="{course.code: true}" href="javascript:void(0)" (click)="setCurrentUserClass(course.CID, course.code)">
+                                    <a>
+                						{{ course.code }}
+              						</a>
+                                </li>
+                            </div>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
         </ul>
-      </div>
-    </li>
-    <li>
-      <div (click)="showForum()" class="collapsible-header"><i class="material-icons">forum</i>Forum</div>
-    </li>
-    <li>
-      <div (click)="showResources()" class="collapsible-header" ><i class="material-icons">backup</i>Resources</div>
-    </li>
-  </ul>
-</ul>
+    </div>
+    <div class="col s9">
+    	<div *ngIf="course !== 'Not Entered'" class="row" >
+		    <div class="col s12">
+		        <ul class="tabs">
+		            <li class="tab col s6" id="forumTab"><a (click)="showForum()" class="active">Forum</a></li>
+		            <li class="tab col s6" id="resourcesTab"><a (click)="showResources()">Resources</a></li>
+		        </ul>
+		    </div>
+		</div>
+
+		<div class="form-wrapper">
+        <div *ngIf="!forumB && !recourcesB">
+            <p>Select a course to access its Forum and Recources.</p>
+        </div>
+        <div *ngIf="!forumB && recourcesB">
+            <resourcePage></resourcePage>
+        </div>
+        <div *ngIf="forumB && !recourcesB">
+            <formPage [cid]="cid"></formPage>
+        </div>
+    </div>
+    </div>
+    
 </div>
-<div class = "form-wrapper">
-  <div *ngIf = "!forumB && !recourcesB">
-    <p>Select a course to access its Forum and Recources.</p>
-  </div>
-  <div *ngIf = "!forumB && recourcesB">
-    <resourcePage></resourcePage>
-  </div>
-  <div *ngIf = "forumB && !recourcesB">
-    <formPage [cid]="cid"></formPage>
-  </div>
-</div>
+
+
 `,
 styles: [
 `
@@ -68,8 +79,9 @@ margin-top: 112px;
 .collapsible li.active .collapsible-body {
 display: block !important;
 }
-.form-wrapper {
-  margin-left: 300px;
+
+.tab > a.active {
+	border-bottom: 2px solid #ee6e73;
 }
 `
 ]
@@ -92,8 +104,11 @@ export class CoursePageComponent implements AfterViewInit {
   setCurrentUserClass(cidI: number, courseI: string){
     this.cid = cidI;
     this.course = courseI;
+    this.showForum();
   }
   showForum(){
+  	$("#forumTab > a").addClass("active");
+  	$("#resourcesTab > a").removeClass("active");
     if(this.course ==="Not Entered"){
       // alert("Please select a course first");
       Materialize.toast('<span class="red-text">Please select a course first</span>', 5000);
@@ -104,6 +119,8 @@ export class CoursePageComponent implements AfterViewInit {
     }
   }
   showResources(){
+  	$("#forumTab > a").removeClass("active");
+  	$("#resourcesTab > a").addClass("active");
     if(this.course ==="Not Entered"){
       // alert("Please select a course first");
        Materialize.toast('<span class="red-text">Please select a course first</span>', 5000);
@@ -115,5 +132,8 @@ export class CoursePageComponent implements AfterViewInit {
   
   ngAfterViewInit() {
     // document ready
+    $(".collapsible").collapsible();
+    $('ul.tabs').tabs();
+
   }
 }

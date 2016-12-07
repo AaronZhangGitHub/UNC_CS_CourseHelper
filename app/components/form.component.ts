@@ -1,53 +1,60 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { CourseModel } from '../models/course.model';
 import { UserModel } from '../models/user.model';
 import { Http, Response } from '@angular/http';
 import { UserService } from '../services/user.service';
 
+var $ = (window as any).$ || {};
+var Materialize = (window as any).Materialize || {};
+
 @Component({
 	selector:'formPage',
 	template: `
-		<div *ngIf = "posts.size!==0" >
-			<div *ngFor="let post of posts" class = "post-container" style = "width: 100%; border-style: groove;" >
-					<post [post]="post" [color]="'blue lighten-0'"></post>
-			</div>
+	<div *ngIf = "posts.size!==0" >
+		<div *ngFor="let post of posts" class = "post-container" style = "width: 100%;" >
+			<post [post]="post" [color]="'blue lighten-0'"></post>
 		</div>
-		<div *ngIf = "posts.length==0">
-			<p>No Posts to Show</p>
-		</div>
-		<br>
-	<div class="row">
-		<button ref="javascript:void(0)" (click)="showPostPostModal()" class="btn waves-effect waves-light" type="submit" name="action">Create Post
-    <i class="material-icons right">send</i></button>
+	</div>
+	<div *ngIf = "posts.length==0">
+		<p>No Posts to Show</p>
+	</div>
+	<br>
+  	<div id="createPostModal" class="modal bottom-sheet">
+	  	<div class="modal-content">
+	 	 	<form class="col s12">
+	 	 		<div class="row">
+	        	  	<div class="input-field col s6">
+			          <input #postTitle id="createPostTitle" type="text">
+			          <label for="createPostTitle">Post title</label>
+		        	</div>
+		        </div>
+	      	  	<div class="row">
+	        	  	<div class="input-field col s6">
+			          <textarea #textEntry id="createPostBody" class="materialize-textarea"></textarea>
+			          <label for="createPostBody">Post body</label>
+		        	</div>
+		        </div>
+	      	</form>
+	  	</div>
+	  	<div class="modal-footer">
+	      	<a (click)="hideCreatePostModal()" class="left modal-close waves-effect waves-green btn-flat">Close</a>
+	      	<a (click)="postPost(postTitle.value, textEntry.value)" class="left modal-close waves-effect waves-green btn-flat">Submit</a>
+	  	</div>
+	</div>
+
+	<div class="fixed-action-btn">
+    	<a (click)="showCreatePostModal()" class="btn-floating btn-large red">
+      		<i class="large material-icons">mode_edit</i>
+   		</a>
   </div>
 
-  <div *ngIf="showPopUpModal" class="modal open" style="z-index: 1003; display: block; opacity: 1; transform: scaleX(1); top: 10%;">
-  	<div class="modal-content">
-     	 <form class="col s12">
-      	  <div class="row">
-        	  <div class="input-field col s6">
-          		<input #postTitle id="post_title" type="text" class="validate">
-          		<label for="post_title">Post Title</label>
-        		</div>
-        			<textarea #textEntry rows="4" cols="50">Post body goes here. </textarea>
-        	</div>
-      	</form>
-  	</div>
-  	<div class="modal-footer">
-    	<div class = "closeButton" style = "float: left;">
-      	<a href="javascript:void(0)" (click)="hidePostPostModal()" class="modal-close waves-effect waves-green btn-flat">Close</a>
-    	</div>
-    	<div class = "closeButton" style = "float: right;">
-      	<a href="javascript:void(0)" (click)="postPost(postTitle.value, textEntry.value)" class="modal-close waves-effect waves-green btn-flat"><i class="material-icons prefix">input</i></a>
-    	</div>
-  	</div>
-	</div>
 	`
 })
-export class FormComponent{
+export class FormComponent implements AfterViewInit {
 	commentURL: string;
 	posts: any;
 	showPopUpModal: boolean;
+
 	
 	private _cid: number;
 
@@ -68,11 +75,13 @@ export class FormComponent{
 		this.showPopUpModal = false;
 	}
 
-	showPostPostModal(){
-		this.showPopUpModal = true;
+	showCreatePostModal(){
+		$("#createPostModal").modal('open');
+		$("#createPostTitle").val("");
+		$("#createPostBody").val("");
 	}
-	hidePostPostModal(){
-		this.showPopUpModal = false;
+	hideCreatePostModal(){
+		$("#createPostModal").modal('close');
 	}
 
 	loadPosts() {
@@ -80,7 +89,6 @@ export class FormComponent{
 			this.posts	= res.json();
 		});
 	}
-
 
 	postPost(pt: string, te: string){
 		if(pt==="" || te ===""){
@@ -94,11 +102,15 @@ export class FormComponent{
 				title: pt,
 				text: te
 			}).subscribe((res: Response) => {
-				console.log(res)
-				this.hidePostPostModal();
-				this.loadPosts();
-			}, (err) => console.log(err));
-		});
+					console.log(res)
+					this.hideCreatePostModal();
+					this.loadPosts();
+				}, (err) => console.log(err));
+			});
+		}
 	}
-}
+
+	ngAfterViewInit() {
+		$(".modal").modal();
+	}
 }

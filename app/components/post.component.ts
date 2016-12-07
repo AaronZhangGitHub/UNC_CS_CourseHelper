@@ -10,49 +10,90 @@ var Materialize = (window as any).Materialize || {};
 @Component({
 	selector:'post',
 	template: `
-		<div class="{{ color }}">
-			<div class = "post-Info" style = "font-size: 8pt">
-				<div class = "post-title" style = "float: left; font-weight: bold;">&nbsp;Title: {{post.title}}</div>
-				<div class = "post-date" style = "float: left">&nbsp;Date-Posted: {{post.datetime}}</div>
+		<div class="container">
+			<div class="card {{color}}">
+				<div class="card-content white-text">
+					<div class="row">
+					    <div class="col s1 post-voting">
+							<a (click)="upvote()" class="white-text upvote"><i class="small material-icons">keyboard_arrow_up</i></a>
+				            <div class="post-score">{{post.weight}}</div>
+				            <a (click)="downvote()" class="white-text downvote"><i class="material-icons">keyboard_arrow_down</i></a>
+					    </div>
+					    <div class="col s11">
+					        <div class="card-title post-info">
+					            <div class="post-title">{{post.title}}</div>
+					            <div class="post-date">{{post.datetime}}</div>
+					        </div>
+					        <p class="grey-text text-lighten-2 post-body">{{post.text}}</p>
+					    </div>
+					</div>
+
+				</div>
+				<div class="card-action">
+					<a *ngIf="postComment.length>0" (click)="toggleComments()" class="blue-text text-lighten-5">{{showComments ? "Hide" : "Show"}} comments</a>
+					<a (click)="showCreateCommentModal()" class="blue-text text-lighten-5">Add comment</a>
+
+				</div>
 			</div>
-	    <div class = "post-Body" style = "font-size: 12pt">
-	    	<br>&nbsp;{{post.text}}
-	    </div>  
-	    <div class = "" style = "width: 100%;">
-	    	<button (click)="upvote()" class = "blue lighten-0" style = "width: 30px;"><i class="fa fa-arrow-up " aria-hidden="true"></i></button>
-	    	<span  style = "width: 33%;">&nbsp; Score: {{post.weight}} &nbsp;</span>
-	    	<button (click)="downvote()" class = "blue lighten-0" style = "width: 30px;"><i class="fa fa-arrow-down blue lighten-0" aria-hidden="true"></i></button>
-	    	<button class = "blue lighten-0" (click)="showPostCommentModal()" href = "">&nbsp;Add Comment</button>
-	    </div>
-	        <div *ngIf="postComment.length>0"  class="postComment">
-	        	<div *ngFor="let pc of postComment" style="border-left-style:groove;">
-    					<comment [comment]="pc" [post]="post"></comment>
-    				</div>
-    			</div>
-    </div>
-  <div *ngIf="showPopUpModal" class="modal open" style="z-index: 1003; display: block; opacity: 1; transform: scaleX(1); top: 10%;">
-  	<div class="modal-content">
-     	 <form class="col s12">
-      	  <div class="row">
-        			<textarea #textEntry rows="8" cols="60">Comment Goes Here</textarea>
-        	</div>
-      	</form>
-  	</div>
-  	<div class="modal-footer">
-    	<div class = "closeButton" style = "float: left;">
-      	<a href="javascript:void(0)" (click)="hidePostCommentModal()" class="modal-close waves-effect waves-green btn-flat">Close</a>
-    	</div>
-    	<div class = "closeButton" style = "float: right;">
-      	<a href="javascript:void(0)" (click)="addComment(textEntry.value)" class="modal-close waves-effect waves-green btn-flat"><i class="material-icons prefix">input</i></a>
-    	</div>
-  	</div>
-	</div>
+			
+		</div>
+        
+		<div *ngIf="postComment.length>0 && showComments"  class="postComment">
+        	<div *ngFor="let pc of postComment">
+					<comment [comment]="pc" [post]="post" [depth]="1"></comment>
+			</div>
+		</div>
+
+	    <div id="createCommentModal" class="modal bottom-sheet">
+		  	<div class="modal-content">
+		 	 	<form class="col s12">
+		      	  	<div class="row">
+		        	  	<div class="input-field col s6">
+				          <textarea #textEntry id="createCommentBody" class="materialize-textarea"></textarea>
+				          <label for="createCommentBody">Comment body</label>
+			        	</div>
+			        </div>
+		      	</form>
+		  	</div>
+		  	<div class="modal-footer">
+		      	<a (click)="hideCreateCommentModal()" class="left modal-close waves-effect waves-green btn-flat">Close</a>
+		      	<a (click)="addComment(textEntry.value)" class="left modal-close waves-effect waves-green btn-flat">Submit</a>
+		  	</div>
+		</div>
 	`
 	,
 	styles:[
 	`
-	.postComment{
-		padding-left: 2cm;
+	.post-title {
+	    margin-bottom: 0;
+	    font-weight: bold;
+	}
+
+	.post-date {
+	    margin-top: -2.2em;
+	    font-size: 50%;
+	}
+	.card a {
+		cursor: pointer;
+	}
+	.post-body {
+	    font-weight: 300;
+	}
+	.post-voting a {
+		display: block;
+	}
+	.post-voting i {
+		font-size: 2rem;
+	}
+	
+	.card-action a {
+		cursor: pointer;
+	}
+	.post-score {
+		margin-left: .7em;
+		display: inline-block;
+		margin-top: 0;
+		margin-bottom: 0;
 	}
 	`
 	]
@@ -62,6 +103,7 @@ export class PostComponent implements OnInit, AfterViewInit {
 	commentURL: string;
 	postComment: any;
 
+	showComments: boolean;
 	showPopUpModal: boolean;
 
 	@Input()
@@ -75,6 +117,7 @@ export class PostComponent implements OnInit, AfterViewInit {
 		this.commentURL = 'http://localhost/final/Database/forum.php';
 		this.postComment = [];
 		this.showPopUpModal = false;
+		this.showComments = false;
 	}
 	deletePost(){
 		console.log("Delete Post");
@@ -86,7 +129,7 @@ export class PostComponent implements OnInit, AfterViewInit {
 		.put(`${this.commentURL}/${this.post.cid}/${this.post.pid}`,{downvote: true})
 		.subscribe((res: Response)=>{
 			//need to refresh posts
-			this.refresh();
+			this.refresh(false);
 		});
 	}
 	upvote(){
@@ -94,14 +137,17 @@ export class PostComponent implements OnInit, AfterViewInit {
 		this.http.put(`${this.commentURL}/${this.post.cid}/${this.post.pid}`,{
 			upvote: true
 		}).subscribe((res: Response)=>{
-			this.refresh();
+			this.refresh(false);
 		}, (err) => console.log(err));
 	}
-	showPostCommentModal(){
-		this.showPopUpModal = true;
+	showCreateCommentModal(){
+		$("#createCommentModal").modal('open');
+		$("#createCommentBody").val("");
+		
 	}
-	hidePostCommentModal(){
-		this.showPopUpModal = false;
+	hideCreateCommentModal(){
+		$("#createCommentModal").modal('close');
+
 	}
 
 	addComment(textEntryVal: string){
@@ -111,24 +157,34 @@ export class PostComponent implements OnInit, AfterViewInit {
 				uid: user.UID,
 				parentID: ""
 			}).subscribe((res: Response)=>{
-				this.hidePostCommentModal();
-				this.refresh();
+				this.hideCreateCommentModal();
+				this.refresh(true);
 			}, (err) => console.log(err));
 		});
 	}
 
 	ngOnInit() {
-		this.refresh();
+		this.refresh(true);
 	}
 
-	refresh() {
+	refresh(commentsChanged: boolean) {
 		this.http.get(`${this.commentURL}/${this.post.cid}/${this.post.pid}`).subscribe((res: Response) => {
 			this.post	= res.json();
-			this.postComment = this.post.comments;
+			if (commentsChanged) this.postComment = this.post.comments;
 		});
+	}
+
+	setShowComments(val: boolean) {
+		this.showComments = val;
+	}
+
+	toggleComments() {
+		this.showComments = !this.showComments;
 	}
 
   ngAfterViewInit() {
     // document ready
+    	$(".modal").modal();
+
   }
 }

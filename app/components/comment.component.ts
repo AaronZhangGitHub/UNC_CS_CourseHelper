@@ -10,50 +10,67 @@ var Materialize = (window as any).Materialize || {};
 @Component({
 	selector:'comment',
 	template: `
-			<div class = "post-Info" style = "font-size: 8pt">
-				<div class = "post-date" style = "float: left">&nbsp;Date-Posted: {{comment.datetime}}</div>
-				<div class = "post-pid" style = "float: left">&nbsp;PID: {{comment.pid}}</div>
-				<div class = "post-cid" style = "float: left">&nbsp;CID: {{comment.cid}}</div>
-				<div class = "post-uid" style = "float: left">&nbsp;UID: {{comment.uid}}</div>
-				<div class = "post-ParentID" style = "float: left">&nbsp;parentID: {{comment.parentID}}</div>
-			</div>
-	    <div class = "post-Body" style = "font-size: 12pt">
-	    	<br>&nbsp;{{comment.text}}
-	    </div>  
-	    <div class = "" style = "width: 100%;">
-	    	<button (click)="upvote()" class = "blue lighten-0" style = "width: 30px;"><i class="fa fa-arrow-up " aria-hidden="true"></i></button>
-	    	<span  style = "width: 33%;">&nbsp; Score: {{comment.weight}} &nbsp;</span>
-	    	<button (click)="downvote()" class = "blue lighten-0" style = "width: 30px;"><i class="fa fa-arrow-down blue lighten-0" aria-hidden="true"></i></button>
-	    	<button class = "blue lighten-0" (click)="showPostCommentModal()" href = "">&nbsp;Reply</button>
-	    	<div *ngIf="replies.length>0"  class="postComment">
-	        <div *ngFor="let rep of replies" style="border-left-style:groove;">
-    				<comment [comment]="rep" [post]="post"></comment>
-    			</div>
-    		</div>
+		<div class="container" [style.padding-left.px]="depth*50">
+	        <div class="card teal darken-2 white-text">
+	            <div class="card-content">
+	                <div class="row">
+	                    <div class="col s1">
+	                        <a (click)="upvote()" class="white-text upvote"><i class="material-icons">keyboard_arrow_up</i></a>
+	                        <div class="comment-score">{{comment.weight}}</div>
+	                        <a (click)="downvote()" class="white-text downvote"><i class="material-icons">keyboard_arrow_down</i></a>
+	                    </div>
+	                    <div class="col s11 ">
+	                        <div class="comment-body grey-text text-lighten-2">
+	                            {{comment.text}}
+	                        </div>
+	                        <div class="comment-date right">{{comment.datetime}}</div>
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="card-action">
+					<a (click)="showCreateCommentModal()" class="blue-text text-lighten-5">Reply</a>
+				</div>
+	        </div>
 	    </div>
-			<div *ngIf="showPopUpModal" class="modal open" style="z-index: 1003; display: block; opacity: 1; transform: scaleX(1); top: 10%;">
-				<div class="modal-content">
-				 	 <form class="col s12">
-				  	  <div class="row">
-				    			<textarea #textEntry rows="8" cols="60">Reply Goes Here</textarea>
-				    	</div>
-				  	</form>
-				</div>
-				<div class="modal-footer">
-					<div class = "closeButton" style = "float: left;">
-				  	<a href="javascript:void(0)" (click)="hidePostCommentModal()" class="modal-close waves-effect waves-green btn-flat">Close</a>
-					</div>
-					<div class = "closeButton" style = "float: right;">
-				  	<a href="javascript:void(0)" (click)="addComment(textEntry.value)" class="modal-close waves-effect waves-green btn-flat"><i class="material-icons prefix">input</i></a>
-					</div>
-				</div>
+
+	    <div *ngIf="replies.length>0"  class="postComment">
+		    <div *ngFor="let rep of replies">
+				<comment [comment]="rep" [post]="post" [depth]="depth+1"></comment>
 			</div>
+		</div>
+	    
+		<div id="createCommentModal" class="modal bottom-sheet">
+		  	<div class="modal-content">
+		 	 	<form class="col s12">
+		      	  	<div class="row">
+		        	  	<div class="input-field col s6">
+				          <textarea #textEntry id="createCommentBody" class="materialize-textarea"></textarea>
+				          <label for="createCommentBody">Comment body</label>
+			        	</div>
+			        </div>
+		      	</form>
+		  	</div>
+		  	<div class="modal-footer">
+		      	<a (click)="hideCreateCommentModal()" class="left modal-close waves-effect waves-green btn-flat">Close</a>
+		      	<a (click)="addComment(textEntry.value)" class="left modal-close waves-effect waves-green btn-flat">Submit</a>
+		  	</div>
+		</div>
 	`
 	,
 	styles:[
 	`
-	.postComment{
-		padding-left: 2cm;
+	.comment-date {
+		font-size: .8em;
+		text-align: right;
+	}
+
+	.comment-score {
+		text-align: center;
+		padding-right: .7em;
+	}
+
+	.card-action a {
+		cursor: pointer;
 	}
 	`]
 })
@@ -63,6 +80,9 @@ export class CommentComponent implements AfterViewInit {
 	thisComment: any;
 	replies: any;
 	showPopUpModal: boolean;
+
+	@Input()
+	depth: number;
 
 	@Input()
 	comment:any;
@@ -76,11 +96,13 @@ export class CommentComponent implements AfterViewInit {
 		this.showPopUpModal = false;
 		//console.log("c: "+ this.comment);
 	 }
-	showPostCommentModal(){
-		this.showPopUpModal = true;
+	showCreateCommentModal(){
+		$("#createCommentModal").modal('open');
+		$("#createCommentBody").val("");
 	}
-	hidePostCommentModal(){
-		this.showPopUpModal = false;
+	hideCreateCommentModal(){
+		$("#createCommentModal").modal('close');
+
 	}
 	downvote(){
 		console.log("downvote");
@@ -114,7 +136,7 @@ export class CommentComponent implements AfterViewInit {
 				console.log(this.comment.replies);
 				//this.comment.replies.push(res.json());
 				console.log(this.comment.replies);
-				this.hidePostCommentModal();
+				this.hideCreateCommentModal();
 				this.refresh();
 			}, (err) => console.log(err));
 		});
@@ -137,5 +159,6 @@ export class CommentComponent implements AfterViewInit {
   
   ngAfterViewInit() {
     // document ready
+    	$(".modal").modal();
   }
 }
