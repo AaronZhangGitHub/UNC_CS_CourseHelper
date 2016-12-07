@@ -74,6 +74,10 @@ var Materialize = (window as any).Materialize || {};
 	.card-action a {
 		cursor: pointer;
 	}
+
+	.upvote, .downvote {
+		cursor: pointer;
+	}
 	`]
 })
 

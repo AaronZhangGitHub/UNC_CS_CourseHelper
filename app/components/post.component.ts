@@ -97,6 +97,10 @@ var Materialize = (window as any).Materialize || {};
 		margin-top: 0;
 		margin-bottom: 0;
 	}
+
+	.upvote, .downvote {
+		cursor: pointer;
+	}
 	`
 	]
 	})
