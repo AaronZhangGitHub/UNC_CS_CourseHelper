@@ -4,7 +4,7 @@ import { CourseModel } from '../models/course.model';
 require("../../../lines/lines.js");
 
 // Force global
-var Snap = (window as any).Snap || function() {};
+var Snap = (window as any).Snap || {};
 
 // After user has created an account and selected their taken courses this is the default page
 @Component({

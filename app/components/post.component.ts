@@ -1,8 +1,11 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, AfterViewInit } from '@angular/core';
 import { CourseModel } from '../models/course.model';
 import { UserModel } from '../models/user.model';
 import { Http, Response } from '@angular/http';
 import { UserService } from '../services/user.service';
+
+var $ = (window as any).$ || {};
+var Materialize = (window as any).Materialize || {};
 
 @Component({
 	selector:'post',
@@ -11,9 +14,6 @@ import { UserService } from '../services/user.service';
 			<div class = "post-Info" style = "font-size: 8pt">
 				<div class = "post-title" style = "float: left; font-weight: bold;">&nbsp;Title: {{post.title}}</div>
 				<div class = "post-date" style = "float: left">&nbsp;Date-Posted: {{post.datetime}}</div>
-				<div class = "post-pid" style = "float: left">&nbsp;PID: {{post.pid}}</div>
-				<div class = "post-cid" style = "float: left">&nbsp;CID: {{post.cid}}</div>
-				<div class = "post-uid" style = "float: left">&nbsp;UID: {{post.uid}}</div>
 			</div>
 	    <div class = "post-Body" style = "font-size: 12pt">
 	    	<br>&nbsp;{{post.text}}
@@ -58,7 +58,7 @@ import { UserService } from '../services/user.service';
 	]
 	})
 
-export class PostComponent implements OnInit {
+export class PostComponent implements OnInit, AfterViewInit {
 	commentURL: string;
 	postComment: any;
 
@@ -128,4 +128,7 @@ export class PostComponent implements OnInit {
 		});
 	}
 
+  ngAfterViewInit() {
+    // document ready
+  }
 }
