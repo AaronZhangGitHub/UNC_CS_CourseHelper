@@ -4,6 +4,9 @@ import { UserModel } from '../models/user.model';
 import { Http, Response } from '@angular/http';
 import { UserService } from '../services/user.service';
 
+var $ = (window as any).$ || {};
+var Materialize = (window as any).Materialize || {};
+
 @Component({
 	selector:'post',
 	template: `

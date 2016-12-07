@@ -4,6 +4,9 @@ import { Http, Response } from '@angular/http';
 import { UserService } from '../services/user.service';
 import { UserModel } from '../models/user.model';
 
+var $ = (window as any).$ || {};
+var Materialize = (window as any).Materialize || {};
+
 @Component({
 	selector:'comment',
 	template: `

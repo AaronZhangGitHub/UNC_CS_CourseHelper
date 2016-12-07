@@ -4,6 +4,10 @@ import { CoursesService } from '../services/courses.service';
 import { UserService } from '../services/user.service';
 import { Observable } from 'rxjs/Observable';
 import { UserModel } from '../models/user.model';
+
+var $ = (window as any).$ || {};
+var Materialize = (window as any).Materialize || {};
+
 //loads the posts and comments from a particular course
 @Component({
 selector: 'coursePage',
