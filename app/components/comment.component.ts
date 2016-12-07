@@ -28,7 +28,7 @@ var Materialize = (window as any).Materialize || {};
 	                </div>
 	            </div>
 	            <div class="card-action">
-					<a (click)="showCreateCommentModal()" class="blue-text text-lighten-5">Reply</a>
+					<a (click)="showCreateCommentModal(comment.coid)" class="blue-text text-lighten-5">Reply</a>
 				</div>
 	        </div>
 	    </div>
@@ -39,7 +39,7 @@ var Materialize = (window as any).Materialize || {};
 			</div>
 		</div>
 	    
-		<div id="createCommentModal" class="modal bottom-sheet">
+		<div id="createCommentModal-{{ comment.coid }}" class="modal bottom-sheet">
 		  	<div class="modal-content">
 		 	 	<form class="col s12">
 		      	  	<div class="row">
@@ -51,7 +51,7 @@ var Materialize = (window as any).Materialize || {};
 		      	</form>
 		  	</div>
 		  	<div class="modal-footer">
-		      	<a (click)="hideCreateCommentModal()" class="left modal-close waves-effect waves-green btn-flat">Close</a>
+		      	<a (click)="hideCreateCommentModal(comment.coid)" class="left modal-close waves-effect waves-green btn-flat">Close</a>
 		      	<a (click)="addComment(textEntry.value)" class="left modal-close waves-effect waves-green btn-flat">Submit</a>
 		  	</div>
 		</div>
@@ -96,12 +96,12 @@ export class CommentComponent implements AfterViewInit {
 		this.showPopUpModal = false;
 		//console.log("c: "+ this.comment);
 	 }
-	showCreateCommentModal(){
-		$("#createCommentModal").modal('open');
+	showCreateCommentModal(id: number){
+		$("#createCommentModal-" + id).modal('open');
 		$("#createCommentBody").val("");
 	}
-	hideCreateCommentModal(){
-		$("#createCommentModal").modal('close');
+	hideCreateCommentModal(id: number){
+		$("#createCommentModal-" + id).modal('close');
 
 	}
 	downvote(){
@@ -136,7 +136,7 @@ export class CommentComponent implements AfterViewInit {
 				console.log(this.comment.replies);
 				//this.comment.replies.push(res.json());
 				console.log(this.comment.replies);
-				this.hideCreateCommentModal();
+				this.hideCreateCommentModal(this.comment.coid);
 				this.refresh();
 			}, (err) => console.log(err));
 		});
