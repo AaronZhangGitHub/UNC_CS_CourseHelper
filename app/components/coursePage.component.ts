@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { CourseModel } from '../models/course.model';
 import { CoursesService } from '../services/courses.service';
 import { UserService } from '../services/user.service';
@@ -74,7 +74,7 @@ display: block !important;
 `
 ]
 })
-export class CoursePageComponent{
+export class CoursePageComponent implements AfterViewInit {
   open: boolean;
   user: Observable<UserModel>;
   cid: number;
@@ -111,5 +111,9 @@ export class CoursePageComponent{
     this.forumB = false;
     this.recourcesB = true;
   }
+  }
+  
+  ngAfterViewInit() {
+    // document ready
   }
 }

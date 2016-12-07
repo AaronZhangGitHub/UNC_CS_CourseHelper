@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, AfterViewInit } from '@angular/core';
 import { CourseModel } from '../models/course.model';
 import { Http, Response } from '@angular/http';
 import { UserService } from '../services/user.service';
@@ -58,7 +58,7 @@ var Materialize = (window as any).Materialize || {};
 	`]
 })
 
-export class CommentComponent  {
+export class CommentComponent implements AfterViewInit {
 	URL: string;
 	thisComment: any;
 	replies: any;
@@ -134,4 +134,8 @@ export class CommentComponent  {
 			//console.log(this.replies);
 		});
 	}
+  
+  ngAfterViewInit() {
+    // document ready
+  }
 }
