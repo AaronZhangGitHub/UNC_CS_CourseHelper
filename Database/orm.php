@@ -12,8 +12,9 @@ class Post{
     private $datetime;
     private $weight;
     private $com;
+    private $username;
 
-    private function __construct($pid, $cid, $uid, $title, $text, $datetime,$weight, $com) {
+    private function __construct($pid, $cid, $uid, $title, $text, $datetime,$weight, $com, $username) {
         $this->pid = $pid;
         $this->cid = $cid;
         $this->uid = $uid;
@@ -22,6 +23,7 @@ class Post{
         $this->datetime = $datetime;
         $this->weight = $weight;
         $this->com = $com;
+        $this->username = $username;
     }
 
     public static function connect() {
@@ -38,7 +40,8 @@ class Post{
 
       if ($result) {
         while ($next_row = $result->fetchArray()) {
-            $post=array('pid'=> $next_row[0], 'cid'=> $next_row[1], 'uid'=> $next_row[2], 'title'=> $next_row[3],
+            $username=Comment::findUsername($next_row[2]);
+            $post=array('username'=>$username, 'pid'=> $next_row[0], 'cid'=> $next_row[1], 'uid'=> $next_row[2], 'title'=> $next_row[3],
                           'text'=> $next_row[4], 'datetime'=> $next_row[5], 'weight'=>$next_row[6]) ;
             $posts[]=$post;
         }
@@ -64,14 +67,15 @@ class Post{
             if(in_array($next_row[0], $childComments)){
               continue;
             }
-            $comment=array('coid'=> $next_row[0], 'pid'=> $next_row[1], 'uid'=> $next_row[2], 'text'=> $next_row[3],
+            $username=Comment::findUsername($next_row[2]);
+            $comment=array('username'=>$username, 'coid'=> $next_row[0], 'pid'=> $next_row[1], 'uid'=> $next_row[2], 'text'=> $next_row[3],
                           'datetime'=> $next_row[4], 'weight'=> $next_row[5]);
             $replies=Comment::findChildren($next_row[0]);
             $comment["replies"]=$replies;
             $comments[]=$comment;
       }
       $page['comments']=$comments;
-
+      $username=Comment::findUsername($post['uid']);
       return new Post($post['pid'],
                           $post['cid'],
                           $post['uid'],
@@ -79,11 +83,13 @@ class Post{
                           $post['text'],
                           $post['datetime'],
                           $post['weight'],
-                          $comments);
+                          $comments,
+                          $username);
     }
 
     public function getJSON() {
-    $json_obj = array('pid' => $this->pid,
+    $json_obj = array('username'=>$this->username,
+          'pid' => $this->pid,
           'cid' => $this->cid,
           'uid' => $this->uid,
           'title'=> $this->title,
@@ -124,11 +130,11 @@ class Post{
             "'" . SQLite3::escapeString($text) . "', " .
             "'" . $datetime. "', " .
             $weight.")");
-      
+      $username=Comment::findUsername($uid);
       if ($result) {
         $pid = $conn->lastInsertRowID();
         $com=array();
-        return new Post($pid,$cid, $uid, $title, $text, $datetime, $weight, $com);
+        return new Post($pid,$cid, $uid, $title, $text, $datetime, $weight, $com, $username);
       }
       return null;
   }
@@ -163,8 +169,9 @@ class Comment{
     private $datetime;
     private $weight;
     private $reply;
+    private $username;
 
-    private function __construct($coid, $pid, $uid, $text, $datetime,$weight, $reply) {
+    private function __construct($coid, $pid, $uid, $text, $datetime,$weight, $reply, $username) {
         $this->coid = $coid;
         $this->pid = $pid;
         $this->uid = $uid;
@@ -172,7 +179,9 @@ class Comment{
         $this->datetime = $datetime;
         $this->weight = $weight;
         $this->reply = $reply;
+        $this->username = $username;
     }
+
 
     public static function connect() {
         return new SQLite3('../server/websiteDatabase.db');
@@ -188,13 +197,15 @@ class Comment{
               $replies=Comment::findChildren($next_row[0]);
               $comment["replies"]=$replies;
         }
+        $username=Comment::findUsername($comment['uid']);
         return new Comment($comment['coid'],
                           $comment['pid'],
                           $comment['uid'],
                           $comment['text'],
                           $comment['datetime'],
                           $comment['weight'],
-                          $comment['replies']);
+                          $comment['replies'],
+                          $username);
     }
 
     public static function findChildren($CoID){
@@ -204,7 +215,8 @@ class Comment{
         $comments=0;
         while ($next_row = $childResult->fetchArray()) {
               $comments++;
-              $child=array('coid'=> $next_row[2], 'pid'=> $next_row[3], 'uid'=> $next_row[4], 'text'=> $next_row[5],
+              $username=Comment::findUsername($next_row[4]);
+              $child=array('username'=>$username, 'coid'=> $next_row[2], 'pid'=> $next_row[3], 'uid'=> $next_row[4], 'text'=> $next_row[5],
                             'datetime'=> $next_row[6], 'weight'=> $next_row[7]) ;
               $nestedChildren = Comment::findChildren($next_row[1]);
               $childComments[]=$next_row[2];
@@ -217,6 +229,15 @@ class Comment{
         return $reply;
     }
 
+    public static function findUsername($uid){
+        $conn= Comment::connect();
+        $userResult = $conn->query("select u.username from User u where u.uid='$uid' ");
+        $username="";
+        while ($next_row = $userResult->fetchArray()) {
+              $username=$next_row[0];
+        }
+        return $username;
+    }
     public static function childCommentIDS(){
         $conn= Comment::connect();
         $childResult = $conn->query("select c.CoID from comment c where c.CoID in (Select ch.Child from CommentHierarchy ch)");
@@ -228,7 +249,8 @@ class Comment{
     }
 
     public function getJSON() {
-    $json_obj = array('coid' => $this->coid,
+    $json_obj = array('username'=>$this->username,
+          'coid' => $this->coid,
           'pid' => $this->pid,
           'uid' => $this->uid,
           'text'=> $this->text,
@@ -267,7 +289,7 @@ class Comment{
             "'" . SQLite3::escapeString($text) . "', " .
             "'" . $datetime. "', " .
             $weight.")");
-      
+      $username=Comment::findUsername($uid);    
       if ($result) {
         $coid = $conn->lastInsertRowID();
         $reply=array();
@@ -284,7 +306,7 @@ class Comment{
           // Comment::notifyUser($puid[0], false, $cid, $pid);
           // Comment::notifyUser($postuid[0], true, $cid, $pid);
         }
-        return new Comment($coid, $pid,$uid, $text, $datetime, $weight, $reply);
+        return new Comment($coid, $pid,$uid, $text, $datetime, $weight, $reply, $username);
       }
       return null;
   }
