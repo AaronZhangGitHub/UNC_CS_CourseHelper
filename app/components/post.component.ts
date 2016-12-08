@@ -37,7 +37,7 @@ var Materialize = (window as any).Materialize || {};
 				</div>
 			</div>
 
-			<div id="createCommentModal-{{ post.pid }}" class="modal bottom-sheet">
+			<div id="createCommentModal-{{ post.pid }}" style="z-index: 100" class="modal bottom-sheet">
 		  	<div class="modal-content">
 		 	 	<form class="col s12">
 		      	  	<div class="row">

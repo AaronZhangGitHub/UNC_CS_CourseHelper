@@ -24,7 +24,7 @@ var Materialize = (window as any).Materialize || {};
 	                            {{comment.text}}
 	                        </div>
 	                        <div class="comment-date right">{{comment.datetime}}</div>
-	                        <div class="comment-username left">{{post.username}}</div>
+	                        <div class="comment-username left">{{comment.username}}</div>
 	                    </div>
 	                </div>
 	            </div>
@@ -33,7 +33,7 @@ var Materialize = (window as any).Materialize || {};
 				</div>
 	        </div>
 
-	        <div id="createCommentModal-{{ comment.coid }}" style="position: absolute; z-index: 100" class="modal bottom-sheet">
+	        <div id="createCommentModal-{{ comment.coid }}" style="z-index: 100" class="modal bottom-sheet">
 		  	<div class="modal-content">
 		 	 	<form class="col s12">
 		      	  	<div class="row">
