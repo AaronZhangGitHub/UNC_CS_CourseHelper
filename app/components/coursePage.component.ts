@@ -47,8 +47,7 @@ template: `
     	<div *ngIf="course !== 'Not Entered'" class="row" >
 		    <div class="col s12">
 		        <ul class="tabs">
-		            <li class="tab col s6" id="forumTab"><a (click)="showForum()" class="active">Forum</a></li>
-		            <li class="tab col s6" id="resourcesTab"><a (click)="showResources()">Resources</a></li>
+		            <li class="tab col s12" id="forumTab"><a (click)="showForum()" class="active">Forum</a></li>
 		        </ul>
 		    </div>
 		</div>

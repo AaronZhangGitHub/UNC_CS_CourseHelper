@@ -24,6 +24,7 @@ var Materialize = (window as any).Materialize || {};
 	                            {{comment.text}}
 	                        </div>
 	                        <div class="comment-date right">{{comment.datetime}}</div>
+	                        <div class="comment-username left">{{post.username}}</div>
 	                    </div>
 	                </div>
 	            </div>
@@ -64,6 +65,10 @@ var Materialize = (window as any).Materialize || {};
 	.comment-date {
 		font-size: .8em;
 		text-align: right;
+	}
+	.comment-username {
+		font-size: .8em;
+		text-align: left;
 	}
 
 	.comment-score {
@@ -128,6 +133,7 @@ export class CommentComponent implements AfterViewInit {
 		}, (err) => console.log(err));
 	}
 	addComment(textEntryVal: string){
+		textEntryVal = this.censorship(textEntryVal);
 		console.log(this.post.cid);
 		console.log(this.post.pid);
 		console.log(this.comment.coid);
@@ -149,6 +155,37 @@ export class CommentComponent implements AfterViewInit {
 	}
 	ngOnInit() {
 		this.refresh();
+	}
+	censorship(inputString: string){
+		var outPutString = "";
+		var replacementPhrases = ["is cool", "your hair is shiny", "your teeth are very hard", "love", "is awesome", "cool","awesome", "you look like you could bear children well","if it came down to you or another person life or death situation I would choose you",
+		"is amazing","I love you in spite of your music taste","you could be a part time model","I don't want to vomit when I look at you",
+		"inspires me","you inspire me","look great today","a smart cookie","a perfect person","brings honor to family","I appreciate you *DJ Khaled Voice*"];
+		//Array of bad words taken from following URL: http://codewithdesign.com/2011/05/20/php-array-of-bad-words/
+		var badWords = ["quit", "horrid","terrible","suck","sucks","fuck","shit","ballsack","scroutum","hell",'fuck', 'shit', 'asshole', 'cunt', 'fag', 'fuk', 'fck', 'fcuk', 'assfuck', 'assfucker', 'fucker',
+                                'motherfucker', 'asscock', 'asshead', 'asslicker', 'asslick', 'asssucker', 'bastard', 'bitch', 'bitchtits',
+                                'bitches', 'bitch', 'brotherfucker', 'bullshit', 'bumblefuck', 'buttfucka', 'fucka', 'buttfucker', 'buttfucka', 'fatass', 'fuckoff', 'fuckstick', 'fucktard', 'fuckwad', 'fuckwit', 'dick',
+                                'dickfuck', 'dickhead', 'dickjuice', 'dickmilk', 'doochbag', 'douchebag', 'douche', 'dickweed', 'dyke', 'dumbass', 'dumass',
+                                'fuckboy', 'fuckbag', 'piss', 'prick', 'pussy',
+                                'poontang', 'poonany', 'porchmonkey','porch monkey', 'poon', 'queer', 'queerbait', 'queerhole', 'queef', 'renob', 'rimjob', 'ruski',
+                                'schlong', 'shitass', 'shitbag', 'shitbagger', 'shitbreath', 'choad', 'clitface'
+                                , 'clusterfuck', 'cockass', 'cockbite', 'cockface', 'skank', 'skeet', 'skullfuck', 'slut', 'slutbag', 'splooge', 'twatlips', 'twat',
+                                'twats', 'twatwaffle', 'vaj', 'vajayjay', 'va-j-j', 'wank', 'wankjob', 'whore', 'whorebag', 'whoreface'];
+    var inputSplitBySpace = inputString.split(' ');
+    for(var x in inputSplitBySpace){
+    	for(var y in badWords){
+    		if(inputSplitBySpace[x].toUpperCase()===badWords[y].toUpperCase()){
+    			//replace with something from replacement phrases
+    			var replacementPhraseIndex = Math.floor(Math.random()*(replacementPhrases.length+1));
+    			inputSplitBySpace[x]=replacementPhrases[replacementPhraseIndex];
+    			break;
+    		}
+    	}
+    }
+    var toString = inputSplitBySpace.toString();
+    console.log(toString);
+    outPutString = toString.replace(/,/g , " ");
+    return outPutString;
 	}
 	refresh(){
 			//console.log(this.comment.coid);

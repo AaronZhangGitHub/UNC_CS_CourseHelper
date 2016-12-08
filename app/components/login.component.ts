@@ -5,6 +5,9 @@ import { UserModel } from '../models/user.model';
 import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
 
+var $ = (window as any).$ || {};
+var Materialize = (window as any).Materialize || {};
+
 @Component({
 selector: 'login',
 template: `
@@ -131,12 +134,17 @@ loginUser(email_login: string, password_login: string){
 }
 signUpUser(fnSU: string, lnSU: string, pwSU: string, pwSUR: string, emSU: string){
   var name = fnSU + " "+lnSU;
-  if(pwSU!==pwSUR ){
-    alert("Passwords do not match, please re-enter.");
+  if(fnSU==""||lnSU==""){
+    Materialize.toast('Please enter a first and last name.', 3000);
+  }else if(emSU==""){
+    Materialize.toast('Please enter a Username.', 3000);
+  }else if(pwSU==""||pwSUR==""||pwSU==null||pwSUR==null){
+    Materialize.toast('Passwords can not be empty, please re-enter.', 3000);
+  }else if(pwSU!==pwSUR ){
+    Materialize.toast('Passwords do not match, please re-enter.', 3000);
   }else if(emSU.substring(emSU.length-7,emSU.length)!=="unc.edu"){
-    alert("Not using UNC email as username, please re-enter.")
-  }
-  else{
+    Materialize.toast('Not using UNC email as username, please re-enter.', 3000);
+  }else{
     this.http.post('/user/register',{
       Name:name,
       Username:emSU,

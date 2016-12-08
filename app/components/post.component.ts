@@ -23,6 +23,7 @@ var Materialize = (window as any).Materialize || {};
 					        <div class="card-title post-info">
 					            <div class="post-title">{{post.title}}</div>
 					            <div class="post-date">{{post.datetime}}</div>
+					            <div class="post-username">{{post.username}}</div>
 					        </div>
 					        <p class="grey-text text-lighten-2 post-body">{{post.text}}</p>
 					    </div>
@@ -74,6 +75,10 @@ var Materialize = (window as any).Materialize || {};
 	.post-date {
 	    margin-top: -2.2em;
 	    font-size: 50%;
+	}
+	.post-username{
+		margin-top: -2.2em;
+	  font-size: 50%;
 	}
 	.card a {
 		cursor: pointer;
@@ -155,8 +160,37 @@ export class PostComponent implements OnInit, AfterViewInit {
 		$("#createCommentModal-" + id).modal('close');
 
 	}
-
+	censorship(inputString: string){
+		var outPutString = "";
+		var replacementPhrases = ["is cool", "your hair is shiny", "your teeth are very hard", "love", "is awesome", "cool","awesome", "you look like you could bear children well","if it came down to you or another person life or death situation I would choose you","is amazing","I love you in spite of your music taste","you could be a part time model","I don't want to vomit when I look at you"];
+		//Array of bad words taken from following URL: http://codewithdesign.com/2011/05/20/php-array-of-bad-words/
+		var badWords = ["quit", "sucks","fuck","shit","ballsack","scroutum","hell",'fuck', 'shit', 'asshole', 'cunt', 'fag', 'fuk', 'fck', 'fcuk', 'assfuck', 'assfucker', 'fucker',
+                                'motherfucker', 'asscock', 'asshead', 'asslicker', 'asslick', 'asssucker', 'bastard', 'bitch', 'bitchtits',
+                                'bitches', 'bitch', 'brotherfucker', 'bullshit', 'bumblefuck', 'buttfucka', 'fucka', 'buttfucker', 'buttfucka', 'fatass', 'fuckoff', 'fuckstick', 'fucktard', 'fuckwad', 'fuckwit', 'dick',
+                                'dickfuck', 'dickhead', 'dickjuice', 'dickmilk', 'doochbag', 'douchebag', 'douche', 'dickweed', 'dyke', 'dumbass', 'dumass',
+                                'fuckboy', 'fuckbag', 'piss', 'prick', 'pussy',
+                                'poontang', 'poonany', 'porchmonkey','porch monkey', 'poon', 'queer', 'queerbait', 'queerhole', 'queef', 'renob', 'rimjob', 'ruski',
+                                'schlong', 'shitass', 'shitbag', 'shitbagger', 'shitbreath', 'choad', 'clitface'
+                                , 'clusterfuck', 'cockass', 'cockbite', 'cockface', 'skank', 'skeet', 'skullfuck', 'slut', 'slutbag', 'splooge', 'twatlips', 'twat',
+                                'twats', 'twatwaffle', 'vaj', 'vajayjay', 'va-j-j', 'wank', 'wankjob', 'whore', 'whorebag', 'whoreface'];
+    var inputSplitBySpace = inputString.split(' ');
+    for(var x in inputSplitBySpace){
+    	for(var y in badWords){
+    		if(inputSplitBySpace[x].toUpperCase()===badWords[y].toUpperCase()){
+    			//replace with something from replacement phrases
+    			var replacementPhraseIndex = Math.floor(Math.random()*(replacementPhrases.length+1));
+    			inputSplitBySpace[x]=replacementPhrases[replacementPhraseIndex];
+    			break;
+    		}
+    	}
+    }
+    var toString = inputSplitBySpace.toString();
+    console.log(toString);
+    outPutString = toString.replace(/,/g , " ");
+    return outPutString;
+	}
 	addComment(textEntryVal: string){
+		textEntryVal = this.censorship(textEntryVal);
 		this.userservice.getUser().subscribe((user: UserModel) => {
 			this.http.post(`${this.commentURL}/${this.post.cid}/${this.post.pid}`,{
 				text:textEntryVal,
