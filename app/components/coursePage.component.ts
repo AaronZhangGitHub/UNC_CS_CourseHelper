@@ -54,13 +54,10 @@ template: `
 
 		<div class="form-wrapper">
         <div *ngIf="!forumB && !recourcesB">
-            <p>Select a course to access its Forum and Recources.</p>
-        </div>
-        <div *ngIf="!forumB && recourcesB">
-            <resourcePage></resourcePage>
+            <p>Select a course to access its Forum.</p>
         </div>
         <div *ngIf="forumB && !recourcesB">
-            <formPage [cid]="cid"></formPage>
+            <formPage [cid]="cid" [course]="course"></formPage>
         </div>
     </div>
     </div>

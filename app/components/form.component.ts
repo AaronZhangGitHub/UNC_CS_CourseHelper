@@ -65,8 +65,15 @@ export class FormComponent implements AfterViewInit {
 			this.loadPosts();
 		}
 	}
+
+	@Input()
+	course: any;
+
 	get cid() {
 		return this._cid;
+	}
+	getCourse(){
+		return this.course;
 	}
 
 	constructor(public http: Http, public userservice: UserService){
@@ -93,7 +100,7 @@ export class FormComponent implements AfterViewInit {
 		var outPutString = "";
 		var replacementPhrases = ["is cool", "your hair is shiny", "your teeth are very hard", "love", "is awesome", "cool","awesome", "you look like you could bear children well","if it came down to you or another person life or death situation I would choose you","is amazing","I love you in spite of your music taste","you could be a part time model","I don't want to vomit when I look at you"];
 		//Array of bad words taken from following URL: http://codewithdesign.com/2011/05/20/php-array-of-bad-words/
-		var badWords = ["quit", "sucks","fuck","fucking","motherfuck","motherfucker","shit","ballsack","scroutum","hell",'fuck', 'shit', 'asshole', 'cunt', 'fag', 'fuk', 'fck', 'fcuk', 'assfuck', 'assfucker', 'fucker',
+		var badWords = ["quit", , "horrid","terrible","suck","sucks","fuck","fucking","motherfuck","motherfucker","shit","ballsack","scroutum","hell",'fuck', 'shit', 'asshole', 'cunt', 'fag', 'fuk', 'fck', 'fcuk', 'assfuck', 'assfucker', 'fucker',
                                 'motherfucker', 'asscock', 'asshead', 'asslicker', 'asslick', 'asssucker', 'bastard', 'bitch', 'bitchtits',
                                 'bitches', 'bitch', 'brotherfucker', 'bullshit', 'bumblefuck', 'buttfucka', 'fucka', 'buttfucker', 'buttfucka', 'fatass', 'fuckoff', 'fuckstick', 'fucktard', 'fuckwad', 'fuckwit', 'dick',
                                 'dickfuck', 'dickhead', 'dickjuice', 'dickmilk', 'doochbag', 'douchebag', 'douche', 'dickweed', 'dyke', 'dumbass', 'dumass',
